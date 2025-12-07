@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=E4Maps
+Comment=A simple mind mapping application
+Exec=e4maps
+Icon=e4maps
+Terminal=false
+Categories=Graphics;2DGraphics;
+Keywords=mindmap;diagram;brainstorming;visualization;

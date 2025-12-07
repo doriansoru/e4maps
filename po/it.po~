@@ -1,0 +1,346 @@
+# Italian translations for e4maps package
+# Traduzioni italiane per il pacchetto e4maps.
+# Copyright (C) 2025 Dorian Soru
+# This file is distributed under the same license as the e4maps package.
+# Dorian Soru <doriansoru@gmail.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: e4maps 1.0.0\n"
+"Report-Msgid-Bugs-To: doriansoru@gmail.com\n"
+"POT-Creation-Date: 2025-12-06 08:06+0100\n"
+"PO-Revision-Date: 2025-12-06 08:09+0100\n"
+"Last-Translator: Dorian Soru <doriansoru@gmail.com>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Command.hpp:44
+msgid "Add Node"
+msgstr "Aggiungi nodo"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Command.hpp:89
+msgid "Remove Node"
+msgstr "Rimuovi nodi"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Command.hpp:162
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:646
+msgid "Edit Node"
+msgstr "Modifica nodo"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Command.hpp:196
+msgid "Move Node"
+msgstr "Sposta nodo"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:224
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:609
+msgid "MAIN IDEA"
+msgstr "IDEA CENTRALE"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:227
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:614
+msgid "E4maps - New Map"
+msgstr "E4maps - Nuova mappa"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:300
+msgid "_File"
+msgstr "_File"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:304
+msgid "_New"
+msgstr "_Nuovo"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:309
+msgid "_Open..."
+msgstr "_Apri..."
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:315
+msgid "Open _Recent"
+msgstr "Apri _recenti"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:321
+msgid "_Save"
+msgstr "_Salva"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:326
+msgid "Save _As..."
+msgstr "Salva c_ome"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:332
+msgid "Export to _PNG"
+msgstr "Esporta in _PNG"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:335
+msgid "Export to P_DF"
+msgstr "Esporta in P_DF"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:340
+msgid "_Quit"
+msgstr "_Esci"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:346
+msgid "_Edit"
+msgstr "_Modifica"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:350
+msgid "_Undo"
+msgstr "_Annulla"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:355
+msgid "_Redo"
+msgstr "_Ripristina"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:362
+msgid "Add _Branch"
+msgstr "Aggingi co_llegamento"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:367
+msgid "_Remove Branch"
+msgstr "Ri_muovi collegamento"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:374
+msgid "_View"
+msgstr "_Visualizzazione"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:378
+msgid "Zoom _In"
+msgstr "Zoom _+"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:383
+msgid "Zoom _Out"
+msgstr "Zoom _-"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:388
+msgid "_Reset View"
+msgstr "Re_setta visualizzaione"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:410
+msgid "Add Branch"
+msgstr "Aggiungi collegamento"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:413
+msgid "Delete"
+msgstr "Elimina"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:416
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:491
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:571
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:714
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:845
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:872
+msgid "Save"
+msgstr "Salva"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:419
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:509
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:550
+msgid "Export to PNG"
+msgstr "Esporta in PNG"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:422
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:570
+msgid "Export to PDF"
+msgstr "Esporta in PDF"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:428
+msgid "Zoom In"
+msgstr "Zoom +"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:433
+msgid "Zoom Out"
+msgstr "Zoom -"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:437
+msgid "Reset"
+msgstr "Resetta"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:438
+msgid "Reset View"
+msgstr "Resetta visualizazione"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:447
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:818
+msgid "E4maps - "
+msgstr "E4maps - "
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:449
+msgid "Map saved successfully."
+msgstr "Mappa salvata correttamente."
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:453
+msgid "Error saving file: "
+msgstr "Errore nel salvataggio del file: "
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:458
+msgid "Unknown error occurred while saving file: "
+msgstr "Errore sconosciuto durante il salvataggio del file: "
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:478
+msgid "Error loading file: "
+msgstr "Errore nel caricamento del file: "
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:482
+msgid "Unknown error occurred while loading file: "
+msgstr ""
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:490
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:871
+msgid "Save Map"
+msgstr "Salva mappa"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:491
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:498
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:510
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:551
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:571
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:713
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:844
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:872
+msgid "Cancel"
+msgstr "Annulla"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:497
+msgid "Open Map"
+msgstr "Apri mappa"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:498
+msgid "Open"
+msgstr "Apri"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:499
+msgid "e4maps files"
+msgstr "file e4maps"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:511
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:552
+msgid "Export"
+msgstr "Esporta"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:521
+msgid "Select resolution for PNG export:"
+msgstr "Seleziona la risoluzione per l'esportazione PNG"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:525
+msgid "72 DPI (Screen)"
+msgstr "72 DPI (Schermo)"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:526
+msgid "300 DPI (High Quality)"
+msgstr "300 DPI (Alta qualità)"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:527
+msgid "600 DPI (Maximum Quality)"
+msgstr "600 DPI (Massima qualità)"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:560
+msgid "PNG export completed successfully!"
+msgstr "Esportazione in PNG completata con successo!"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:562
+msgid "Error during PNG export: "
+msgstr "Errore durante l'esportazione in PNG: "
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:565
+msgid "Unknown error occurred during PNG export"
+msgstr "Errore sconosciuto durante l'esportazione in PNG"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:578
+msgid "PDF export completed successfully!"
+msgstr "Esportazione in PDF completata con successo!"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:580
+msgid "Error during PDF export: "
+msgstr "Errore durante l'esportazione in PDF: "
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:583
+msgid "Unknown error occurred during PDF export"
+msgstr "Errore sconosciuto durante l'esportazione in PDF"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:593
+msgid "New"
+msgstr "Nuovo"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:651
+msgid "Node Text:"
+msgstr "Testo del nodo:"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:656
+msgid "Font:"
+msgstr "Carattere:"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:660
+msgid "Text Color:"
+msgstr "Colore del testo:"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:667
+msgid "Connection Color:"
+msgstr "Colore della connessione:"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:677
+msgid "Node Image:"
+msgstr "Immagine del nodo"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:679
+msgid "Choose..."
+msgstr "Seleziona..."
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:681
+msgid "Images"
+msgstr "Immagini"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:686
+msgid "W:"
+msgstr "L"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:687
+msgid "H:"
+msgstr "A"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:695
+msgid "Choose icon..."
+msgstr "Seleziona icona..."
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:700
+msgid "--- Branch Annotation ---"
+msgstr "--- Annotazione del collegamento ---"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:703
+msgid "Branch Text:"
+msgstr "Testo del collegamento:"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:707
+msgid "Branch Icon:"
+msgstr "Icona del collegamento:"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:735
+msgid "Selected image file format is not supported. Image will not be loaded."
+msgstr "Il formato di file dell'immagine selezionata non è supportato. L'immagine non sarà caricata."
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:750
+msgid ""
+"Selected connection image file format is not supported. Image will not be "
+"loaded."
+msgstr "Il formato di file del collegamento dell'immagine selezionata non è supportato. L'immagine non sarà caricata."
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:822
+msgid "New Map"
+msgstr "Nuova mappa"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:837
+msgid "The document contains unsaved changes."
+msgstr "Il documento contiene modifiche non salvate."
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:842
+msgid "Do you want to save the changes?"
+msgstr "Vuoi salvare le modifiche?"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/Gui.hpp:843
+msgid "Close without saving"
+msgstr "Chiusi senza salvare"
+
+#: /home/srbntt/Documenti/ProgrammiInformatici/c++/e4maps/src/MindMap.hpp:133
+msgid "Cannot open file"
+msgstr "Impossibile aprire il file"

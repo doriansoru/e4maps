@@ -1,0 +1,359 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Dorian Soru
+# This file is distributed under the same license as the e4maps package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: e4maps 1.0.0\n"
+"Report-Msgid-Bugs-To: doriansoru@gmail.com\n"
+"POT-Creation-Date: 2025-12-07 17:08+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/Command.hpp:45
+msgid "Add Node"
+msgstr ""
+
+#: src/Command.hpp:90
+msgid "Remove Node"
+msgstr ""
+
+#: src/Command.hpp:163 src/MainWindow.cpp:476
+msgid "Edit Node"
+msgstr ""
+
+#: src/Command.hpp:227
+msgid "Move Node"
+msgstr ""
+
+#: src/Command.hpp:258
+msgid "Copy Node"
+msgstr ""
+
+#: src/Command.hpp:305
+msgid "Cut Node"
+msgstr ""
+
+#: src/Command.hpp:343
+msgid "Paste Node"
+msgstr ""
+
+#: src/MindMap.hpp:126
+msgid "Cannot open file"
+msgstr ""
+
+#: src/MainWindow.cpp:5 src/MainWindow.cpp:439
+msgid "MAIN IDEA"
+msgstr ""
+
+#: src/MainWindow.cpp:8 src/MainWindow.cpp:444
+msgid "E4maps - New Map"
+msgstr ""
+
+#: src/MainWindow.cpp:66 src/MainWindow.cpp:74 src/MainWindow.cpp:729
+msgid "New Map"
+msgstr ""
+
+#: src/MainWindow.cpp:80 src/MainWindow.cpp:286
+msgid "Open Map"
+msgstr ""
+
+#: src/MainWindow.cpp:86 src/MainWindow.cpp:274 src/MainWindow.cpp:778
+msgid "Save Map"
+msgstr ""
+
+#: src/MainWindow.cpp:102
+msgid "Remove Branch"
+msgstr ""
+
+#: src/MainWindow.cpp:108
+msgid "Add Branch"
+msgstr ""
+
+#: src/MainWindow.cpp:117
+msgid "Open Recent"
+msgstr ""
+
+#: src/MainWindow.cpp:126
+msgid "Undo"
+msgstr ""
+
+#: src/MainWindow.cpp:131
+msgid "Redo"
+msgstr ""
+
+#: src/MainWindow.cpp:138
+msgid "Cut"
+msgstr ""
+
+#: src/MainWindow.cpp:143
+msgid "Copy"
+msgstr ""
+
+#: src/MainWindow.cpp:148
+msgid "Paste"
+msgstr ""
+
+#: src/MainWindow.cpp:156
+msgid "View"
+msgstr ""
+
+#: src/MainWindow.cpp:160
+msgid "Zoom In"
+msgstr ""
+
+#: src/MainWindow.cpp:165
+msgid "Zoom Out"
+msgstr ""
+
+#: src/MainWindow.cpp:170
+msgid "Reset View"
+msgstr ""
+
+#: src/MainWindow.cpp:178 src/MainWindow.cpp:300 src/MainWindow.cpp:383
+msgid "Export"
+msgstr ""
+
+#: src/MainWindow.cpp:182
+msgid "To PNG..."
+msgstr ""
+
+#: src/MainWindow.cpp:186
+msgid "To PDF..."
+msgstr ""
+
+#: src/MainWindow.cpp:190
+msgid "To Freeplane..."
+msgstr ""
+
+#: src/MainWindow.cpp:196
+msgid "Save As..."
+msgstr ""
+
+#: src/MainWindow.cpp:203
+msgid "About"
+msgstr ""
+
+#: src/MainWindow.cpp:207
+msgid "Quit"
+msgstr ""
+
+#: src/MainWindow.cpp:231 src/MainWindow.cpp:725
+msgid "E4maps - "
+msgstr ""
+
+#: src/MainWindow.cpp:233
+msgid "Map saved successfully."
+msgstr ""
+
+#: src/MainWindow.cpp:237
+msgid "Error saving file: "
+msgstr ""
+
+#: src/MainWindow.cpp:242
+msgid "Unknown error occurred while saving file: "
+msgstr ""
+
+#: src/MainWindow.cpp:262
+msgid "Error loading file: "
+msgstr ""
+
+#: src/MainWindow.cpp:266
+msgid "Unknown error occurred while loading file: "
+msgstr ""
+
+#: src/MainWindow.cpp:275 src/MainWindow.cpp:287 src/MainWindow.cpp:299
+#: src/MainWindow.cpp:382 src/MainWindow.cpp:543 src/MainWindow.cpp:751
+#: src/MainWindow.cpp:779
+msgid "Cancel"
+msgstr ""
+
+#: src/MainWindow.cpp:275 src/MainWindow.cpp:544 src/MainWindow.cpp:752
+#: src/MainWindow.cpp:779
+msgid "Save"
+msgstr ""
+
+#: src/MainWindow.cpp:276
+msgid "map.e4m"
+msgstr ""
+
+#: src/MainWindow.cpp:287
+msgid "Open"
+msgstr ""
+
+#: src/MainWindow.cpp:288
+msgid "e4maps files"
+msgstr ""
+
+#: src/MainWindow.cpp:298 src/MainWindow.cpp:364
+msgid "Export to PNG"
+msgstr ""
+
+#: src/MainWindow.cpp:310
+msgid "Select resolution for PNG export:"
+msgstr ""
+
+#: src/MainWindow.cpp:314
+msgid "72 DPI (Screen)"
+msgstr ""
+
+#: src/MainWindow.cpp:315
+msgid "300 DPI (High Quality)"
+msgstr ""
+
+#: src/MainWindow.cpp:316
+msgid "600 DPI (Maximum Quality)"
+msgstr ""
+
+#: src/MainWindow.cpp:365
+msgid "PNG export completed successfully!"
+msgstr ""
+
+#: src/MainWindow.cpp:366
+msgid "Error during PNG export: "
+msgstr ""
+
+#: src/MainWindow.cpp:368
+msgid "Export to PDF"
+msgstr ""
+
+#: src/MainWindow.cpp:369
+msgid "PDF export completed successfully!"
+msgstr ""
+
+#: src/MainWindow.cpp:370
+msgid "Error during PDF export: "
+msgstr ""
+
+#: src/MainWindow.cpp:372
+msgid "Export to Freeplane"
+msgstr ""
+
+#: src/MainWindow.cpp:373
+msgid "Freeplane export completed successfully!"
+msgstr ""
+
+#: src/MainWindow.cpp:374
+msgid "Error during Freeplane export: "
+msgstr ""
+
+#: src/MainWindow.cpp:389
+msgid "Freeplane files"
+msgstr ""
+
+#: src/MainWindow.cpp:394
+msgid "PNG images"
+msgstr ""
+
+#: src/MainWindow.cpp:399
+msgid "PDF documents"
+msgstr ""
+
+#: src/MainWindow.cpp:414
+msgid "Unknown error occurred."
+msgstr ""
+
+#: src/MainWindow.cpp:423
+msgid "New"
+msgstr ""
+
+#: src/MainWindow.cpp:481
+msgid "Node Text:"
+msgstr ""
+
+#: src/MainWindow.cpp:486
+msgid "Font:"
+msgstr ""
+
+#: src/MainWindow.cpp:490
+msgid "Text Color:"
+msgstr ""
+
+#: src/MainWindow.cpp:497
+msgid "Connection Color:"
+msgstr ""
+
+#: src/MainWindow.cpp:507
+msgid "Node Image:"
+msgstr ""
+
+#: src/MainWindow.cpp:509
+msgid "Choose..."
+msgstr ""
+
+#: src/MainWindow.cpp:511
+msgid "Images"
+msgstr ""
+
+#: src/MainWindow.cpp:516
+msgid "W:"
+msgstr ""
+
+#: src/MainWindow.cpp:517
+msgid "H:"
+msgstr ""
+
+#: src/MainWindow.cpp:525
+msgid "Choose icon..."
+msgstr ""
+
+#: src/MainWindow.cpp:530
+msgid "--- Branch Annotation ---"
+msgstr ""
+
+#: src/MainWindow.cpp:533
+msgid "Branch Text:"
+msgstr ""
+
+#: src/MainWindow.cpp:537
+msgid "Branch Icon:"
+msgstr ""
+
+#: src/MainWindow.cpp:565
+msgid "Selected image file format is not supported. Image will not be loaded."
+msgstr ""
+
+#: src/MainWindow.cpp:580
+msgid ""
+"Selected connection image file format is not supported. Image will not be "
+"loaded."
+msgstr ""
+
+#: src/MainWindow.cpp:685
+msgid "E4Maps"
+msgstr ""
+
+#: src/MainWindow.cpp:686
+msgid "1.0.0"
+msgstr ""
+
+#: src/MainWindow.cpp:687
+msgid "Copyright (c) 2025 Dorian Soru <doriansoru@gmail.com>"
+msgstr ""
+
+#: src/MainWindow.cpp:688
+msgid "A simple mind mapping application"
+msgstr ""
+
+#: src/MainWindow.cpp:691
+msgid "GitHub Repository"
+msgstr ""
+
+#: src/MainWindow.cpp:744
+msgid "The document contains unsaved changes."
+msgstr ""
+
+#: src/MainWindow.cpp:749
+msgid "Do you want to save the changes?"
+msgstr ""
+
+#: src/MainWindow.cpp:750
+msgid "Close without saving"
+msgstr ""
