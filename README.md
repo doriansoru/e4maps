@@ -96,7 +96,7 @@ git clone https://github.com/doriansoru/e4maps.git
 cd e4maps
 mkdir build && cd build
 cmake .. -G "MinGW Makefiles"
-mingw32-make
+cmake --build .
 ```
 
 5. Run the application:
