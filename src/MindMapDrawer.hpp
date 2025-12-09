@@ -4,6 +4,7 @@
 #include "MindMap.hpp"
 #include "Utils.hpp"
 #include "Constants.hpp"
+#include "Theme.hpp"
 #include <gtkmm.h>
 #include <cairomm/cairomm.h>
 #include <pangomm.h>
@@ -106,23 +107,30 @@ public:
     }
 
     // Pre-calculate node dimensions to ensure arrows are positioned correctly
-    void preCalculateNodeDimensions(std::shared_ptr<Node> node) {
+    void preCalculateNodeDimensions(std::shared_ptr<Node> node, const Theme& theme, int depth = 0) {
         if (!node) return;
-        calculateNodeDimensions(node);
+        calculateNodeDimensions(node, theme, depth);
         for (auto& child : node->children) {
-            preCalculateNodeDimensions(child);
+            preCalculateNodeDimensions(child, theme, depth + 1);
         }
     }
 
     // Calculate node dimensions without drawing
-    void calculateNodeDimensions(std::shared_ptr<Node> node) {
+    void calculateNodeDimensions(std::shared_ptr<Node> node, const Theme& theme, int depth) {
         if (!node) return;
+
+        NodeStyle style = theme.getStyle(depth);
 
         // Calculate text size
         auto layout = create_dummy_pango_layout();
         layout->set_text(node->text);
-        Pango::FontDescription font(node->fontDesc);
+        Pango::FontDescription font(style.fontDescription);
         layout->set_font_description(font);
+        
+        // Enable text wrapping
+        layout->set_width(E4Maps::MAX_NODE_WIDTH * Pango::SCALE);
+        layout->set_wrap(Pango::WRAP_WORD_CHAR);
+        
         int textW, textH;
         layout->get_pixel_size(textW, textH);
 
@@ -137,8 +145,8 @@ public:
             contentHeight += imgH + 5; // Padding between image and text
         }
 
-        node->width = contentWidth;
-        node->height = contentHeight;
+        node->width = contentWidth + style.horizontalPadding * 2;
+        node->height = contentHeight + style.verticalPadding * 2;
     }
 
     // Helper to load and cache images
@@ -178,16 +186,38 @@ public:
         cr->restore();
     }
 
-    void drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, std::shared_ptr<Node> selectedNode = nullptr) {
+    void drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode = nullptr, const std::vector<std::shared_ptr<Node>>& selectedNodes = {}) {
         if (!node) return;
+
+        NodeStyle style = theme.getStyle(depth);
+
+        // --- MANUAL OVERRIDES (Highest Priority) ---
+        if (node->overrideTextColor) {
+            style.textColor = Cairo::SolidPattern::create_rgb(node->textColor.r, node->textColor.g, node->textColor.b);
+        }
+        if (node->overrideFont) {
+            style.fontDescription = Pango::FontDescription(node->fontDesc);
+        }
 
         // Draw connections first (so they are behind nodes)
         for (auto& child : node->children) {
             cr->save();
-            cr->set_source_rgb(child->color.r, child->color.g, child->color.b);
+            
+            // Determine connection color for this specific child
+            Cairo::RefPtr<Cairo::Pattern> connColor = style.connectionColor;
+            if (child->overrideColor) {
+                connColor = Cairo::SolidPattern::create_rgb(child->color.r, child->color.g, child->color.b);
+            }
+            
+            cr->set_source(connColor);
             // Thinner, more elegant lines
-            cr->set_line_width(std::max(1.5, 6.0 - depth * 1.2));
+            cr->set_line_width(style.connectionWidth); // Using themed connection width
             cr->set_line_cap(Cairo::LINE_CAP_ROUND);
+
+            if (style.connectionDash) {
+                std::vector<double> dashes = {6.0, 3.0};
+                cr->set_dash(dashes, 0.0);
+            }
 
             double dx = child->x - node->x;
             double dy = child->y - node->y;
@@ -231,7 +261,21 @@ public:
 
             double offsetX = std::cos(arrowAngle) * totalOffset;
             double offsetY = std::sin(arrowAngle) * totalOffset;
-            drawArrow(cr, p3x - offsetX, p3y - offsetY, arrowAngle, arrowSize, child->color);
+            
+            Color arrowColor = {0, 0, 0};
+            auto solidPattern = Cairo::RefPtr<Cairo::SolidPattern>::cast_dynamic(connColor); // Use the effective connection color
+            if (solidPattern) {
+                double r, g, b, a;
+                solidPattern->get_rgba(r, g, b, a);
+                arrowColor.r = r;
+                arrowColor.g = g;
+                arrowColor.b = b;
+            } else {
+                // Fallback to node color if pattern is not solid or unavailable
+                arrowColor = child->color;
+            }
+            
+            drawArrow(cr, p3x - offsetX, p3y - offsetY, arrowAngle, arrowSize, arrowColor);
             
             // Annotations (Text/Image on line)
             if (!child->connText.empty() || !child->connImagePath.empty()) {
@@ -300,7 +344,7 @@ public:
                 cr->restore(); 
             }
             cr->restore();
-            drawNode(cr, child, depth + 1, selectedNode);
+            drawNode(cr, child, depth + 1, theme, selectedNode, selectedNodes); // RECURSIVE CALL UPDATE
         }
 
         // --- DRAW NODE ---
@@ -312,8 +356,13 @@ public:
         
         auto layout = Pango::Layout::create(cr);
         layout->set_text(node->text);
-        Pango::FontDescription font(node->fontDesc);
+        Pango::FontDescription font(style.fontDescription); // Use themed font
         layout->set_font_description(font);
+        
+        // Enable text wrapping
+        layout->set_width(E4Maps::MAX_NODE_WIDTH * Pango::SCALE);
+        layout->set_wrap(Pango::WRAP_WORD_CHAR);
+        
         int textW, textH;
         layout->get_pixel_size(textW, textH); // Get actual text dimensions for drawing
 
@@ -323,47 +372,51 @@ public:
             imgW = pb->get_width(); imgH = pb->get_height();
         }
 
-        double pad = E4Maps::NODE_PADDING;
+        double pad = style.horizontalPadding; // Use themed padding
         double totalW = node->width + pad*2;
-        double totalH = node->height + pad*2;
-        double cornerRadius = 10.0;
+        double totalH = node->height + style.verticalPadding*2; // Use themed padding
+        double cornerRadius = style.cornerRadius; // Use themed corner radius
         double boxX = node->x - totalW/2;
         double boxY = node->y - totalH/2;
 
         // 1. Draw Shadow
         cr->save();
-        cr->set_source_rgba(0.0, 0.0, 0.0, 0.2); // Soft shadow color
-        rounded_rectangle(cr, boxX + 3, boxY + 3, totalW, totalH, cornerRadius);
+        cr->set_source(style.shadowColor); // Use themed shadow color
+        rounded_rectangle(cr, boxX + style.shadowOffsetX, boxY + style.shadowOffsetY, totalW, totalH, cornerRadius);
         cr->fill();
         cr->restore();
 
-        // 2. Draw Node Background (Gradient)
-        Cairo::RefPtr<Cairo::LinearGradient> gradient = Cairo::LinearGradient::create(boxX, boxY, boxX, boxY + totalH);
-        gradient->add_color_stop_rgba(0, 1.0, 1.0, 1.0, 1.0);     // White at top
-        gradient->add_color_stop_rgba(1, 0.95, 0.95, 0.95, 1.0); // Slightly grey at bottom
-        
-        cr->set_source(gradient);
+        // 2. Draw Node Background (Gradient or Solid)
+        bool isNodeSelected = (node == selectedNode) ||
+                             (!selectedNodes.empty() &&
+                              std::find(selectedNodes.begin(), selectedNodes.end(), node) != selectedNodes.end());
+
+        if (isNodeSelected) {
+            cr->set_source(style.backgroundHoverColor); // Use themed hover color if selected
+        } else {
+            cr->set_source(style.backgroundColor); // Use themed background color
+        }
         rounded_rectangle(cr, boxX, boxY, totalW, totalH, cornerRadius);
         cr->fill_preserve(); // Keep path for stroke
 
         // 3. Draw Border
-        if (node == selectedNode) {
-            cr->set_source_rgb(0.2, 0.6, 1.0); // Highlight color
+        if (isNodeSelected) {
+            cr->set_source_rgb(0.2, 0.6, 1.0); // Highlight color remains hardcoded for now
             cr->set_line_width(2.5);
         } else {
-            cr->set_source_rgb(0.6, 0.6, 0.6); // Normal border
-            cr->set_line_width(1.0);
+            cr->set_source(style.borderColor); // Use themed border color
+            cr->set_line_width(style.borderWidth); // Use themed border width
         }
         cr->stroke();
 
         // 4. Draw Content
         if (pb) {
-            Gdk::Cairo::set_source_pixbuf(cr, pb, node->x - imgW/2, boxY + pad);
+            Gdk::Cairo::set_source_pixbuf(cr, pb, node->x - imgW/2, boxY + style.verticalPadding);
             cr->paint();
         }
 
-        cr->set_source_rgb(node->textColor.r, node->textColor.g, node->textColor.b);
-        double textY = boxY + pad + ((pb) ? imgH + 5 : 0);
+        cr->set_source(style.textColor); // Use themed text color
+        double textY = boxY + style.verticalPadding + ((pb) ? imgH + 5 : 0);
         cr->move_to(node->x - textW/2, textY);
         layout->show_in_cairo_context(cr);
         
@@ -374,6 +427,10 @@ public:
     static void clearImageCache() {
         ImageCache::getInstance().clear();
     }
+
+private:
+    Theme currentTheme;
 };
 
 #endif // MINDMAP_DRAWER_HPP
+

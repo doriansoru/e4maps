@@ -11,13 +11,17 @@ class ConfigManager {
 private:
     std::string m_configDir;
     std::string m_recentFile;
+    std::string m_lastDirFile;
     std::deque<std::string> m_recentFiles;
+    std::string m_lastUsedDir;
 
 public:
     ConfigManager() {
         initializeConfigDir();
         m_recentFile = (std::filesystem::path(m_configDir) / "recent.txt").string();
+        m_lastDirFile = (std::filesystem::path(m_configDir) / "lastdir.txt").string();
         loadRecentFiles();
+        loadLastUsedDirectory();
     }
 
     void initializeConfigDir() {
@@ -58,6 +62,29 @@ public:
     }
 
     const std::deque<std::string>& getRecentFiles() const { return m_recentFiles; }
+
+    // Last directory functionality
+    void loadLastUsedDirectory() {
+        std::ifstream in(m_lastDirFile);
+        if (in.is_open()) {
+            std::getline(in, m_lastUsedDir);
+            if (m_lastUsedDir.empty() || !std::filesystem::exists(m_lastUsedDir)) {
+                m_lastUsedDir.clear();
+            }
+        }
+    }
+
+    void saveLastUsedDirectory(const std::string& dir) {
+        std::ofstream out(m_lastDirFile);
+        if (out.is_open()) {
+            out << dir << std::endl;
+        }
+        m_lastUsedDir = dir;
+    }
+
+    const std::string& getLastUsedDirectory() const {
+        return m_lastUsedDir;
+    }
 };
 
 #endif // CONFIG_MANAGER_HPP

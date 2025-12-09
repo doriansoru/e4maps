@@ -9,6 +9,10 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 pkg_check_modules(CAIROMM REQUIRED cairomm-1.0)
 
+# Include tinyxml2 from 3rdparty
+set(TINYXML2_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tinyxml2)
+include_directories(${TINYXML2_SOURCE_DIR})
+
 # Find Gettext for internationalization support
 find_package(Gettext REQUIRED)
 
@@ -46,8 +50,13 @@ if(WIN32)
         src/Translation.hpp
         src/MapArea.cpp
         src/MainWindow.cpp
+        src/MainWindow_UI.cpp
+        src/MainWindow_Actions.cpp
         src/NodeEditDialog.cpp
         src/LayoutAlgorithm.cpp
+        src/Theme.cpp
+        src/ThemeEditor.cpp
+        ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
         resources/e4maps.rc
     )
 else()
@@ -56,14 +65,19 @@ else()
         src/Translation.hpp
         src/MapArea.cpp
         src/MainWindow.cpp
+        src/MainWindow_UI.cpp
+        src/MainWindow_Actions.cpp
         src/NodeEditDialog.cpp
         src/LayoutAlgorithm.cpp
+        src/Theme.cpp
+        src/ThemeEditor.cpp
+        ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
     )
 endif()
 
 # Add header files to the executable target to ensure they are included in IDEs
 set(HEADER_FILES
-    src/Gui.hpp
+    src/MainWindow.hpp
     src/NodeEditDialog.hpp
     src/Utils.hpp
     src/Exporter.hpp
@@ -76,6 +90,8 @@ set(HEADER_FILES
     src/ConfigManager.hpp
     src/LayoutAlgorithm.hpp
     src/MindMapUtils.hpp
+    src/Theme.hpp
+    src/ThemeEditor.hpp
 )
 
 target_sources(e4maps PRIVATE ${HEADER_FILES})

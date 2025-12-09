@@ -104,6 +104,12 @@ private:
     int oldImgHeight, newImgHeight;
     std::string oldConnText, newConnText;
     std::string oldConnImagePath, newConnImagePath;
+    
+    // Override flags
+    bool oldOvrC, newOvrC;
+    bool oldOvrT, newOvrT;
+    bool oldOvrF, newOvrF;
+    
     bool executed;
 
 public:
@@ -115,7 +121,10 @@ public:
                     const std::string& oldImgPath, const std::string& newImgPath,
                     int oldW, int newW, int oldH, int newH,
                     const std::string& oldConnTxt, const std::string& newConnTxt,
-                    const std::string& oldConnImgPath, const std::string& newConnImgPath)
+                    const std::string& oldConnImgPath, const std::string& newConnImgPath,
+                    bool oldOc, bool newOc,
+                    bool oldOt, bool newOt,
+                    bool oldOf, bool newOf)
         : node(nodeToEdit), oldText(oldTxt), newText(newTxt),
           oldFontDesc(oldFont), newFontDesc(newFont),
           oldColor(oldCol), newColor(newCol),
@@ -125,6 +134,9 @@ public:
           oldImgHeight(oldH), newImgHeight(newH),
           oldConnText(oldConnTxt), newConnText(newConnTxt),
           oldConnImagePath(oldConnImgPath), newConnImagePath(newConnImgPath),
+          oldOvrC(oldOc), newOvrC(newOc),
+          oldOvrT(oldOt), newOvrT(newOt),
+          oldOvrF(oldOf), newOvrF(newOf),
           executed(false) {}
 
     void execute() override {
@@ -139,6 +151,11 @@ public:
             node->imgHeight = newImgHeight;
             node->connText = newConnText;
             node->connImagePath = newConnImagePath;
+            
+            node->overrideColor = newOvrC;
+            node->overrideTextColor = newOvrT;
+            node->overrideFont = newOvrF;
+            
             executed = true;
         }
     }
@@ -155,6 +172,11 @@ public:
             node->imgHeight = oldImgHeight;
             node->connText = oldConnText;
             node->connImagePath = oldConnImagePath;
+            
+            node->overrideColor = oldOvrC;
+            node->overrideTextColor = oldOvrT;
+            node->overrideFont = oldOvrF;
+            
             executed = false;
         }
     }
@@ -182,6 +204,11 @@ inline std::shared_ptr<Node> copyNodeTree(std::shared_ptr<Node> original) {
     copy->height = original->height;
     copy->angle = original->angle;
     copy->manualPosition = original->manualPosition;
+    
+    // Copy override flags
+    copy->overrideColor = original->overrideColor;
+    copy->overrideTextColor = original->overrideTextColor;
+    copy->overrideFont = original->overrideFont;
 
     // Copy all children recursively
     for (auto& child : original->children) {
@@ -326,6 +353,14 @@ public:
         if (!executed && parent && nodeToPaste) {
             actualPastedNode = copyNodeTree(nodeToPaste);
             if (actualPastedNode) {
+                // Apply intelligent positioning to avoid overlapping with existing children
+                if (actualPastedNode->manualPosition) {
+                    // Calculate a suitable position that doesn't overlap with existing children
+                    std::pair<double, double> newPos = findNonOverlappingPosition(parent, actualPastedNode);
+                    actualPastedNode->x = newPos.first;
+                    actualPastedNode->y = newPos.second;
+                }
+
                 parent->addChild(actualPastedNode);
             }
             executed = true;
@@ -341,6 +376,343 @@ public:
 
     std::string getName() const override {
         return _("Paste Node");
+    }
+
+private:
+    // Helper method to find a non-overlapping position for the pasted node and its subtree
+    std::pair<double, double> findNonOverlappingPosition(std::shared_ptr<Node> targetParent, std::shared_ptr<Node> nodeToPaste) {
+        // Calculate the offset that should be applied to the entire subtree
+        double rootOriginalX = nodeToPaste->x;
+        double rootOriginalY = nodeToPaste->y;
+
+        // Start with a basic offset from the original root position
+        double newRootX = rootOriginalX + 40.0;
+        double newRootY = rootOriginalY + 40.0;
+
+        // Get a list of all children positions of the target parent to check for overlaps
+        std::vector<std::pair<double, double>> existingPositions;
+        for (const auto& child : targetParent->children) {
+            existingPositions.push_back({child->x, child->y});
+        }
+
+        // Keep trying different positions until we find one that doesn't overlap
+        int attempts = 0;
+        const int maxAttempts = 100; // Prevent infinite loops
+
+        while (attempts < maxAttempts) {
+            bool overlaps = false;
+
+            // Check if the new root position overlaps with any existing child
+            for (const auto& pos : existingPositions) {
+                // Simple distance check - if closer than a threshold, consider it overlapping
+                double distance = std::sqrt(std::pow(newRootX - pos.first, 2) + std::pow(newRootY - pos.second, 2));
+                if (distance < 60.0) { // 60 pixel minimum distance
+                    overlaps = true;
+                    break;
+                }
+            }
+
+            if (!overlaps) {
+                break; // Found a good position
+            }
+
+            // Try a different position using a spiral pattern
+            attempts++;
+            double angle = attempts * 0.785; // Approximately 45 degrees in radians
+            double radius = (attempts / 8) * 60.0; // Increase radius every 8 attempts
+            newRootX = targetParent->x + radius * std::cos(angle);
+            newRootY = targetParent->y + radius * std::sin(angle);
+        }
+
+        // If we've exhausted attempts, use a fallback position
+        if (attempts >= maxAttempts) {
+            newRootX = targetParent->x + 100.0;
+            newRootY = targetParent->y + 100.0;
+        }
+
+        // Now apply the calculated offset to the entire subtree
+        double offsetX = newRootX - rootOriginalX;
+        double offsetY = newRootY - rootOriginalY;
+
+        // Apply the offset to the root node
+        nodeToPaste->x = newRootX;
+        nodeToPaste->y = newRootY;
+
+        // Apply the same offset to all descendants in the subtree
+        applyOffsetToSubtree(nodeToPaste, offsetX, offsetY);
+
+        // Return the new root position
+        return std::make_pair(newRootX, newRootY);
+    }
+
+    // Helper method to apply an offset to all nodes in a subtree
+    void applyOffsetToSubtree(std::shared_ptr<Node> node, double offsetX, double offsetY) {
+        if (!node) return;
+
+        for (auto& child : node->children) {
+            child->x += offsetX;
+            child->y += offsetY;
+
+            // Recursively apply offset to grandchildren
+            applyOffsetToSubtree(child, offsetX, offsetY);
+        }
+    }
+};
+
+// Command to copy multiple nodes (doesn't modify the map, just stores multiple copies)
+class CopyMultipleNodesCommand : public Command {
+private:
+    std::vector<std::shared_ptr<Node>> nodesToCopy;
+    std::vector<std::shared_ptr<Node>> nodesCopy;
+    bool executed;
+
+public:
+    CopyMultipleNodesCommand(const std::vector<std::shared_ptr<Node>>& nodes)
+        : nodesToCopy(nodes), executed(false) {}
+
+    void execute() override {
+        if (!executed) {
+            for (auto& node : nodesToCopy) {
+                if (node) {
+                    nodesCopy.push_back(copyNodeTree(node));
+                }
+            }
+            executed = true;
+        }
+    }
+
+    void undo() override {
+        // Copy operation doesn't modify the map, so undo is a no-op
+        if (executed) {
+            nodesCopy.clear();
+            executed = false;
+        }
+    }
+
+    std::string getName() const override {
+        return _("Copy Multiple Nodes");
+    }
+
+    const std::vector<std::shared_ptr<Node>>& getNodesCopy() const {
+        return nodesCopy;
+    }
+};
+
+// Command to cut multiple nodes (remove from map but keep copies)
+class CutMultipleNodesCommand : public Command {
+private:
+    std::vector<std::pair<std::shared_ptr<Node>, std::shared_ptr<Node>>> parentChildPairs; // parent, child
+    std::vector<std::shared_ptr<Node>> nodesCopy;
+    std::vector<std::size_t> positions; // positions of nodes in their respective parents' children
+    bool executed;
+
+public:
+    CutMultipleNodesCommand(const std::vector<std::shared_ptr<Node>>& nodes) : executed(false) {
+        for (auto& node : nodes) {
+            if (node && !node->isRoot()) {  // Can't cut the root node
+                if (auto parent = node->parent.lock()) {
+                    // Find the position of the node in parent's children
+                    auto it = std::find(parent->children.begin(), parent->children.end(), node);
+                    if (it != parent->children.end()) {
+                        std::size_t position = std::distance(parent->children.begin(), it);
+                        parentChildPairs.push_back({parent, node});
+                        positions.push_back(position);
+                    }
+                }
+            }
+        }
+    }
+
+    void execute() override {
+        if (!executed) {
+            // Keep copies of nodes before removal
+            for (auto& node : parentChildPairs) {
+                nodesCopy.push_back(copyNodeTree(node.second));
+            }
+
+            // Remove nodes from their parents
+            for (size_t i = 0; i < parentChildPairs.size(); i++) {
+                auto& pair = parentChildPairs[i];
+                if (pair.first && pair.second) {
+                    pair.first->removeChild(pair.second);
+                }
+            }
+            executed = true;
+        }
+    }
+
+    void undo() override {
+        if (executed) {
+            // Reinsert nodes at their original positions
+            for (size_t i = 0; i < parentChildPairs.size(); i++) {
+                auto& pair = parentChildPairs[i];
+                if (pair.first && !nodesCopy.empty() && i < nodesCopy.size()) {
+                    auto nodeToRestore = copyNodeTree(nodesCopy[i]);
+                    if (!nodeToRestore) continue;
+
+                    // Reinsert at original position
+                    if (positions[i] < pair.first->children.size()) {
+                        pair.first->children.insert(pair.first->children.begin() + positions[i], nodeToRestore);
+                    } else {
+                        pair.first->addChild(nodeToRestore);
+                    }
+                }
+            }
+            executed = false;
+        }
+    }
+
+    std::string getName() const override {
+        return _("Cut Multiple Nodes");
+    }
+
+    const std::vector<std::shared_ptr<Node>>& getNodesCopy() const {
+        return nodesCopy;
+    }
+};
+
+// Command to paste multiple nodes to a parent
+class PasteMultipleNodesCommand : public Command {
+private:
+    std::shared_ptr<Node> parent;
+    std::vector<std::shared_ptr<Node>> nodesToPaste;
+    std::vector<std::shared_ptr<Node>> actualPastedNodes; // Copied instances that get added to the map
+    bool executed;
+
+public:
+    PasteMultipleNodesCommand(std::shared_ptr<Node> parentNode, const std::vector<std::shared_ptr<Node>>& nodes)
+        : parent(parentNode), nodesToPaste(nodes), executed(false) {}
+
+    void execute() override {
+        if (!executed && parent && !nodesToPaste.empty()) {
+            actualPastedNodes.clear();
+
+            // Copy each node to paste and add to parent
+            for (auto& node : nodesToPaste) {
+                if (node) {
+                    auto nodeCopy = copyNodeTree(node);
+                    if (nodeCopy) {
+                        // Apply intelligent positioning to avoid overlapping with existing children
+                        if (nodeCopy->manualPosition) {
+                            // Calculate a suitable position that doesn't overlap with existing children or other pasted nodes
+                            std::pair<double, double> newPos = findNonOverlappingPosition(parent, nodeCopy, actualPastedNodes);
+                            nodeCopy->x = newPos.first;
+                            nodeCopy->y = newPos.second;
+                        }
+
+                        parent->addChild(nodeCopy);
+                        actualPastedNodes.push_back(nodeCopy);
+                    }
+                }
+            }
+            executed = true;
+        }
+    }
+
+    void undo() override {
+        if (executed && parent && !actualPastedNodes.empty()) {
+            // Remove all pasted nodes from parent
+            for (auto& node : actualPastedNodes) {
+                if (node) {
+                    parent->removeChild(node);
+                }
+            }
+            actualPastedNodes.clear();
+            executed = false;
+        }
+    }
+
+    std::string getName() const override {
+        return _("Paste Multiple Nodes");
+    }
+
+    const std::vector<std::shared_ptr<Node>>& getPastedNodes() const {
+        return actualPastedNodes;
+    }
+
+private:
+    // Helper method to find a non-overlapping position for the pasted node and its subtree
+    std::pair<double, double> findNonOverlappingPosition(std::shared_ptr<Node> targetParent, std::shared_ptr<Node> nodeToPaste, const std::vector<std::shared_ptr<Node>>& otherPastedNodes) {
+        // Calculate the offset that should be applied to the entire subtree
+        double rootOriginalX = nodeToPaste->x;
+        double rootOriginalY = nodeToPaste->y;
+
+        // Start with a basic offset from the original root position
+        double newRootX = rootOriginalX + 40.0;
+        double newRootY = rootOriginalY + 40.0;
+
+        // Get a list of all children positions of the target parent to check for overlaps
+        std::vector<std::pair<double, double>> existingPositions;
+        for (const auto& child : targetParent->children) {
+            existingPositions.push_back({child->x, child->y});
+        }
+
+        // Also check positions of other nodes being pasted in this operation
+        for (const auto& pastedNode : otherPastedNodes) {
+            existingPositions.push_back({pastedNode->x, pastedNode->y});
+        }
+
+        // Keep trying different positions until we find one that doesn't overlap
+        int attempts = 0;
+        const int maxAttempts = 100; // Prevent infinite loops
+
+        while (attempts < maxAttempts) {
+            bool overlaps = false;
+
+            // Check if the new root position overlaps with any existing child or other pasted node
+            for (const auto& pos : existingPositions) {
+                // Simple distance check - if closer than a threshold, consider it overlapping
+                double distance = std::sqrt(std::pow(newRootX - pos.first, 2) + std::pow(newRootY - pos.second, 2));
+                if (distance < 60.0) { // 60 pixel minimum distance
+                    overlaps = true;
+                    break;
+                }
+            }
+
+            if (!overlaps) {
+                break; // Found a good position
+            }
+
+            // Try a different position using a spiral pattern
+            attempts++;
+            double angle = attempts * 0.785; // Approximately 45 degrees in radians
+            double radius = (attempts / 8) * 60.0; // Increase radius every 8 attempts
+            newRootX = targetParent->x + radius * std::cos(angle);
+            newRootY = targetParent->y + radius * std::sin(angle);
+        }
+
+        // If we've exhausted attempts, use a fallback position
+        if (attempts >= maxAttempts) {
+            newRootX = targetParent->x + 100.0 * (otherPastedNodes.size() + 1);
+            newRootY = targetParent->y + 100.0;
+        }
+
+        // Now apply the calculated offset to the entire subtree
+        double offsetX = newRootX - rootOriginalX;
+        double offsetY = newRootY - rootOriginalY;
+
+        // Apply the offset to the root node
+        nodeToPaste->x = newRootX;
+        nodeToPaste->y = newRootY;
+
+        // Apply the same offset to all descendants in the subtree
+        applyOffsetToSubtree(nodeToPaste, offsetX, offsetY);
+
+        // Return the new root position
+        return std::make_pair(newRootX, newRootY);
+    }
+
+    // Helper method to apply an offset to all nodes in a subtree
+    void applyOffsetToSubtree(std::shared_ptr<Node> node, double offsetX, double offsetY) {
+        if (!node) return;
+
+        for (auto& child : node->children) {
+            child->x += offsetX;
+            child->y += offsetY;
+
+            // Recursively apply offset to grandchildren
+            applyOffsetToSubtree(child, offsetX, offsetY);
+        }
     }
 };
 

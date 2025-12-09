@@ -6,8 +6,11 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
     const int width = allocation.get_width();
     const int height = allocation.get_height();
 
-    // Check if Ctrl is pressed for panning
-    if (event->state & GDK_CONTROL_MASK) {
+    // Handle node selection and dragging
+    auto clickedNode = drawingContext.hitTest(event->x, event->y, width, height);
+
+    // Check if Ctrl is pressed for panning - BUT only if not clicking on a node
+    if ((event->state & GDK_CONTROL_MASK) && !clickedNode) {
         isPanning = true;
         panStartOffsetX = drawingContext.getViewport().offsetX;
         panStartOffsetY = drawingContext.getViewport().offsetY;
@@ -15,9 +18,6 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
         dragStartY = event->y;
         return true;
     }
-
-    // Handle node selection and dragging
-    auto clickedNode = drawingContext.hitTest(event->x, event->y, width, height);
     if (event->type == GDK_2BUTTON_PRESS && clickedNode) {
         drawingContext.setSelectedNode(clickedNode);
         signal_edit_node.emit(clickedNode);
@@ -25,15 +25,56 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
         return true;
     }
     if (clickedNode) {
-        drawingContext.setSelectedNode(clickedNode);
-        isDragging = true;
-        dragStartX = event->x;
-        dragStartY = event->y;
-        // Store original node position in world coordinates
-        auto [worldX, worldY] = drawingContext.screenToWorld(event->x, event->y, width, height);
-        nodeStartX = clickedNode->x;
-        nodeStartY = clickedNode->y;
+        // Check if Ctrl is pressed to toggle selection
+        bool isCtrlPressed = (event->state & GDK_CONTROL_MASK) != 0;
+
+        if (isCtrlPressed) {
+            // Toggle the clicked node in the selection
+            bool wasSelected = drawingContext.isNodeSelected(clickedNode);
+
+            if (wasSelected) {
+                drawingContext.removeNodeFromSelection(clickedNode);
+            } else {
+                drawingContext.addNodeToSelection(clickedNode);
+            }
+
+            // We're not dragging in this case, just selecting/deselecting
+            isDragging = false;
+        } else {
+            // Regular click - if the clicked node is already selected AND there are multiple selections,
+            // drag all selected nodes; otherwise, select only this node
+            bool isAlreadySelected = drawingContext.isNodeSelected(clickedNode);
+            bool hasMultipleSelection = drawingContext.getSelectedNodesCount() > 1;
+
+            if (isAlreadySelected && hasMultipleSelection) {
+                // The clicked node is part of a multi-selection, drag all selected nodes
+                isDragging = true;
+                isFirstDragMotion = true;  // Reset for this drag operation
+                dragStartX = event->x;
+                dragStartY = event->y;
+                // Store original position of the clicked node to calculate movement
+                auto [worldX, worldY] = drawingContext.screenToWorld(event->x, event->y, width, height);
+                nodeStartX = clickedNode->x;
+                nodeStartY = clickedNode->y;
+            } else {
+                // Select only this node and drag it
+                drawingContext.setSelectedNode(clickedNode);
+                isDragging = true;
+                isFirstDragMotion = true;  // Reset for this drag operation
+                dragStartX = event->x;
+                dragStartY = event->y;
+                // Store original node position in world coordinates
+                auto [worldX, worldY] = drawingContext.screenToWorld(event->x, event->y, width, height);
+                nodeStartX = clickedNode->x;
+                nodeStartY = clickedNode->y;
+            }
+        }
     } else {
+        // Clicked on empty space - clear selection
+        bool isCtrlPressed = (event->state & GDK_CONTROL_MASK) != 0;
+        if (!isCtrlPressed) {
+            drawingContext.clearSelection();
+        }
         isDragging = false;
     }
     queue_draw();
@@ -43,6 +84,7 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
 bool MapArea::on_button_release_event(GdkEventButton* event) {
     isDragging = false;
     isPanning = false;
+    isFirstDragMotion = true;  // Reset for next drag operation
     return true;
 }
 
@@ -57,23 +99,58 @@ bool MapArea::on_motion_notify_event(GdkEventMotion* event) {
         drawingContext.setViewport(vp);
         queue_draw();
         return true;
-    } else if (isDragging && drawingContext.getSelectedNode()) {
-        // Dragging node: update node position
-        Gtk::Allocation allocation = get_allocation();
-        const int width = allocation.get_width();
-        const int height = allocation.get_height();
+    } else if (isDragging) {
+        // Check which dragging mode we're in: single node or multiple nodes
+        auto selectedNodes = drawingContext.getSelectedNodes();
+        if (!selectedNodes.empty()) {
+            // Dragging nodes: update position incrementally
+            Gtk::Allocation allocation = get_allocation();
+            const int width = allocation.get_width();
+            const int height = allocation.get_height();
 
-        auto [worldStartX, worldStartY] = drawingContext.screenToWorld(dragStartX, dragStartY, width, height);
-        auto [worldCurrentX, worldCurrentY] = drawingContext.screenToWorld(event->x, event->y, width, height);
+            auto [worldCurrentX, worldCurrentY] = drawingContext.screenToWorld(event->x, event->y, width, height);
 
-        auto node = drawingContext.getSelectedNode();
-        node->x = nodeStartX + (worldCurrentX - worldStartX);
-        node->y = nodeStartY + (worldCurrentY - worldStartY);
-        node->manualPosition = true;
-        queue_draw();
-        // Signal that the map has been modified
-        signal_map_modified.emit();
-        return true;
+            // Calculate incremental offset from previous position
+            double deltaX, deltaY;
+            if (isFirstDragMotion) {
+                // On first motion event, use absolute position to avoid jumps
+                // Calculate how much the mouse has moved from the start position
+                auto [worldStartX, worldStartY] = drawingContext.screenToWorld(dragStartX, dragStartY, width, height);
+                deltaX = worldCurrentX - worldStartX;
+                deltaY = worldCurrentY - worldStartY;
+
+                // Set the reference points for incremental movement
+                prevMouseWorldX = worldCurrentX;
+                prevMouseWorldY = worldCurrentY;
+                isFirstDragMotion = false;
+            } else {
+                // Calculate incremental movement since last event
+                deltaX = worldCurrentX - prevMouseWorldX;
+                deltaY = worldCurrentY - prevMouseWorldY;
+
+                // Update the reference points for next iteration
+                prevMouseWorldX = worldCurrentX;
+                prevMouseWorldY = worldCurrentY;
+            }
+
+            // Move all selected nodes by the same delta
+            for (auto& node : selectedNodes) {
+                if (node) {
+                    // Apply the incremental offset to the current node position
+                    node->x += deltaX;
+                    node->y += deltaY;
+                    node->manualPosition = true;
+
+                    // Move the entire subtree by the same incremental offset
+                    moveSubtree(node, deltaX, deltaY);
+                }
+            }
+
+            queue_draw();
+            // Signal that the map has been modified
+            signal_map_modified.emit();
+            return true;
+        }
     }
     return false;
 }
@@ -149,4 +226,20 @@ void MapArea::resetView() {
     Gtk::Allocation allocation = get_allocation();
     drawingContext.resetViewToCenter(allocation.get_width(), allocation.get_height());
     queue_draw();
+}
+
+void MapArea::moveSubtree(std::shared_ptr<Node> node, double dx, double dy) {
+    if (!node) return;
+
+    // Move all children of this node
+    for (auto& child : node->children) {
+        // Only move nodes that are manually positioned (or if we want to move all)
+        // This is important to maintain auto-layout behavior for non-manual nodes
+        child->x += dx;
+        child->y += dy;
+        child->manualPosition = true;  // Mark as manually positioned
+
+        // Recursively move the child's subtree
+        moveSubtree(child, dx, dy);
+    }
 }

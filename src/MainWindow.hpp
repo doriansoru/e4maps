@@ -1,5 +1,5 @@
-#ifndef GUI_HPP
-#define GUI_HPP
+#ifndef MAINWINDOW_HPP
+#define MAINWINDOW_HPP
 
 #include <gtkmm.h>
 #include <gdkmm/pixbuf.h>
@@ -18,62 +18,17 @@
 #include "Translation.hpp"
 #include "Utils.hpp"  // Include for utility functions
 #include "ConfigManager.hpp"  // Include for configuration management
+#include "MapArea.hpp"  // Include for MapArea class definition
 
 // Forward declarations to reduce dependencies
 class Node;
 class MindMap;
 
-class MapArea : public Gtk::DrawingArea {
-    DrawingContext drawingContext;
-
-    bool isDragging = false;
-    bool isPanning = false;
-    double dragStartX, dragStartY;
-    double panStartOffsetX, panStartOffsetY;
-    double nodeStartX, nodeStartY;
-
-public:
-    sigc::signal<void, std::shared_ptr<Node>> signal_edit_node;
-    sigc::signal<void> signal_map_modified;
-
-    MapArea(std::shared_ptr<MindMap> m) : drawingContext(m) {
-        add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK |
-                   Gdk::POINTER_MOTION_MASK | Gdk::SCROLL_MASK);
-        drawingContext.setRedrawCallback([this](){ this->queue_draw(); });
-    }
-
-    std::shared_ptr<Node> getSelectedNode() const { return drawingContext.getSelectedNode(); }
-
-    void setMap(std::shared_ptr<MindMap> m) {
-        drawingContext.setMap(m);
-        ImageCache::getInstance().clear();
-        // Center the view to show all content
-        Gtk::Allocation allocation = get_allocation();
-        drawingContext.centerView(allocation.get_width(), allocation.get_height());
-        queue_draw();
-    }
-    
-    void invalidateLayout() {
-        drawingContext.invalidateLayout();
-        queue_draw();
-    }
-
-    void zoomIn();
-    void zoomOut();
-    void resetView();
-
-protected:
-    bool on_button_press_event(GdkEventButton* event) override;
-    bool on_button_release_event(GdkEventButton* event) override;
-    bool on_motion_notify_event(GdkEventMotion* event) override;
-    bool on_scroll_event(GdkEventScroll* event) override;
-    bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-    bool on_configure_event(GdkEventConfigure* event) override;
-};
-
 class MainWindow : public Gtk::Window {
     Gtk::Box m_VBox;
     Gtk::HeaderBar m_HeaderBar;
+    Gtk::Statusbar m_StatusBar;
+    guint m_StatusContextId;
 
     std::shared_ptr<MindMap> m_Map;
     MapArea m_Area;
@@ -84,7 +39,7 @@ class MainWindow : public Gtk::Window {
     CommandManager m_commandManager;
 
     // Clipboard for cut/copy/paste functionality
-    std::shared_ptr<Node> m_clipboard;
+    std::vector<std::shared_ptr<Node>> m_clipboard;
 
     // (1) Acceleratori
     Glib::RefPtr<Gtk::AccelGroup> m_refAccelGroup;
@@ -106,6 +61,10 @@ private:
 
     void initHeaderBar();
 
+public:
+    void openFile(const std::string& path) { open_file_internal(path); }
+
+private:
     void save_internal(const std::string& path);
     void open_file_internal(const std::string& path);
     void on_save();
@@ -126,6 +85,7 @@ private:
     void on_copy();
     void on_cut();
     void on_paste();
+    void on_edit_theme();
 
     // Method to check if document has been modified and prompt user to save
     bool on_delete_event(GdkEventAny* event) override;
@@ -141,6 +101,13 @@ private:
                       std::function<void(Exporter&, std::shared_ptr<MindMap>, const std::string&, double)> render_func,
                       double dpi);
 
+    // Helper method for status bar
+    void updateStatusBar(const std::string& message);
+
+    // Helper methods for file dialog management
+    void updateLastUsedDirectory(const std::string& path);
+    std::string getLastUsedDirectoryForDialog();
+
 };
 
-#endif // GUI_HPP
+#endif // MAINWINDOW_HPP

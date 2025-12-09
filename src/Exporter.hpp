@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iomanip>
 #include "MindMapUtils.hpp"
+#include "tinyxml2.h"
 
 class Exporter {
     int width;
@@ -117,23 +118,21 @@ public:
     }
 
     void exportToFreeplane(std::shared_ptr<MindMap> map, const std::string& filename) {
-        std::ofstream out(filename);
-        if (!out.is_open()) {
-            throw std::runtime_error("Cannot open file for writing: " + filename);
-        }
+        tinyxml2::XMLDocument doc;
 
-        out << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-        out << "<map version=\"1.3.0\">\n";
+        // Create the root map element
+        auto mapElement = doc.NewElement("map");
+        mapElement->SetAttribute("version", "1.3.0");
+        doc.InsertFirstChild(mapElement);
 
         if (map && map->root) {
             // Generate base timestamp for the root node
             auto now = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now().time_since_epoch()).count();
-            exportNodeToFreeplaneImproved(out, map->root, 0, generateId(), now);
+            exportNodeToFreeplaneImproved(doc, mapElement, map->root, generateId(), now);
         }
 
-        out << "</map>\n";
-        out.close();
+        doc.SaveFile(filename.c_str());
     }
 
 
@@ -144,7 +143,7 @@ public:
         if (!map || !map->root) return;
 
         // Pre-calculate all node dimensions to ensure arrows are positioned correctly
-        drawer.preCalculateNodeDimensions(map->root);
+        drawer.preCalculateNodeDimensions(map->root, map->theme);
 
         // Check if any nodes have manual positioning
         bool hasManualPositions = hasManualPositionsRecursive(map->root);
@@ -165,7 +164,7 @@ public:
             }
         }
 
-        drawer.drawNode(cr, map->root, 0);
+        drawer.drawNode(cr, map->root, 0, map->theme);
     }
 
     // Helper to check if any nodes have manual positioning
@@ -219,25 +218,24 @@ public:
         return "ID_" + std::to_string(idCounter++);
     }
 
-    void exportNodeToFreeplaneImproved(std::ofstream& out, std::shared_ptr<Node> node, int indentLevel, const std::string& nodeId, long baseTimestamp) {
-        std::string indent(indentLevel * 2, ' ');
-
+    void exportNodeToFreeplaneImproved(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* parentElement, std::shared_ptr<Node> node, const std::string& nodeId, long baseTimestamp) {
         // Calculate timestamp for this node - each node gets a slightly different timestamp
-        long nodeTimestamp = baseTimestamp + (indentLevel * 1000); // Add 1 second per level for demo
+        long nodeTimestamp = baseTimestamp; // Add time based on level
 
-        // Write node opening tag with all required attributes
-        out << indent << "<node TEXT=\"" << ::escapeXml(node->text) << "\"";
-        out << " ID=\"" << nodeId << "\"";
-        out << " CREATED=\"" << nodeTimestamp << "\"";
-        out << " MODIFIED=\"" << nodeTimestamp << "\"";
+        // Create node element with required attributes
+        auto nodeElement = doc.NewElement("node");
+        nodeElement->SetAttribute("TEXT", node->text.c_str());
+        nodeElement->SetAttribute("ID", nodeId.c_str());
+        nodeElement->SetAttribute("CREATED", nodeTimestamp);
+        nodeElement->SetAttribute("MODIFIED", nodeTimestamp);
 
         // Add position information if available
         if (node->manualPosition) {
             // Determine position based on relative coordinates (simplified approach)
             if (node->x < 0) {
-                out << " POSITION=\"left\"";
+                nodeElement->SetAttribute("POSITION", "left");
             } else {
-                out << " POSITION=\"right\"";
+                nodeElement->SetAttribute("POSITION", "right");
             }
         }
 
@@ -248,59 +246,65 @@ public:
             int b = static_cast<int>(node->color.b * 255);
             char colorStr[8];
             snprintf(colorStr, sizeof(colorStr), "#%02X%02X%02X", r, g, b);
-            out << " COLOR=\"" << colorStr << "\"";
+            nodeElement->SetAttribute("COLOR", colorStr);
         }
-
-        // Add background color if needed
-        // (We could derive this from node properties if available)
 
         // Add style information based on font properties
         std::string fontStr = node->fontDesc;
         if (fontStr.find("Bold") != std::string::npos) {
-            out << " STYLE=\"bubble\"";
+            nodeElement->SetAttribute("STYLE", "bubble");
         }
-
-        out << ">\n";
 
         // Add font information if needed
         if (!node->fontDesc.empty()) {
-            out << indent << "  <font NAME=\"" << ::escapeXml(node->fontDesc) << "\"";
+            auto fontElement = doc.NewElement("font");
+            fontElement->SetAttribute("NAME", node->fontDesc.c_str());
             // Extract font size and other properties from font description
             if (node->fontDesc.find("Bold") != std::string::npos) {
-                out << " BOLD=\"true\"";
+                fontElement->SetAttribute("BOLD", "true");
             }
-            out << "/>\n";
+            nodeElement->InsertEndChild(fontElement);
         }
 
         // Add image as richcontent if present (separate from text)
         if (!node->imagePath.empty()) {
-            // In Freeplane, we should add images as separate richcontent, not replacing the text
-            out << indent << "  <richcontent TYPE=\"DETAILS\">\n";
-            out << indent << "    <html>\n";
-            out << indent << "      <head>\n";
-            out << indent << "      </head>\n";
-            out << indent << "      <body>\n";
-            out << indent << "        <p><img src=\"" << ::escapeXml(node->imagePath) << "\"";
+            auto richcontentElement = doc.NewElement("richcontent");
+            richcontentElement->SetAttribute("TYPE", "DETAILS");
+
+            // Create HTML structure for the image
+            auto htmlElement = doc.NewElement("html");
+            auto headElement = doc.NewElement("head");
+            auto bodyElement = doc.NewElement("body");
+            auto pElement = doc.NewElement("p");
+            auto imgElement = doc.NewElement("img");
+            imgElement->SetAttribute("src", node->imagePath.c_str());
+
             // If image dimensions are available, use them; otherwise use reasonable defaults
             if (node->imgWidth > 0 && node->imgHeight > 0) {
-                out << " width=\"" << node->imgWidth << "\" height=\"" << node->imgHeight << "\"";
+                imgElement->SetAttribute("width", node->imgWidth);
+                imgElement->SetAttribute("height", node->imgHeight);
             } else {
                 // Use reasonable default sizes for Freeplane display
-                out << " width=\"100\" height=\"100\"";
+                imgElement->SetAttribute("width", 100);
+                imgElement->SetAttribute("height", 100);
             }
-            out << "/></p>\n";
-            out << indent << "      </body>\n";
-            out << indent << "    </html>\n";
-            out << indent << "  </richcontent>\n";
+
+            // Build the HTML structure
+            pElement->InsertEndChild(imgElement);
+            bodyElement->InsertEndChild(pElement);
+            htmlElement->InsertEndChild(headElement);
+            htmlElement->InsertEndChild(bodyElement);
+            richcontentElement->InsertEndChild(htmlElement);
+            nodeElement->InsertEndChild(richcontentElement);
         }
 
         // Process all children
         for (auto& child : node->children) {
-            exportNodeToFreeplaneImproved(out, child, indentLevel + 1, generateId(), baseTimestamp + 1000);
+            exportNodeToFreeplaneImproved(doc, nodeElement, child, generateId(), nodeTimestamp + 1000);
         }
 
-        // Close the node tag
-        out << indent << "</node>\n";
+        // Add the completed node element to the parent
+        parentElement->InsertEndChild(nodeElement);
     }
 };
 

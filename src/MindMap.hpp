@@ -13,6 +13,8 @@
 #include "Translation.hpp"
 #include "Utils.hpp"
 #include "Constants.hpp"
+#include "tinyxml2.h"
+#include "Theme.hpp"
 
 struct Color {
     double r, g, b;
@@ -37,6 +39,11 @@ public:
 
     Color color; // Connection color (incoming branch)
     Color textColor = {0.0, 0.0, 0.0}; // Node text color
+    
+    // Style overrides
+    bool overrideColor = false;
+    bool overrideTextColor = false;
+    bool overrideFont = false;
     
     std::vector<std::shared_ptr<Node>> children;
     std::weak_ptr<Node> parent;
@@ -78,6 +85,7 @@ public:
                 py >= y - height/2 - margin && py <= y + height/2 + margin);
     }
     
+    // Old string-based toXML method (for backwards compatibility)
     std::string toXML(int indentLevel = 0) {
         std::stringstream ss;
         std::string indent(indentLevel * 2, ' ');
@@ -90,7 +98,10 @@ public:
            << "cimg=\"" << escapeXml(connImagePath) << "\" "
            << "r=\"" << (int)(color.r*255) << "\" g=\"" << (int)(color.g*255) << "\" b=\"" << (int)(color.b*255) << "\" "
            << "tr=\"" << (int)(textColor.r*255) << "\" tg=\"" << (int)(textColor.g*255) << "\" tb=\"" << (int)(textColor.b*255) << "\" "
-           << "x=\"" << x << "\" y=\"" << y << "\" manual=\"" << manualPosition << "\">\n";
+           << "x=\"" << x << "\" y=\"" << y << "\" manual=\"" << manualPosition << "\" "
+           << "ovr_c=\"" << overrideColor << "\" "
+           << "ovr_t=\"" << overrideTextColor << "\" "
+           << "ovr_f=\"" << overrideFont << "\">\n";
 
         for(auto& child : children) {
             ss << child->toXML(indentLevel + 1);
@@ -99,11 +110,120 @@ public:
         ss << indent << "</node>\n";
         return ss.str();
     }
+
+    // New tinyxml2-based method for file I/O
+    tinyxml2::XMLElement* toXMLElement(tinyxml2::XMLDocument* doc) const {
+        auto element = doc->NewElement("node");
+
+        element->SetAttribute("text", text.c_str());
+        element->SetAttribute("font", fontDesc.c_str());
+        element->SetAttribute("img", imagePath.c_str());
+        element->SetAttribute("iw", imgWidth);
+        element->SetAttribute("ih", imgHeight);
+        element->SetAttribute("ctext", connText.c_str());
+        element->SetAttribute("cimg", connImagePath.c_str());
+        element->SetAttribute("r", (int)(color.r*255));
+        element->SetAttribute("g", (int)(color.g*255));
+        element->SetAttribute("b", (int)(color.b*255));
+        element->SetAttribute("tr", (int)(textColor.r*255));
+        element->SetAttribute("tg", (int)(textColor.g*255));
+        element->SetAttribute("tb", (int)(textColor.b*255));
+        element->SetAttribute("x", x);
+        element->SetAttribute("y", y);
+        element->SetAttribute("manual", manualPosition ? 1 : 0);
+        
+        // Save override flags
+        element->SetAttribute("ovr_c", overrideColor ? 1 : 0);
+        element->SetAttribute("ovr_t", overrideTextColor ? 1 : 0);
+        element->SetAttribute("ovr_f", overrideFont ? 1 : 0);
+
+        // Add child nodes recursively
+        for(const auto& child : children) {
+            element->InsertEndChild(child->toXMLElement(doc));
+        }
+
+        return element;
+    }
+
+    static std::shared_ptr<Node> fromXMLElement(tinyxml2::XMLElement* element) {
+        if (!element) return nullptr;
+
+        // Get attributes from the XML element
+        const char* text = element->Attribute("text");
+        const char* font = element->Attribute("font");
+        const char* img = element->Attribute("img");
+        int iw = element->IntAttribute("iw", 0);
+        int ih = element->IntAttribute("ih", 0);
+        const char* ctext = element->Attribute("ctext");
+        const char* cimg = element->Attribute("cimg");
+        int r = element->IntAttribute("r", 0);
+        int g = element->IntAttribute("g", 0);
+        int b = element->IntAttribute("b", 0);
+        int tr = element->IntAttribute("tr", 0);
+        int tg = element->IntAttribute("tg", 0);
+        int tb = element->IntAttribute("tb", 0);
+        double x = element->DoubleAttribute("x", 0.0);
+        double y = element->DoubleAttribute("y", 0.0);
+        bool manual = element->IntAttribute("manual", 0) == 1;
+        
+        // Load override flags with legacy compatibility
+        bool ovr_c = false;
+        if (element->QueryBoolAttribute("ovr_c", &ovr_c) != tinyxml2::XML_SUCCESS) {
+            // Legacy: If ovr_c is missing, we consider it an override ONLY if the color attributes exist.
+            if (element->Attribute("r")) ovr_c = true;
+        }
+
+        bool ovr_t = false;
+        if (element->QueryBoolAttribute("ovr_t", &ovr_t) != tinyxml2::XML_SUCCESS) {
+            if (element->Attribute("tr")) ovr_t = true;
+        }
+
+        bool ovr_f = false;
+        if (element->QueryBoolAttribute("ovr_f", &ovr_f) != tinyxml2::XML_SUCCESS) {
+            if (element->Attribute("font")) ovr_f = true;
+        }
+
+        // Create node with the extracted data
+        std::string textStr = text ? text : "";
+        std::string fontStr = font ? font : "Sans Bold 14";  // Default font if not provided
+        std::string imgStr = img ? img : "";
+        std::string ctextStr = ctext ? ctext : "";
+        std::string cimgStr = cimg ? cimg : "";
+
+        auto node = std::make_shared<Node>(textStr, Color{r/255.0, g/255.0, b/255.0});
+        node->textColor = {tr/255.0, tg/255.0, tb/255.0};
+        node->fontDesc = fontStr;
+        node->imagePath = imgStr;
+        node->imgWidth = iw;
+        node->imgHeight = ih;
+        node->connText = ctextStr;
+        node->connImagePath = cimgStr;
+        node->x = x;
+        node->y = y;
+        node->manualPosition = manual;
+        
+        node->overrideColor = ovr_c;
+        node->overrideTextColor = ovr_t;
+        node->overrideFont = ovr_f;
+
+        // Process child elements
+        for (tinyxml2::XMLElement* childElement = element->FirstChildElement("node");
+             childElement;
+             childElement = childElement->NextSiblingElement("node")) {
+            auto childNode = Node::fromXMLElement(childElement);
+            if (childNode) {
+                node->addChild(childNode);
+            }
+        }
+
+        return node;
+    }
 };
 
 class MindMap {
 public:
     std::shared_ptr<Node> root;
+    Theme theme;
 
     MindMap(const std::string& rootText) {
         root = std::make_shared<Node>(rootText, Color{0.0, 0.0, 0.0});
@@ -116,106 +236,60 @@ public:
     }
     
     void saveToFile(const std::string& filename) {
-        std::ofstream out(filename);
-        if (root) out << root->toXML();
-        out.close();
+        if (!root) return;
+
+        tinyxml2::XMLDocument doc;
+        
+        // Create new root element for the map file
+        auto mapElement = doc.NewElement("mindmap");
+        doc.InsertFirstChild(mapElement);
+        
+        // Save Theme
+        theme.save(mapElement, &doc);
+        
+        // Save Nodes
+        auto rootElement = root->toXMLElement(&doc);
+        mapElement->InsertEndChild(rootElement);
+
+        doc.SaveFile(filename.c_str());
     }
     
     static std::shared_ptr<MindMap> loadFromFile(const std::string& filename) {
-        std::ifstream in(filename);
-        if (!in.is_open()) throw std::runtime_error(_("Cannot open file"));
-        
-        std::stringstream buffer;
-        buffer << in.rdbuf();
-        std::string content = buffer.str();
-        
+        tinyxml2::XMLDocument doc;
+        tinyxml2::XMLError result = doc.LoadFile(filename.c_str());
+        if (result != tinyxml2::XML_SUCCESS) {
+            throw std::runtime_error(_("Cannot open file"));
+        }
+
         auto map = std::make_shared<MindMap>();
-        size_t pos = 0;
-        map->root = parseNode(content, pos);
+        
+        // Check root element
+        tinyxml2::XMLElement* rootElement = doc.RootElement();
+        if (!rootElement) throw std::runtime_error(_("Invalid XML file"));
+        
+        std::string rootName = rootElement->Name();
+        if (rootName == "mindmap") {
+            // New format
+            // Load Theme
+            map->theme.load(rootElement);
+            
+            // Load Node Tree
+            tinyxml2::XMLElement* nodeElement = rootElement->FirstChildElement("node");
+            if (nodeElement) {
+                map->root = Node::fromXMLElement(nodeElement);
+            }
+        } else if (rootName == "node") {
+            // Old format (Root is the node itself)
+            map->root = Node::fromXMLElement(rootElement);
+            // Theme remains default
+        } else {
+             throw std::runtime_error(_("Unknown file format"));
+        }
+        
         return map;
     }
 
 private:
-    static int safeStoi(const std::string& s, int def = 0) {
-        if (s.empty()) return def;
-        try { return std::stoi(s); } catch (...) { return def; }
-    }
-
-    static double safeStod(std::string s, double def = 0.0) {
-        if (s.empty()) return def;
-        std::replace(s.begin(), s.end(), ',', '.');
-        try { return std::stod(s); } catch (...) { return def; }
-    }
-
-    static std::shared_ptr<Node> parseNode(const std::string& xml, size_t& pos) {
-        size_t start = xml.find("<node", pos);
-        if (start == std::string::npos) return nullptr;
-        pos = start;
-        
-        std::string text = getAttr(xml, pos, "text");
-        std::string font = getAttr(xml, pos, "font");
-        if (font.empty()) font = "Sans Bold 14"; // Default if missing
-
-        std::string img = getAttr(xml, pos, "img");
-        int iw = safeStoi(getAttr(xml, pos, "iw"), 0);
-        int ih = safeStoi(getAttr(xml, pos, "ih"), 0);
-
-        std::string ctext = getAttr(xml, pos, "ctext");
-        std::string cimg = getAttr(xml, pos, "cimg");
-        
-        double r = safeStoi(getAttr(xml, pos, "r")) / 255.0;
-        double g = safeStoi(getAttr(xml, pos, "g")) / 255.0;
-        double b = safeStoi(getAttr(xml, pos, "b")) / 255.0;
-        
-        // Text Color (default black if not present)
-        double tr = safeStoi(getAttr(xml, pos, "tr")) / 255.0;
-        double tg = safeStoi(getAttr(xml, pos, "tg")) / 255.0;
-        double tb = safeStoi(getAttr(xml, pos, "tb")) / 255.0;
-        
-        double x = safeStod(getAttr(xml, pos, "x"));
-        double y = safeStod(getAttr(xml, pos, "y"));
-        
-        bool manual = safeStoi(getAttr(xml, pos, "manual"), 0) == 1;
-        
-        auto node = std::make_shared<Node>(text, Color{r,g,b});
-        node->textColor = {tr, tg, tb};
-        node->fontDesc = font;
-        node->imagePath = img;
-        node->imgWidth = iw; node->imgHeight = ih;
-        node->connText = ctext;
-        node->connImagePath = cimg;
-        node->x = x; node->y = y; node->manualPosition = manual;
-        
-        size_t tagEnd = xml.find(">", pos);
-        pos = tagEnd + 1;
-        
-        while (true) {
-            size_t nextTag = xml.find("<", pos);
-            if (nextTag == std::string::npos) break;
-            
-            if (xml.substr(nextTag, 7) == "</node>") {
-                pos = nextTag + 7;
-                break;
-            } else {
-                auto child = parseNode(xml, pos);
-                if (child) node->addChild(child);
-            }
-        }
-        return node;
-    }
-    
-    static std::string getAttr(const std::string& xml, size_t start, const std::string& attrName) {
-        std::string search = attrName + "=\"" ;
-        size_t attrStart = xml.find(search, start);
-        if (attrStart == std::string::npos) return "";
-        size_t tagClose = xml.find(">", start);
-        if (attrStart > tagClose) return ""; 
-        attrStart += search.length();
-        size_t attrEnd = xml.find("\"", attrStart);
-        if (attrEnd == std::string::npos) return "";
-        return xml.substr(attrStart, attrEnd - attrStart);
-    }
-
     std::shared_ptr<Node> hitTestRecursive(std::shared_ptr<Node> node, double x, double y) {
         if (!node) return nullptr;
         if (node->contains(x, y)) return node;
@@ -246,6 +320,11 @@ inline std::shared_ptr<Node> cloneNodeTree(std::shared_ptr<Node> original) {
     copy->height = original->height;
     copy->angle = original->angle;
     copy->manualPosition = original->manualPosition;
+    
+    // Copy overrides
+    copy->overrideColor = original->overrideColor;
+    copy->overrideTextColor = original->overrideTextColor;
+    copy->overrideFont = original->overrideFont;
     
     for (const auto& child : original->children) {
         auto childCopy = cloneNodeTree(child);

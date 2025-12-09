@@ -6,6 +6,7 @@ namespace E4Maps {
 // Node and UI constants
 constexpr double NODE_PADDING = 8.0;
 constexpr double NODE_MARGIN = 20.0;
+constexpr int MAX_NODE_WIDTH = 300; // Maximum width for text wrapping
 constexpr double MIN_ZOOM = 0.1;
 constexpr double MAX_ZOOM = 5.0;
 constexpr double ZOOM_FACTOR_IN = 1.1;

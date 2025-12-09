@@ -28,7 +28,8 @@ class DrawingContext : public sigc::trackable {
 private:
     Viewport viewport;
     std::shared_ptr<MindMap> map;
-    std::shared_ptr<Node> selectedNode;
+    std::shared_ptr<Node> selectedNode;  // Primary selected node
+    std::vector<std::shared_ptr<Node>> selectedNodes;  // Multiple selected nodes
     MindMapDrawer drawer;
     
     // Threading
@@ -41,6 +42,9 @@ private:
 
 public:
     DrawingContext(std::shared_ptr<MindMap> m) : map(m), selectedNode(m->root) {
+        if (m->root) {
+            selectedNodes.push_back(m->root);
+        }
         m_dispatcher.connect(sigc::mem_fun(*this, &DrawingContext::onLayoutFinished));
     }
     
@@ -67,6 +71,7 @@ public:
     
     void invalidateLayout() {
         if (!map || !map->root) return;
+        m_dimensions_dirty = true;
         if (m_isCalculating) return; 
 
         m_isCalculating = true;
@@ -122,9 +127,66 @@ public:
 
     void setSelectedNode(std::shared_ptr<Node> node) {
         selectedNode = node;
+        // Also update the selectedNodes vector to ensure this node is selected
+        if (node) {
+            selectedNodes.clear();
+            selectedNodes.push_back(node);
+        } else {
+            selectedNodes.clear();
+        }
     }
 
     std::shared_ptr<Node> getSelectedNode() const { return selectedNode; }
+
+    // Multi-selection methods
+    void setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes) {
+        selectedNodes = nodes;
+        if (!nodes.empty()) {
+            selectedNode = nodes[0]; // Set primary selection to first node
+        }
+    }
+
+    void addNodeToSelection(std::shared_ptr<Node> node) {
+        if (node) {
+            // Check if node is already in selection
+            auto it = std::find(selectedNodes.begin(), selectedNodes.end(), node);
+            if (it == selectedNodes.end()) {
+                // Only set as primary if no selection existed before
+                if (selectedNodes.empty()) {
+                    selectedNode = node; // Set as primary if it's the first selection
+                }
+                selectedNodes.push_back(node);
+            }
+        }
+    }
+
+    void removeNodeFromSelection(std::shared_ptr<Node> node) {
+        if (node) {
+            auto it = std::find(selectedNodes.begin(), selectedNodes.end(), node);
+            if (it != selectedNodes.end()) {
+                selectedNodes.erase(it);
+                // Update primary selection
+                if (selectedNode == node && !selectedNodes.empty()) {
+                    selectedNode = selectedNodes[0];
+                } else if (selectedNodes.empty()) {
+                    selectedNode = nullptr;
+                }
+            }
+        }
+    }
+
+    void clearSelection() {
+        selectedNodes.clear();
+        selectedNode = nullptr;
+    }
+
+    bool isNodeSelected(std::shared_ptr<Node> node) const {
+        if (!node) return false;
+        return std::find(selectedNodes.begin(), selectedNodes.end(), node) != selectedNodes.end();
+    }
+
+    const std::vector<std::shared_ptr<Node>>& getSelectedNodes() const { return selectedNodes; }
+    size_t getSelectedNodesCount() const { return selectedNodes.size(); }
 
     const Viewport& getViewport() const { return viewport; }
 
@@ -168,14 +230,14 @@ public:
         }
 
         if (m_dimensions_dirty) {
-            drawer.preCalculateNodeDimensions(map->root);
+            drawer.preCalculateNodeDimensions(map->root, map->theme);
             m_dimensions_dirty = false;
         }
         
         // Drawing is now decoupled from heavy layout calculation.
         // Layout happens in background thread.
 
-        drawer.drawNode(cr, map->root, 0, selectedNode);
+        drawer.drawNode(cr, map->root, 0, map->theme, selectedNode, selectedNodes);
 
         cr->restore();
         return true;

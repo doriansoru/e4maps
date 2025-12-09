@@ -3,6 +3,10 @@
 
 #include <gtkmm.h>
 #include "MindMap.hpp"
+#include <memory>
+
+// Forward declaration
+class EditNodeCommand;
 
 class NodeEditDialog : public Gtk::Dialog {
 public:
@@ -22,8 +26,25 @@ public:
     int getNewImgWidth() const;
     int getNewImgHeight() const;
 
+    // Factory method to create an EditNodeCommand from the dialog state
+    std::unique_ptr<EditNodeCommand> createEditCommand();
+
 private:
     std::shared_ptr<Node> m_node;
+
+    // Original state for undo
+    std::string m_origText;
+    std::string m_origFont;
+    Color m_origColor;
+    Color m_origTextColor;
+    std::string m_origImagePath;
+    int m_origImgWidth;
+    int m_origImgHeight;
+    std::string m_origConnText;
+    std::string m_origConnImagePath;
+    bool m_origOvrC;
+    bool m_origOvrT;
+    bool m_origOvrF;
 
     Gtk::Entry m_entryText;
     Gtk::FontButton m_btnFont;

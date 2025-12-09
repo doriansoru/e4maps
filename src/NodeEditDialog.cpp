@@ -1,11 +1,26 @@
 #include "NodeEditDialog.hpp"
 #include "Translation.hpp"
 #include "Utils.hpp"
+#include "Command.hpp"
 
 NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
     : Gtk::Dialog(_("Edit Node"), parent, true),
       m_node(node)
 {
+    // Capture original state
+    m_origText = node->text;
+    m_origFont = node->fontDesc;
+    m_origColor = node->color;
+    m_origTextColor = node->textColor;
+    m_origImagePath = node->imagePath;
+    m_origImgWidth = node->imgWidth;
+    m_origImgHeight = node->imgHeight;
+    m_origConnText = node->connText;
+    m_origConnImagePath = node->connImagePath;
+    m_origOvrC = node->overrideColor;
+    m_origOvrT = node->overrideTextColor;
+    m_origOvrF = node->overrideFont;
+
     // Setup UI
     Gtk::Grid* grid = Gtk::manage(new Gtk::Grid());
     grid->set_row_spacing(10); 
@@ -157,4 +172,37 @@ std::string NodeEditDialog::getNewImagePath() {
 std::string NodeEditDialog::getNewConnImagePath() {
     if (m_node->isRoot()) return "";
     return validateImage(m_btnConnImg.get_filename(), _("Connection Image"));
+}
+
+std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
+    // Get new values from UI
+    std::string newText = getNewText();
+    std::string newFont = getNewFont();
+    Color newTxtColor = getNewTextColor();
+    Color newCol = getNewColor();
+    
+    std::string newNodeImagePath = getNewImagePath();
+    int newImgWidth = getNewImgWidth();
+    int newImgHeight = getNewImgHeight();
+
+    std::string newConnText = getNewConnText();
+    std::string newConnImagePath = getNewConnImagePath();
+
+    // Create and return the edit command
+    // We assume that if the user explicitly edits/saves via the dialog, 
+    // they intend to override the theme defaults for these specific properties.
+    return std::make_unique<EditNodeCommand>(
+        m_node, m_origText, newText,
+        m_origFont, newFont,
+        m_origColor, newCol,
+        m_origTextColor, newTxtColor,
+        m_origImagePath, newNodeImagePath,
+        m_origImgWidth, newImgWidth,
+        m_origImgHeight, newImgHeight,
+        m_origConnText, newConnText,
+        m_origConnImagePath, newConnImagePath,
+        m_origOvrC, true, // Color override
+        m_origOvrT, true, // Text Color override
+        m_origOvrF, true  // Font override
+    );
 }

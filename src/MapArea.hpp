@@ -28,6 +28,9 @@ class MapArea : public Gtk::DrawingArea {
     double dragStartX, dragStartY;
     double panStartOffsetX, panStartOffsetY;
     double nodeStartX, nodeStartY;
+    // Track previous mouse position for smooth incremental movement
+    double prevMouseWorldX, prevMouseWorldY;
+    bool isFirstDragMotion = true;
 
 public:
     sigc::signal<void, std::shared_ptr<Node>> signal_edit_node;
@@ -36,9 +39,12 @@ public:
     MapArea(std::shared_ptr<MindMap> m) : drawingContext(m) {
         add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK |
                    Gdk::POINTER_MOTION_MASK | Gdk::SCROLL_MASK);
+        drawingContext.setRedrawCallback([this](){ this->queue_draw(); });
     }
 
     std::shared_ptr<Node> getSelectedNode() const { return drawingContext.getSelectedNode(); }
+
+    const std::vector<std::shared_ptr<Node>>& getSelectedNodes() const { return drawingContext.getSelectedNodes(); }
 
     void setMap(std::shared_ptr<MindMap> m) {
         drawingContext.setMap(m);
@@ -46,6 +52,16 @@ public:
         // Center the view to show all content
         Gtk::Allocation allocation = get_allocation();
         drawingContext.centerView(allocation.get_width(), allocation.get_height());
+        queue_draw();
+    }
+
+    void setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes) {
+        drawingContext.setSelectedNodes(nodes);
+        queue_draw();
+    }
+
+    void invalidateLayout() {
+        drawingContext.invalidateLayout();
         queue_draw();
     }
 
@@ -60,6 +76,9 @@ protected:
     bool on_scroll_event(GdkEventScroll* event) override;
     bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
     bool on_configure_event(GdkEventConfigure* event) override;
+
+    // Helper method to move an entire subtree by an offset
+    void moveSubtree(std::shared_ptr<Node> node, double dx, double dy);
 };
 
 #endif // MAPAREA_HPP
