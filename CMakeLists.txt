@@ -45,7 +45,7 @@ add_definitions(-DGETTEXT_PACKAGE="e4maps")
 if(WIN32)
     # Add Windows resource file for icon
     configure_file(resources/e4maps.ico resources/e4maps.ico COPYONLY)
-    add_executable(e4maps
+    add_executable(e4maps WIN32
         src/main.cpp
         src/Translation.hpp
         src/MapArea.cpp
