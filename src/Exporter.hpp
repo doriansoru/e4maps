@@ -226,8 +226,8 @@ public:
         auto nodeElement = doc.NewElement("node");
         nodeElement->SetAttribute("TEXT", node->text.c_str());
         nodeElement->SetAttribute("ID", nodeId.c_str());
-        nodeElement->SetAttribute("CREATED", nodeTimestamp);
-        nodeElement->SetAttribute("MODIFIED", nodeTimestamp);
+        nodeElement->SetAttribute("CREATED", static_cast<int64_t>(nodeTimestamp));
+        nodeElement->SetAttribute("MODIFIED", static_cast<int64_t>(nodeTimestamp));
 
         // Add position information if available
         if (node->manualPosition) {

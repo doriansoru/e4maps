@@ -25,8 +25,19 @@ public:
     }
 
     void initializeConfigDir() {
+#ifdef _WIN32
+        const char* appData = getenv("APPDATA");
+        std::filesystem::path configDir;
+        if (appData) {
+            configDir = std::filesystem::path(appData) / "e4maps";
+        } else {
+            const char* userProfile = getenv("USERPROFILE");
+            configDir = std::filesystem::path(userProfile ? userProfile : ".") / ".config" / "e4maps";
+        }
+#else
         const char* home = getenv("HOME");
         std::filesystem::path configDir = std::filesystem::path(home ? home : ".") / ".config" / "e4maps";
+#endif
         if (!std::filesystem::exists(configDir)) {
             std::filesystem::create_directories(configDir);
         }
