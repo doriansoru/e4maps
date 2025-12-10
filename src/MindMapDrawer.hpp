@@ -129,7 +129,7 @@ public:
         
         // Enable text wrapping
         layout->set_width(E4Maps::MAX_NODE_WIDTH * Pango::SCALE);
-        layout->set_wrap(Pango::WRAP_WORD_CHAR);
+        layout->set_wrap(Pango::WRAP_WORD);
         
         int textW, textH;
         layout->get_pixel_size(textW, textH);
@@ -361,7 +361,7 @@ public:
         
         // Enable text wrapping
         layout->set_width(E4Maps::MAX_NODE_WIDTH * Pango::SCALE);
-        layout->set_wrap(Pango::WRAP_WORD_CHAR);
+        layout->set_wrap(Pango::WRAP_WORD);
         
         int textW, textH;
         layout->get_pixel_size(textW, textH); // Get actual text dimensions for drawing
@@ -373,8 +373,8 @@ public:
         }
 
         double pad = style.horizontalPadding; // Use themed padding
-        double totalW = node->width + pad*2;
-        double totalH = node->height + style.verticalPadding*2; // Use themed padding
+        double totalW = node->width;
+        double totalH = node->height; // Use themed padding
         double cornerRadius = style.cornerRadius; // Use themed corner radius
         double boxX = node->x - totalW/2;
         double boxY = node->y - totalH/2;
