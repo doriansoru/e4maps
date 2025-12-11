@@ -86,6 +86,7 @@ private:
     void on_cut();
     void on_paste();
     void on_edit_theme();
+    void on_help_guide();
 
     // Method to check if document has been modified and prompt user to save
     bool on_delete_event(GdkEventAny* event) override;

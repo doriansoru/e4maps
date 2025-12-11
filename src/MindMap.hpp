@@ -90,12 +90,12 @@ public:
         std::stringstream ss;
         std::string indent(indentLevel * 2, ' ');
 
-        ss << indent << "<node text=\"" << escapeXml(text) << "\" "
-           << "font=\"" << escapeXml(fontDesc) << "\" "
-           << "img=\"" << escapeXml(imagePath) << "\" "
+        ss << indent << "<node text=\"" << Utils::escapeXml(text) << "\" "
+           << "font=\"" << Utils::escapeXml(fontDesc) << "\" "
+           << "img=\"" << Utils::escapeXml(imagePath) << "\" "
            << "iw=\"" << imgWidth << "\" ih=\"" << imgHeight << "\" "
-           << "ctext=\"" << escapeXml(connText) << "\" "
-           << "cimg=\"" << escapeXml(connImagePath) << "\" "
+           << "ctext=\"" << Utils::escapeXml(connText) << "\" "
+           << "cimg=\"" << Utils::escapeXml(connImagePath) << "\" "
            << "r=\"" << (int)(color.r*255) << "\" g=\"" << (int)(color.g*255) << "\" b=\"" << (int)(color.b*255) << "\" "
            << "tr=\"" << (int)(textColor.r*255) << "\" tg=\"" << (int)(textColor.g*255) << "\" tb=\"" << (int)(textColor.b*255) << "\" "
            << "x=\"" << x << "\" y=\"" << y << "\" manual=\"" << manualPosition << "\" "

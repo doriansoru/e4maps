@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e4maps 1.0.0\n"
 "Report-Msgid-Bugs-To: doriansoru@gmail.com\n"
-"POT-Creation-Date: 2025-12-08 18:11+0100\n"
-"PO-Revision-Date: 2025-12-06 08:09+0100\n"
+"POT-Creation-Date: 2025-12-11 18:19+0100\n"
+"PO-Revision-Date: 2025-12-11 17:19+0100\n"
 "Last-Translator: Dorian Soru <doriansoru@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -17,257 +17,52 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Gtranslator 48.0\n"
 
-#: src/MainWindow.cpp:6 src/MainWindow.cpp:447
+#: src/MainWindow.cpp:4 src/MainWindow_Actions.cpp:304
 msgid "MAIN IDEA"
 msgstr "IDEA CENTRALE"
 
-#: src/MainWindow.cpp:9 src/MainWindow.cpp:452
+#: src/MainWindow.cpp:8 src/MainWindow_Actions.cpp:309
 msgid "E4maps - New Map"
 msgstr "E4maps - Nuova mappa"
 
-#: src/MainWindow.cpp:67 src/MainWindow.cpp:75 src/MainWindow.cpp:644
-msgid "New Map"
-msgstr "Nuova mappa"
-
-#: src/MainWindow.cpp:81 src/MainWindow.cpp:294
-msgid "Open Map"
-msgstr "Apri mappa"
-
-#: src/MainWindow.cpp:87 src/MainWindow.cpp:282 src/MainWindow.cpp:693
-msgid "Save Map"
-msgstr "Salva mappa"
-
-#: src/MainWindow.cpp:103
-msgid "Remove Branch"
-msgstr "Rimuovi collegamento"
-
-#: src/MainWindow.cpp:109
-msgid "Add Branch"
-msgstr "Aggiungi collegamento"
-
-#: src/MainWindow.cpp:118
-msgid "Open Recent"
-msgstr "Apri recenti"
-
-#: src/MainWindow.cpp:127
-msgid "Undo"
-msgstr "Annulla"
-
-#: src/MainWindow.cpp:132
-msgid "Redo"
-msgstr "Ripristina"
-
-#: src/MainWindow.cpp:139
-msgid "Cut"
-msgstr "Taglia"
-
-#: src/MainWindow.cpp:144
-msgid "Copy"
-msgstr "Copia"
-
-#: src/MainWindow.cpp:149
-msgid "Paste"
-msgstr "Incolla"
-
-#: src/MainWindow.cpp:157
-msgid "Edit Theme..."
-msgstr "Modifica tema..."
-
-#: src/MainWindow.cpp:164
-msgid "View"
-msgstr "Visualizzazione"
-
-#: src/MainWindow.cpp:168
-msgid "Zoom In"
-msgstr "Zoom +"
-
-#: src/MainWindow.cpp:173
-msgid "Zoom Out"
-msgstr "Zoom -"
-
-#: src/MainWindow.cpp:178
-msgid "Reset View"
-msgstr "Resetta visualizazione"
-
-#: src/MainWindow.cpp:186 src/MainWindow.cpp:308 src/MainWindow.cpp:391
-msgid "Export"
-msgstr "Esporta"
-
-#: src/MainWindow.cpp:190
-msgid "To PNG..."
-msgstr "In PNG..."
-
-#: src/MainWindow.cpp:194
-msgid "To PDF..."
-msgstr "In PDF..."
-
-#: src/MainWindow.cpp:198
-msgid "To Freeplane..."
-msgstr "In Freeplane..."
-
-#: src/MainWindow.cpp:204
-msgid "Save As..."
-msgstr "Salva con nome..."
-
-#: src/MainWindow.cpp:211
-msgid "About"
-msgstr "Informazioni"
-
-#: src/MainWindow.cpp:215
-msgid "Quit"
-msgstr "Esci"
-
-#: src/MainWindow.cpp:239 src/MainWindow.cpp:640
+#: src/MainWindow.cpp:61 src/MainWindow_Actions.cpp:43
 msgid "E4maps - "
 msgstr "E4maps - "
 
-#: src/MainWindow.cpp:241
-msgid "Map saved successfully."
-msgstr "Mappa salvata correttamente."
+#: src/MainWindow.cpp:65 src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16
+msgid "New Map"
+msgstr "Nuova mappa"
 
-#: src/MainWindow.cpp:245
-msgid "Error saving file: "
-msgstr "Errore nel salvataggio del file: "
-
-#: src/MainWindow.cpp:250
-msgid "Unknown error occurred while saving file: "
-msgstr "Errore sconosciuto durante il salvataggio del file: "
-
-#: src/MainWindow.cpp:270
-msgid "Error loading file: "
-msgstr "Errore nel caricamento del file: "
-
-#: src/MainWindow.cpp:274
-msgid "Unknown error occurred while loading file: "
-msgstr "Errore sconosciuto durante il caricamento del file: "
-
-#: src/MainWindow.cpp:283 src/MainWindow.cpp:295 src/MainWindow.cpp:307
-#: src/MainWindow.cpp:390 src/MainWindow.cpp:666 src/MainWindow.cpp:694
-#: src/NodeEditDialog.cpp:105 src/ThemeEditor.cpp:95
-msgid "Cancel"
-msgstr "Annulla"
-
-#: src/MainWindow.cpp:283 src/MainWindow.cpp:667 src/MainWindow.cpp:694
-#: src/NodeEditDialog.cpp:106
-msgid "Save"
-msgstr "Salva"
-
-#: src/MainWindow.cpp:284
-msgid "map.e4m"
-msgstr "mappa.e4m"
-
-#: src/MainWindow.cpp:295
-msgid "Open"
-msgstr "Apri"
-
-#: src/MainWindow.cpp:296
-msgid "e4maps files"
-msgstr "file e4maps"
-
-#: src/MainWindow.cpp:306 src/MainWindow.cpp:372
-msgid "Export to PNG"
-msgstr "Esporta in PNG"
-
-#: src/MainWindow.cpp:318
-msgid "Select resolution for PNG export:"
-msgstr "Seleziona la risoluzione per l'esportazione PNG"
-
-#: src/MainWindow.cpp:322
-msgid "72 DPI (Screen)"
-msgstr "72 DPI (Schermo)"
-
-#: src/MainWindow.cpp:323
-msgid "300 DPI (High Quality)"
-msgstr "300 DPI (Alta qualità)"
-
-#: src/MainWindow.cpp:324
-msgid "600 DPI (Maximum Quality)"
-msgstr "600 DPI (Massima qualità)"
-
-#: src/MainWindow.cpp:373
-msgid "PNG export completed successfully!"
-msgstr "Esportazione in PNG completata con successo!"
-
-#: src/MainWindow.cpp:374
-msgid "Error during PNG export: "
-msgstr "Errore durante l'esportazione in PNG: "
-
-#: src/MainWindow.cpp:376
-msgid "Export to PDF"
-msgstr "Esporta in PDF"
-
-#: src/MainWindow.cpp:377
-msgid "PDF export completed successfully!"
-msgstr "Esportazione in PDF completata con successo!"
-
-#: src/MainWindow.cpp:378
-msgid "Error during PDF export: "
-msgstr "Errore durante l'esportazione in PDF: "
-
-#: src/MainWindow.cpp:380
-msgid "Export to Freeplane"
-msgstr "Esporta in Freeplane"
-
-#: src/MainWindow.cpp:381
-msgid "Freeplane export completed successfully!"
-msgstr "Esportazione in Freeplane completata con successo!"
-
-#: src/MainWindow.cpp:382
-msgid "Error during Freeplane export: "
-msgstr "Errore durante l'esportazione in Freeplane: "
-
-#: src/MainWindow.cpp:397
-msgid "Freeplane files"
-msgstr "File freeplane"
-
-#: src/MainWindow.cpp:402
-msgid "PNG images"
-msgstr "Immagini PNG"
-
-#: src/MainWindow.cpp:407
-msgid "PDF documents"
-msgstr "Documenti PDF"
-
-#: src/MainWindow.cpp:422
-msgid "Unknown error occurred."
-msgstr "È avvenuto un errore sconosciuto."
-
-#: src/MainWindow.cpp:431
-msgid "New"
-msgstr "Nuovo"
-
-#: src/MainWindow.cpp:600
-msgid "E4Maps"
-msgstr "E4Maps"
-
-#: src/MainWindow.cpp:601
-msgid "1.0.0"
-msgstr "1.0.0"
-
-#: src/MainWindow.cpp:602
-msgid "Copyright (c) 2025 Dorian Soru <doriansoru@gmail.com>"
-msgstr "Copyright (c) 2025 Dorian Soru <doriansoru@gmail.com>"
-
-#: src/MainWindow.cpp:603
-msgid "A simple mind mapping application"
-msgstr "Un'applicazione semplice per la creazione di mappe mentali"
-
-#: src/MainWindow.cpp:606
-msgid "GitHub Repository"
-msgstr "Repository GitHub"
-
-#: src/MainWindow.cpp:659
+#: src/MainWindow.cpp:80
 msgid "The document contains unsaved changes."
 msgstr "Il documento contiene modifiche non salvate."
 
-#: src/MainWindow.cpp:664
+#: src/MainWindow.cpp:85
 msgid "Do you want to save the changes?"
 msgstr "Vuoi salvare le modifiche?"
 
-#: src/MainWindow.cpp:665
+#: src/MainWindow.cpp:86
 msgid "Close without saving"
 msgstr "Chiudi senza salvare"
+
+#: src/MainWindow.cpp:87 src/MainWindow.cpp:115 src/NodeEditDialog.cpp:120
+#: src/ThemeEditor.cpp:95 src/MainWindow_Actions.cpp:88
+#: src/MainWindow_Actions.cpp:111 src/MainWindow_Actions.cpp:132
+#: src/MainWindow_Actions.cpp:239
+msgid "Cancel"
+msgstr "Annulla"
+
+#: src/MainWindow.cpp:88 src/MainWindow.cpp:115 src/NodeEditDialog.cpp:121
+#: src/MainWindow_Actions.cpp:88
+msgid "Save"
+msgstr "Salva"
+
+#: src/MainWindow.cpp:114 src/MainWindow_UI.cpp:28
+#: src/MainWindow_Actions.cpp:87
+msgid "Save Map"
+msgstr "Salva mappa"
 
 #: src/Command.hpp:45
 msgid "Add Node"
@@ -277,7 +72,7 @@ msgstr "Aggiungi nodo"
 msgid "Remove Node"
 msgstr "Rimuovi nodo"
 
-#: src/Command.hpp:185 src/NodeEditDialog.cpp:6
+#: src/Command.hpp:185 src/NodeEditDialog.cpp:7
 msgid "Edit Node"
 msgstr "Modifica nodo"
 
@@ -293,9 +88,21 @@ msgstr "Copia nodo"
 msgid "Cut Node"
 msgstr "Taglia nodo"
 
-#: src/Command.hpp:370
+#: src/Command.hpp:378
 msgid "Paste Node"
 msgstr "Incolla nodo"
+
+#: src/Command.hpp:493
+msgid "Copy Multiple Nodes"
+msgstr "Copia più nodi"
+
+#: src/Command.hpp:566
+msgid "Cut Multiple Nodes"
+msgstr "Taglia più nodi"
+
+#: src/Command.hpp:626
+msgid "Paste Multiple Nodes"
+msgstr "Incolla più nodi"
 
 #: src/main.cpp:24
 msgid "Usage: "
@@ -313,75 +120,75 @@ msgstr "Impossibile aprire il file"
 
 #: src/MindMap.hpp:268
 msgid "Invalid XML file"
-msgstr ""
+msgstr "File XML non valido"
 
 #: src/MindMap.hpp:286
 msgid "Unknown file format"
-msgstr ""
+msgstr "Formato di file sconosciuto"
 
-#: src/NodeEditDialog.cpp:19
+#: src/NodeEditDialog.cpp:34
 msgid "Node Text:"
 msgstr "Testo del nodo:"
 
-#: src/NodeEditDialog.cpp:25 src/ThemeEditor.cpp:174
+#: src/NodeEditDialog.cpp:40 src/ThemeEditor.cpp:176
 msgid "Font:"
 msgstr "Carattere:"
 
-#: src/NodeEditDialog.cpp:30 src/ThemeEditor.cpp:177
+#: src/NodeEditDialog.cpp:45 src/ThemeEditor.cpp:179
 msgid "Text Color:"
 msgstr "Colore del testo:"
 
-#: src/NodeEditDialog.cpp:38
+#: src/NodeEditDialog.cpp:53
 msgid "Connection Color:"
 msgstr "Colore della connessione:"
 
-#: src/NodeEditDialog.cpp:49
+#: src/NodeEditDialog.cpp:64
 msgid "Node Image:"
 msgstr "Immagine del nodo"
 
-#: src/NodeEditDialog.cpp:52
+#: src/NodeEditDialog.cpp:67
 msgid "Choose Image"
 msgstr "Seleziona immagine"
 
-#: src/NodeEditDialog.cpp:57
+#: src/NodeEditDialog.cpp:72
 msgid "Images"
 msgstr "Immagini"
 
-#: src/NodeEditDialog.cpp:65
+#: src/NodeEditDialog.cpp:80
 msgid "W:"
 msgstr "L"
 
-#: src/NodeEditDialog.cpp:69
+#: src/NodeEditDialog.cpp:84
 msgid "H:"
 msgstr "A"
 
-#: src/NodeEditDialog.cpp:82
+#: src/NodeEditDialog.cpp:97
 msgid "Choose Icon"
 msgstr "Seleziona icona"
 
-#: src/NodeEditDialog.cpp:90
+#: src/NodeEditDialog.cpp:105
 msgid "--- Branch Annotation ---"
 msgstr "--- Annotazione del collegamento ---"
 
-#: src/NodeEditDialog.cpp:93
+#: src/NodeEditDialog.cpp:108
 msgid "Branch Text:"
 msgstr "Testo del collegamento:"
 
-#: src/NodeEditDialog.cpp:98
+#: src/NodeEditDialog.cpp:113
 msgid "Branch Icon:"
 msgstr "Icona del collegamento:"
 
-#: src/NodeEditDialog.cpp:145
+#: src/NodeEditDialog.cpp:160
 msgid "Selected image file format is not supported. Image will not be loaded."
 msgstr ""
 "Il formato di file dell'immagine selezionata non è supportato. L'immagine "
 "non sarà caricata."
 
-#: src/NodeEditDialog.cpp:154
+#: src/NodeEditDialog.cpp:169
 msgid "Node Image"
 msgstr "Immagine del nodo"
 
-#: src/NodeEditDialog.cpp:159
+#: src/NodeEditDialog.cpp:174
 msgid "Connection Image"
 msgstr "Colore del collegamento"
 
@@ -408,93 +215,316 @@ msgstr "Modifica per personalizzare."
 msgid "OK"
 msgstr "OK"
 
-#: src/ThemeEditor.cpp:146
+#: src/ThemeEditor.cpp:148
 msgid "Appearance"
 msgstr "Aspetto"
 
-#: src/ThemeEditor.cpp:150
+#: src/ThemeEditor.cpp:152
 msgid "Background Color"
 msgstr "Colore di sfondo"
 
-#: src/ThemeEditor.cpp:151
+#: src/ThemeEditor.cpp:153
 msgid "Background:"
 msgstr "Sfondo:"
 
-#: src/ThemeEditor.cpp:153
+#: src/ThemeEditor.cpp:155
 msgid "Hover Color"
 msgstr "Colore al passaggio del mouse"
 
-#: src/ThemeEditor.cpp:154
+#: src/ThemeEditor.cpp:156
 msgid "Hover Background:"
 msgstr "Sfondo al passaggio del mouse:"
 
-#: src/ThemeEditor.cpp:156
+#: src/ThemeEditor.cpp:158
 msgid "Border Color"
 msgstr "Colore del bordo"
 
-#: src/ThemeEditor.cpp:157
+#: src/ThemeEditor.cpp:159
 msgid "Border Color:"
 msgstr "Colore del bordo:"
 
-#: src/ThemeEditor.cpp:161
+#: src/ThemeEditor.cpp:163
 msgid "Border Width:"
 msgstr "Spessore del bordo"
 
-#: src/ThemeEditor.cpp:165
+#: src/ThemeEditor.cpp:167
 msgid "Corner Radius:"
 msgstr "Raggio dell'angolo"
 
-#: src/ThemeEditor.cpp:169
+#: src/ThemeEditor.cpp:171
 msgid "Text"
 msgstr "Testo"
 
-#: src/ThemeEditor.cpp:173
+#: src/ThemeEditor.cpp:175
 msgid "Font"
 msgstr "Carattere"
 
-#: src/ThemeEditor.cpp:176
+#: src/ThemeEditor.cpp:178
 msgid "Text Color"
 msgstr "Colore del testo"
 
-#: src/ThemeEditor.cpp:182
+#: src/ThemeEditor.cpp:184
 msgid "Layout & Shadow"
 msgstr "Layout e ombra"
 
-#: src/ThemeEditor.cpp:187
+#: src/ThemeEditor.cpp:189
 msgid "Horizontal Padding:"
 msgstr "Spaziatura orizzontale"
 
-#: src/ThemeEditor.cpp:190
+#: src/ThemeEditor.cpp:192
 msgid "Vertical Padding:"
 msgstr "Spaziatura verticale"
 
-#: src/ThemeEditor.cpp:192
+#: src/ThemeEditor.cpp:194
 msgid "Shadow Color"
 msgstr "Colore dell'ombra"
 
-#: src/ThemeEditor.cpp:193
+#: src/ThemeEditor.cpp:195
 msgid "Shadow Color:"
 msgstr "Colore dell'ombra:"
 
-#: src/ThemeEditor.cpp:197
+#: src/ThemeEditor.cpp:199
 msgid "Connections (To Children)"
 msgstr "Connessioni (ai figli)"
 
-#: src/ThemeEditor.cpp:201
+#: src/ThemeEditor.cpp:203
 msgid "Line Color"
 msgstr "Colore della linea"
 
-#: src/ThemeEditor.cpp:202
+#: src/ThemeEditor.cpp:204
 msgid "Line Color:"
 msgstr "Colore della linea:"
 
-#: src/ThemeEditor.cpp:206
+#: src/ThemeEditor.cpp:208
 msgid "Line Width:"
 msgstr "Spessore della linea:"
 
-#: src/ThemeEditor.cpp:208
+#: src/ThemeEditor.cpp:210
 msgid "Dashed Line:"
 msgstr "Linea tratteggiata:"
+
+#: src/MainWindow_UI.cpp:22 src/MainWindow_Actions.cpp:110
+msgid "Open Map"
+msgstr "Apri mappa"
+
+#: src/MainWindow_UI.cpp:44
+msgid "Remove Branch"
+msgstr "Rimuovi collegamento"
+
+#: src/MainWindow_UI.cpp:50
+msgid "Add Branch"
+msgstr "Aggiungi collegamento"
+
+#: src/MainWindow_UI.cpp:59
+msgid "Open Recent"
+msgstr "Apri recenti"
+
+#: src/MainWindow_UI.cpp:68
+msgid "Undo"
+msgstr "Annulla"
+
+#: src/MainWindow_UI.cpp:73
+msgid "Redo"
+msgstr "Ripristina"
+
+#: src/MainWindow_UI.cpp:80
+msgid "Cut"
+msgstr "Taglia"
+
+#: src/MainWindow_UI.cpp:85
+msgid "Copy"
+msgstr "Copia"
+
+#: src/MainWindow_UI.cpp:90
+msgid "Paste"
+msgstr "Incolla"
+
+#: src/MainWindow_UI.cpp:98
+msgid "Edit Theme..."
+msgstr "Modifica tema..."
+
+#: src/MainWindow_UI.cpp:105
+msgid "View"
+msgstr "Visualizzazione"
+
+#: src/MainWindow_UI.cpp:109
+msgid "Zoom In"
+msgstr "Zoom +"
+
+#: src/MainWindow_UI.cpp:114
+msgid "Zoom Out"
+msgstr "Zoom -"
+
+#: src/MainWindow_UI.cpp:119
+msgid "Reset View"
+msgstr "Resetta visualizazione"
+
+#: src/MainWindow_UI.cpp:127 src/MainWindow_Actions.cpp:133
+#: src/MainWindow_Actions.cpp:240
+msgid "Export"
+msgstr "Esporta"
+
+#: src/MainWindow_UI.cpp:131
+msgid "To PNG..."
+msgstr "In PNG..."
+
+#: src/MainWindow_UI.cpp:135
+msgid "To PDF..."
+msgstr "In PDF..."
+
+#: src/MainWindow_UI.cpp:139
+msgid "To Freeplane..."
+msgstr "In Freeplane..."
+
+#: src/MainWindow_UI.cpp:145
+msgid "Save As..."
+msgstr "Salva con nome..."
+
+#: src/MainWindow_UI.cpp:152
+msgid "User Guide"
+msgstr "Guida utente"
+
+#: src/MainWindow_UI.cpp:157
+msgid "About"
+msgstr "Informazioni"
+
+#: src/MainWindow_UI.cpp:161
+msgid "Quit"
+msgstr "Esci"
+
+#: src/MainWindow_UI.cpp:194
+msgid "E4Maps"
+msgstr "E4Maps"
+
+#: src/MainWindow_UI.cpp:195
+msgid "1.0.0"
+msgstr "1.0.0"
+
+#: src/MainWindow_UI.cpp:196
+msgid "Copyright (c) 2025 Dorian Soru <doriansoru@gmail.com>"
+msgstr "Copyright (c) 2025 Dorian Soru <doriansoru@gmail.com>"
+
+#: src/MainWindow_UI.cpp:197
+msgid "A simple mind mapping application"
+msgstr "Un'applicazione semplice per la creazione di mappe mentali"
+
+#: src/MainWindow_UI.cpp:200
+msgid "GitHub Repository"
+msgstr "Repository GitHub"
+
+#: src/MainWindow_Actions.cpp:47
+msgid "Map saved successfully."
+msgstr "Mappa salvata correttamente."
+
+#: src/MainWindow_Actions.cpp:50
+msgid "Error saving file: "
+msgstr "Errore nel salvataggio del file: "
+
+#: src/MainWindow_Actions.cpp:55
+msgid "Unknown error occurred while saving file: "
+msgstr "Errore sconosciuto durante il salvataggio del file: "
+
+#: src/MainWindow_Actions.cpp:75
+msgid "Error loading file: "
+msgstr "Errore nel caricamento del file: "
+
+#: src/MainWindow_Actions.cpp:79
+msgid "Unknown error occurred while loading file: "
+msgstr "Errore sconosciuto durante il caricamento del file: "
+
+#: src/MainWindow_Actions.cpp:89
+msgid "map.e4m"
+msgstr "mappa.e4m"
+
+#: src/MainWindow_Actions.cpp:111
+msgid "Open"
+msgstr "Apri"
+
+#: src/MainWindow_Actions.cpp:112
+msgid "e4maps files"
+msgstr "file e4maps"
+
+#: src/MainWindow_Actions.cpp:131 src/MainWindow_Actions.cpp:197
+msgid "Export to PNG"
+msgstr "Esporta in PNG"
+
+#: src/MainWindow_Actions.cpp:143
+msgid "Select resolution for PNG export:"
+msgstr "Seleziona la risoluzione per l'esportazione PNG"
+
+#: src/MainWindow_Actions.cpp:147
+msgid "72 DPI (Screen)"
+msgstr "72 DPI (Schermo)"
+
+#: src/MainWindow_Actions.cpp:148
+msgid "300 DPI (High Quality)"
+msgstr "300 DPI (Alta qualità)"
+
+#: src/MainWindow_Actions.cpp:149
+msgid "600 DPI (Maximum Quality)"
+msgstr "600 DPI (Massima qualità)"
+
+#: src/MainWindow_Actions.cpp:198
+msgid "PNG export completed successfully!"
+msgstr "Esportazione in PNG completata con successo!"
+
+#: src/MainWindow_Actions.cpp:199
+msgid "Error during PNG export: "
+msgstr "Errore durante l'esportazione in PNG: "
+
+#: src/MainWindow_Actions.cpp:201
+msgid "Export to PDF"
+msgstr "Esporta in PDF"
+
+#: src/MainWindow_Actions.cpp:202
+msgid "PDF export completed successfully!"
+msgstr "Esportazione in PDF completata con successo!"
+
+#: src/MainWindow_Actions.cpp:203
+msgid "Error during PDF export: "
+msgstr "Errore durante l'esportazione in PDF: "
+
+#: src/MainWindow_Actions.cpp:205
+msgid "Export to Freeplane"
+msgstr "Esporta in Freeplane"
+
+#: src/MainWindow_Actions.cpp:206
+msgid "Freeplane export completed successfully!"
+msgstr "Esportazione in Freeplane completata con successo!"
+
+#: src/MainWindow_Actions.cpp:207
+msgid "Error during Freeplane export: "
+msgstr "Errore durante l'esportazione in Freeplane: "
+
+#: src/MainWindow_Actions.cpp:252
+msgid "Freeplane files"
+msgstr "File freeplane"
+
+#: src/MainWindow_Actions.cpp:257
+msgid "PNG images"
+msgstr "Immagini PNG"
+
+#: src/MainWindow_Actions.cpp:262
+msgid "PDF documents"
+msgstr "Documenti PDF"
+
+#: src/MainWindow_Actions.cpp:279
+msgid "Unknown error occurred."
+msgstr "È avvenuto un errore sconosciuto."
+
+#: src/MainWindow_Actions.cpp:288
+msgid "New"
+msgstr "Nuovo"
+
+#: src/MainWindow_Actions.cpp:541
+msgid "Help file not found."
+msgstr "File della guida non trovato."
+
+#~ msgid "Close"
+#~ msgstr "Chiudi"
+
+#~ msgid "Could not open help file: "
+#~ msgstr "Impossibile aprire il file della guida: "
 
 #~ msgid "Choose..."
 #~ msgstr "Seleziona..."

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e4maps User Guide</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }
+        h1, h2, h3 { color: #2c3e50; }
+        code { background-color: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .icon { font-weight: bold; color: #555; }
+    </style>
+</head>
+<body>
+
+<h1>e4maps User Guide</h1>
+
+<p>Welcome to <strong>e4maps</strong>, a simple and efficient mind mapping application designed to help you organize your thoughts and ideas visually.</p>
+
+<h2>Table of Contents</h2>
+<ul>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#basic-operations">Basic Operations</a></li>
+    <li><a href="#working-with-nodes">Working with Nodes</a></li>
+    <li><a href="#customizing-appearance">Customizing Appearance</a></li>
+    <li><a href="#exporting">Exporting</a></li>
+    <li><a href="#keyboard-shortcuts">Keyboard Shortcuts</a></li>
+</ul>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<h3>Installation</h3>
+<p>Please refer to the <code>README.md</code> file included with the source code for detailed instructions on how to build and install e4maps on Linux and Windows.</p>
+
+<h3>Launching the Application</h3>
+<p>Once installed or built, you can launch the application from your terminal or desktop environment.</p>
+<pre><code>./e4maps</code></pre>
+
+<h2 id="basic-operations">Basic Operations</h2>
+<p>The main window provides a clean interface with a header bar containing frequently used tools.</p>
+<ul>
+    <li><strong>New Map</strong>: Click the "New Document" icon (page with a plus) to start a fresh mind map.</li>
+    <li><strong>Open Map</strong>: Click the "Open" icon (folder) to load an existing <code>.e4m</code> file.</li>
+    <li><strong>Save Map</strong>: Click the "Save" icon (floppy disk) to save your current work. Use the menu for "Save As...".</li>
+    <li><strong>Navigation</strong>:
+        <ul>
+            <li><strong>Zoom In/Out</strong>: Use <code>Ctrl + +</code> / <code>Ctrl + -</code> or the View menu options.</li>
+            <li><strong>Reset View</strong>: Use <code>Ctrl + 0</code> to center the map and reset zoom.</li>
+            <li><strong>Pan</strong>: Click and drag on the empty background to move the map around.</li>
+        </ul>
+    </li>
+</ul>
+
+<h2 id="working-with-nodes">Working with Nodes</h2>
+<p>Nodes are the building blocks of your mind map.</p>
+
+<h3>Adding and Removing</h3>
+<ul>
+    <li><strong>Add Branch</strong>: Select a node and press <code>Tab</code> or click the "+" button in the header bar to add a child node.</li>
+    <li><strong>Remove Branch</strong>: Select a node (or multiple) and press <code>Delete</code> or click the "-" button in the header bar to remove them. <em>Note: The root node cannot be removed.</em></li>
+</ul>
+
+<h3>Editing Nodes</h3>
+<p>Double-click on any node (or select it and press Enter) to open the <strong>Node Editor</strong>. Here you can customize:</p>
+<ul>
+    <li><strong>Text</strong>: The label of the node.</li>
+    <li><strong>Font</strong>: Custom font family, style, and size.</li>
+    <li><strong>Text Color</strong>: Color of the text.</li>
+    <li><strong>Connection Color</strong>: Color of the line connecting to this node.</li>
+    <li><strong>Images</strong>:
+        <ul>
+            <li><strong>Node Image</strong>: Add an image to be displayed inside the node. You can adjust its width and height.</li>
+            <li><strong>Connection Image</strong>: Add an icon to the connection line.</li>
+        </ul>
+    </li>
+    <li><strong>Connection Label</strong>: Add text to the connecting line.</li>
+</ul>
+
+<h3>Organizing</h3>
+<ul>
+    <li><strong>Cut/Copy/Paste</strong>: Use standard shortcuts (<code>Ctrl+X</code>, <code>Ctrl+C</code>, <code>Ctrl+V</code>) or the menu to move or duplicate subtrees. You can select multiple nodes to copy/paste them together.</li>
+</ul>
+
+<h2 id="customizing-appearance">Customizing Appearance</h2>
+<p>You can change the look and feel of your entire map using the <strong>Theme Editor</strong>.</p>
+<p>Access it via the Menu button (hamburger icon) -&gt; <strong>Edit Theme...</strong>.</p>
+<p>Themes work by <strong>Levels</strong>:</p>
+<ul>
+    <li><strong>Level 0</strong>: The Root node.</li>
+    <li><strong>Level 1</strong>: Direct children of the root.</li>
+    <li><strong>Level 2+</strong>: Subsequent descendants.</li>
+</ul>
+<p>For each level, you can customize:</p>
+<ul>
+    <li><strong>Shape</strong>: Corner radius, padding.</li>
+    <li><strong>Colors</strong>: Background (normal and hover), border, shadow.</li>
+    <li><strong>Typography</strong>: Font and text color.</li>
+    <li><strong>Connections</strong>: Line color, width, and style (dashed or solid).</li>
+    <li><strong>Effects</strong>: Shadow offset and blur.</li>
+</ul>
+
+<h2 id="exporting">Exporting</h2>
+<p>Share your mind maps by exporting them to different formats. Go to Menu -&gt; <strong>Export</strong>:</p>
+<ul>
+    <li><strong>To PNG</strong>: Save as an image. You can choose the quality:
+        <ul>
+            <li>72 DPI (Screen)</li>
+            <li>300 DPI (High Quality)</li>
+            <li>600 DPI (Print Quality)</li>
+        </ul>
+    </li>
+    <li><strong>To PDF</strong>: Save as a document.</li>
+    <li><strong>To Freeplane</strong>: Export as a <code>.mm</code> file for compatibility with Freeplane software.</li>
+</ul>
+
+<h2 id="keyboard-shortcuts">Keyboard Shortcuts</h2>
+<table>
+    <tr><th>Action</th><th>Shortcut</th></tr>
+    <tr><td><strong>Add Node</strong></td><td><code>Tab</code></td></tr>
+    <tr><td><strong>Remove Node</strong></td><td><code>Delete</code></td></tr>
+    <tr><td><strong>Undo</strong></td><td><code>Ctrl + Z</code></td></tr>
+    <tr><td><strong>Redo</strong></td><td><code>Ctrl + Shift + Z</code></td></tr>
+    <tr><td><strong>Cut</strong></td><td><code>Ctrl + X</code></td></tr>
+    <tr><td><strong>Copy</strong></td><td><code>Ctrl + C</code></td></tr>
+    <tr><td><strong>Paste</strong></td><td><code>Ctrl + V</code></td></tr>
+    <tr><td><strong>Zoom In</strong></td><td><code>Ctrl + +</code></td></tr>
+    <tr><td><strong>Zoom Out</strong></td><td><code>Ctrl + -</code></td></tr>
+    <tr><td><strong>Reset View</strong></td><td><code>Ctrl + 0</code></td></tr>
+    <tr><td><strong>Save As</strong></td><td><code>Ctrl + Shift + S</code></td></tr>
+    <tr><td><strong>Quit</strong></td><td><code>Ctrl + Q</code></td></tr>
+</table>
+
+<hr>
+<p><em>Happy Mapping!</em></p>
+
+</body>
+</html>

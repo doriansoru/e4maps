@@ -3,14 +3,37 @@ OutFile "e4maps-installer.exe"
 InstallDir $PROGRAMFILES\e4maps
 InstallDirRegKey HKCU "Software\e4maps" ""
 
-Section
+!include "MUI2.nsh"
+
+; Installer pages
+!insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE "LICENSE"  ; If you have a license file
+!insertmacro MUI_PAGE_COMPONENTS
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+!insertmacro MUI_PAGE_FINISH
+
+; Uninstaller pages
+!insertmacro MUI_UNPAGE_CONFIRM
+!insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
+
+; Show completion message after installation
+Function .onInstSuccess
+  MessageBox MB_OK|MB_ICONINFORMATION "Installation completed successfully!$\\n\\nYou can now launch e4maps from the Start Menu or Desktop (if selected)."
+FunctionEnd
+
+; Language
+!insertmacro MUI_LANGUAGE "English"
+
+; Define sections for optional components
+Section "Main Application" SecMain
   SetOutPath $INSTDIR
   File /r dist\*.*
 
-  ; Create start menu and desktop shortcuts
+  ; Create start menu shortcuts
   CreateDirectory "$SMPROGRAMS\e4maps"
   CreateShortCut "$SMPROGRAMS\e4maps\e4maps.lnk" "$INSTDIR\e4maps.exe" "" "$INSTDIR\e4maps.exe" 0 SW_SHOWNORMAL
-  CreateShortCut "$DESKTOP\e4maps.lnk" "$INSTDIR\e4maps.exe" "" "$INSTDIR\e4maps.exe" 0 SW_SHOWNORMAL
 
   WriteRegStr HKCU "Software\e4maps" "" $INSTDIR
   WriteRegStr HKCR "Software\Microsoft\Windows\CurrentVersion\Uninstall\e4maps" "DisplayName" "e4maps"
@@ -22,6 +45,20 @@ Section
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 SectionEnd
 
+; Optional Desktop Shortcut
+Section "Desktop Shortcut" SecDesktop
+  CreateShortCut "$DESKTOP\e4maps.lnk" "$INSTDIR\e4maps.exe" "" "$INSTDIR\e4maps.exe" 0 SW_SHOWNORMAL
+SectionEnd
+
+; Optional Start Menu Entry
+SectionGroup /e "Start Menu Options"
+  Section "Start Menu Folder" SecStartMenu
+    CreateDirectory "$SMPROGRAMS\e4maps"
+    CreateShortCut "$SMPROGRAMS\e4maps\e4maps.lnk" "$INSTDIR\e4maps.exe" "" "$INSTDIR\e4maps.exe" 0 SW_SHOWNORMAL
+  SectionEnd
+SectionGroupEnd
+
+; Uninstaller Section
 Section "Uninstall"
   ; Remove start menu and desktop shortcuts
   Delete "$SMPROGRAMS\e4maps\e4maps.lnk"
@@ -32,3 +69,13 @@ Section "Uninstall"
   DeleteRegKey HKCR "Software\Microsoft\Windows\CurrentVersion\Uninstall\e4maps"
   RMDir /r "$INSTDIR"
 SectionEnd
+
+LangString DESC_SecMain ${LANG_ENGLISH} "Main application files."
+LangString DESC_SecDesktop ${LANG_ENGLISH} "Place a shortcut on the desktop."
+LangString DESC_SecStartMenu ${LANG_ENGLISH} "Create start menu entry."
+
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+!insertmacro MUI_DESCRIPTION_TEXT ${SecMain} $(DESC_SecMain)
+!insertmacro MUI_DESCRIPTION_TEXT ${SecDesktop} $(DESC_SecDesktop)
+!insertmacro MUI_DESCRIPTION_TEXT ${SecStartMenu} $(DESC_SecStartMenu)
+!insertmacro MUI_FUNCTION_DESCRIPTION_END

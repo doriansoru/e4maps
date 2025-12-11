@@ -149,6 +149,11 @@ void MainWindow::initHeaderBar() {
 
     menu->append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
     
+    auto itemGuide = Gtk::manage(new Gtk::MenuItem(_("User Guide")));
+    itemGuide->add_accelerator("activate", m_refAccelGroup, GDK_KEY_F1, (Gdk::ModifierType)0, Gtk::ACCEL_VISIBLE);
+    itemGuide->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_help_guide));
+    menu->append(*itemGuide);
+
     auto itemAbout = Gtk::manage(new Gtk::MenuItem(_("About")));
     itemAbout->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_about));
     menu->append(*itemAbout);

@@ -1,0 +1,40 @@
+<mindmap>
+    <theme name="Default">
+        <level_styles>
+            <style bg="#CCCCE5" bg_hover="#CCCCCC" border="#666699" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans Bold 18" text_color="#000000" corner_r="5" pad_h="20" pad_v="10" conn_color="#7F7F7F" conn_w="5" conn_dash="false" level="0"/>
+            <style bg="#E5E5CC" bg_hover="#CCCCCC" border="#999966" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans Bold 14" text_color="#000000" corner_r="5" pad_h="15" pad_v="7" conn_color="#7F7F7F" conn_w="3" conn_dash="false" level="1"/>
+            <style bg="#F9F06B" bg_hover="#CCCCCC" border="#B2B2B2" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans Italic 12" text_color="#000000" corner_r="5" pad_h="10" pad_v="5" conn_color="#7F7F7F" conn_w="1,5" conn_dash="false" level="2"/>
+            <style bg="#FFFFFF" bg_hover="#CCCCCC" border="#B2B2B2" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans 10" text_color="#000000" corner_r="5" pad_h="10" pad_v="5" conn_color="#7F7F7F" conn_w="1" conn_dash="false" level="3"/>
+            <style bg="#F2F2F2" bg_hover="#CCCCCC" border="#B2B2B2" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans 10" text_color="#000000" corner_r="5" pad_h="10" pad_v="5" conn_color="#7F7F7F" conn_w="1" conn_dash="false" level="4"/>
+        </level_styles>
+    </theme>
+    <node text="MEZZI DI CORREDO" font="Sans Bold 14" img="/home/srbntt/Documenti/Libri e tesine/archivistica/Corso APD/II-anno/Archivistica tecnica modulo 1/mappe/01 - mezzi di corredo introduzione/mezzi-corredo-archivistici.jpg" iw="150" ih="0" ctext="" cimg="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="122" y="-80" manual="1" ovr_c="1" ovr_t="1" ovr_f="0">
+        <node text="rendono possibile la fruizione" font="Sans Bold 14" img="/home/srbntt/Documenti/Libri e tesine/archivistica/Corso APD/II-anno/Archivistica tecnica modulo 1/mappe/01 - mezzi di corredo introduzione/fruizione-archivio.jpg" iw="100" ih="0" ctext="elementi che" cimg="" r="36" g="0" b="203" tr="0" tg="0" tb="0" x="275,75766735343598" y="-348,399265439175" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+        <node text="archivi" font="Sans Bold 14" img="" iw="0" ih="0" ctext="esclusivi di" cimg="" r="225" g="0" b="111" tr="0" tg="0" tb="0" x="516,37218292909915" y="-238,61430704664519" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+        <node text="strumenti per la ricerca" font="Sans Bold 14" img="" iw="0" ih="0" ctext="se di raccolte si chiamano" cimg="" r="20" g="0" b="26" tr="0" tg="0" tb="0" x="616,41507954891927" y="-60,075570724485047" manual="1" ovr_c="1" ovr_t="1" ovr_f="0">
+            <node text="Legate alla volontà di chi crea la raccolta" font="Sans 12" img="" iw="0" ih="0" ctext="" cimg="" r="100" g="250" b="92" tr="0" tg="0" tb="0" x="837,41163038662444" y="-239,0999391504748" manual="1" ovr_c="1" ovr_t="1" ovr_f="1"/>
+        </node>
+        <node text="tipologie" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="178" g="0" b="197" tr="0" tg="0" tb="0" x="27,800844861847359" y="-265,26065543940808" manual="1" ovr_c="1" ovr_t="1" ovr_f="0">
+            <node text="primari" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="241" g="0" b="57" tr="0" tg="0" tb="0" x="-2,8254754685697776" y="-404,54867368824415" manual="1" ovr_c="1" ovr_t="1" ovr_f="0">
+                <node text="elenchi" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="45" g="0" b="209" tr="0" tg="0" tb="0" x="47,363025862528957" y="-481,54617322323264" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+                <node text="guide" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="255" g="0" b="0" tr="0" tg="0" tb="0" x="-39,377362699638553" y="-518,399828327401" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+                <node text="inventari" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="160" g="0" b="23" tr="0" tg="0" tb="0" x="-115,25778559205799" y="-465,47920298419865" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+            </node>
+            <node text="sussidiari" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="186" g="0" b="244" tr="0" tg="0" tb="0" x="-128,97681509739161" y="-343,26552457444308" manual="1" ovr_c="1" ovr_t="1" ovr_f="0">
+                <node text="indici" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="234" g="0" b="68" tr="0" tg="0" tb="0" x="-254,91907591109359" y="-416,87092410198454" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+                <node text="rubriche" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="242" g="0" b="250" tr="0" tg="0" tb="0" x="-264,1071353218436" y="-351,87757773795454" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+                <node text="repertori" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="4" g="0" b="60" tr="0" tg="0" tb="0" x="-259,01255778166973" y="-286,02455434701551" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+            </node>
+            <node text="complementari" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="141" g="0" b="23" tr="0" tg="0" tb="0" x="-422,47486213384548" y="-229,33114216948786" manual="1" ovr_c="1" ovr_t="1" ovr_f="0">
+                <node text="sunti" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="153" g="0" b="125" tr="0" tg="0" tb="0" x="-473,57919715897793" y="-143,3537821482511" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+                <node text="regesti" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="195" g="0" b="39" tr="0" tg="0" tb="0" x="-373,51020033393729" y="-135,23690024497452" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+                <node text="trascrizioni" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="147" g="0" b="44" tr="0" tg="0" tb="0" x="-277,20559217972698" y="-170,22712862783303" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+            </node>
+            <node text="atipici" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="123" g="0" b="124" tr="0" tg="0" tb="0" x="-139,36209334924825" y="-175,07346008754342" manual="1" ovr_c="1" ovr_t="1" ovr_f="0">
+                <node text="schedari" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="199" g="0" b="69" tr="0" tg="0" tb="0" x="-235,99624311391537" y="-76,555508555829647" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+                <node text="data base" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="130" g="0" b="107" tr="0" tg="0" tb="0" x="-168,55549666353912" y="-28,611120901493685" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+                <node text="cataloghi" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="220" g="0" b="31" tr="0" tg="0" tb="0" x="-91,156646707671896" y="-101,21179227966962" manual="1" ovr_c="1" ovr_t="1" ovr_f="0"/>
+            </node>
+        </node>
+    </node>
+</mindmap>

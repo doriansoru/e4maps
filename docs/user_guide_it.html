@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guida Utente e4maps</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }
+        h1, h2, h3 { color: #2c3e50; }
+        code { background-color: #f4f4f4; padding: 2px 5px; border-radius: 3px; font-family: monospace; }
+        pre { background-color: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .icon { font-weight: bold; color: #555; }
+    </style>
+</head>
+<body>
+
+<h1>Guida Utente e4maps</h1>
+
+<p>Benvenuto in <strong>e4maps</strong>, un'applicazione semplice ed efficiente per mappe mentali progettata per aiutarti a organizzare visivamente pensieri e idee.</p>
+
+<h2>Indice</h2>
+<ul>
+    <li><a href="#per-iniziare">Per Iniziare</a></li>
+    <li><a href="#operazioni-base">Operazioni Base</a></li>
+    <li><a href="#lavorare-con-i-nodi">Lavorare con i Nodi</a></li>
+    <li><a href="#personalizzare-aspetto">Personalizzare l'Aspetto</a></li>
+    <li><a href="#esportazione">Esportazione</a></li>
+    <li><a href="#scorciatoie-da-tastiera">Scorciatoie da Tastiera</a></li>
+</ul>
+
+<h2 id="per-iniziare">Per Iniziare</h2>
+
+<h3>Installazione</h3>
+<p>Fai riferimento al file <code>README.md</code> incluso nel codice sorgente per istruzioni dettagliate su come compilare e installare e4maps su Linux e Windows.</p>
+
+<h3>Avvio dell'Applicazione</h3>
+<p>Una volta installata o compilata, puoi avviare l'applicazione dal terminale o dall'ambiente desktop.</p>
+<pre><code>./e4maps</code></pre>
+
+<h2 id="operazioni-base">Operazioni Base</h2>
+<p>La finestra principale offre un'interfaccia pulita con una barra superiore contenente gli strumenti più usati.</p>
+<ul>
+    <li><strong>Nuova Mappa</strong>: Clicca l'icona "Nuovo Documento" (pagina con un più) per iniziare una nuova mappa mentale.</li>
+    <li><strong>Apri Mappa</strong>: Clicca l'icona "Apri" (cartella) per caricare un file <code>.e4m</code> esistente.</li>
+    <li><strong>Salva Mappa</strong>: Clicca l'icona "Salva" (floppy disk) per salvare il lavoro corrente. Usa il menu per "Salva con nome...".</li>
+    <li><strong>Navigazione</strong>:
+        <ul>
+            <li><strong>Zoom Avanti/Indietro</strong>: Usa <code>Ctrl + +</code> / <code>Ctrl + -</code> o le opzioni nel menu Visualizza.</li>
+            <li><strong>Reimposta Vista</strong>: Usa <code>Ctrl + 0</code> per centrare la mappa e reimpostare lo zoom.</li>
+            <li><strong>Spostarsi (Pan)</strong>: Clicca e trascina sullo sfondo vuoto per muovere la mappa.</li>
+        </ul>
+    </li>
+</ul>
+
+<h2 id="lavorare-con-i-nodi">Lavorare con i Nodi</h2>
+<p>I nodi sono i mattoni della tua mappa mentale.</p>
+
+<h3>Aggiungere e Rimuovere</h3>
+<ul>
+    <li><strong>Aggiungi Ramo</strong>: Seleziona un nodo e premi <code>Tab</code> o clicca il pulsante "+" nella barra superiore per aggiungere un nodo figlio.</li>
+    <li><strong>Rimuovi Ramo</strong>: Seleziona un nodo (o più) e premi <code>Canc</code> (Delete) o clicca il pulsante "-" nella barra superiore per rimuoverli. <em>Nota: Il nodo radice non può essere rimosso.</em></li>
+</ul>
+
+<h3>Modificare i Nodi</h3>
+<p>Fai doppio clic su qualsiasi nodo (o selezionalo e premi Invio) per aprire l'<strong>Editor Nodo</strong>. Qui puoi personalizzare:</p>
+<ul>
+    <li><strong>Testo</strong>: L'etichetta del nodo.</li>
+    <li><strong>Font</strong>: Famiglia, stile e dimensione del carattere personalizzati.</li>
+    <li><strong>Colore Testo</strong>: Colore del testo.</li>
+    <li><strong>Colore Connessione</strong>: Colore della linea che si connette a questo nodo.</li>
+    <li><strong>Immagini</strong>:
+        <ul>
+            <li><strong>Immagine Nodo</strong>: Aggiungi un'immagine da mostrare all'interno del nodo. Puoi regolarne larghezza e altezza.</li>
+            <li><strong>Immagine Connessione</strong>: Aggiungi un'icona sulla linea di connessione.</li>
+        </ul>
+    </li>
+    <li><strong>Etichetta Connessione</strong>: Aggiungi testo alla linea di connessione.</li>
+</ul>
+
+<h3>Organizzare</h3>
+<ul>
+    <li><strong>Taglia/Copia/Incolla</strong>: Usa le scorciatoie standard (<code>Ctrl+X</code>, <code>Ctrl+C</code>, <code>Ctrl+V</code>) o il menu per spostare o duplicare rami. Puoi selezionare più nodi per copiarli/incollarli insieme.</li>
+</ul>
+
+<h2 id="personalizzare-aspetto">Personalizzare l'Aspetto</h2>
+<p>Puoi cambiare l'aspetto dell'intera mappa usando l'<strong>Editor Tema</strong>.</p>
+<p>Accedivi tramite il pulsante Menu (icona hamburger) -&gt; <strong>Modifica Tema...</strong>.</p>
+<p>I temi funzionano per <strong>Livelli</strong>:</p>
+<ul>
+    <li><strong>Livello 0</strong>: Il nodo Radice.</li>
+    <li><strong>Livello 1</strong>: I figli diretti della radice.</li>
+    <li><strong>Livello 2+</strong>: I discendenti successivi.</li>
+</ul>
+<p>Per ogni livello, puoi personalizzare:</p>
+<ul>
+    <li><strong>Forma</strong>: Raggio degli angoli, spaziatura (padding).</li>
+    <li><strong>Colori</strong>: Sfondo (normale e al passaggio del mouse), bordo, ombra.</li>
+    <li><strong>Tipografia</strong>: Font e colore del testo.</li>
+    <li><strong>Connessioni</strong>: Colore linea, spessore e stile (tratteggiato o solido).</li>
+    <li><strong>Effetti</strong>: Offset ombra e sfocatura.</li>
+</ul>
+
+<h2 id="esportazione">Esportazione</h2>
+<p>Condividi le tue mappe mentali esportandole in diversi formati. Vai su Menu -&gt; <strong>Esporta</strong>:</p>
+<ul>
+    <li><strong>In PNG</strong>: Salva come immagine. Puoi scegliere la qualità:
+        <ul>
+            <li>72 DPI (Schermo)</li>
+            <li>300 DPI (Alta Qualità)</li>
+            <li>600 DPI (Qualità Stampa)</li>
+        </ul>
+    </li>
+    <li><strong>In PDF</strong>: Salva come documento.</li>
+    <li><strong>In Freeplane</strong>: Esporta come file <code>.mm</code> per compatibilità con il software Freeplane.</li>
+</ul>
+
+<h2 id="scorciatoie-da-tastiera">Scorciatoie da Tastiera</h2>
+<table>
+    <tr><th>Azione</th><th>Scorciatoia</th></tr>
+    <tr><td><strong>Aggiungi Nodo</strong></td><td><code>Tab</code></td></tr>
+    <tr><td><strong>Rimuovi Nodo</strong></td><td><code>Canc</code></td></tr>
+    <tr><td><strong>Annulla (Undo)</strong></td><td><code>Ctrl + Z</code></td></tr>
+    <tr><td><strong>Ripeti (Redo)</strong></td><td><code>Ctrl + Shift + Z</code></td></tr>
+    <tr><td><strong>Taglia</strong></td><td><code>Ctrl + X</code></td></tr>
+    <tr><td><strong>Copia</strong></td><td><code>Ctrl + C</code></td></tr>
+    <tr><td><strong>Incolla</strong></td><td><code>Ctrl + V</code></td></tr>
+    <tr><td><strong>Zoom Avanti</strong></td><td><code>Ctrl + +</code></td></tr>
+    <tr><td><strong>Zoom Indietro</strong></td><td><code>Ctrl + -</code></td></tr>
+    <tr><td><strong>Reimposta Vista</strong></td><td><code>Ctrl + 0</code></td></tr>
+    <tr><td><strong>Salva con nome</strong></td><td><code>Ctrl + Shift + S</code></td></tr>
+    <tr><td><strong>Esci</strong></td><td><code>Ctrl + Q</code></td></tr>
+</table>
+
+<hr>
+<p><em>Buon Mapping!</em></p>
+
+</body>
+</html>

@@ -9,7 +9,7 @@ static std::string patternToHex(const Cairo::RefPtr<Cairo::Pattern>& pat) {
     if (solid) {
         double r, g, b, a;
         solid->get_rgba(r, g, b, a);
-        return cairoToHex(r, g, b, a);
+        return Utils::cairoToHex(r, g, b, a);
     }
     return "#000000"; // Fallback for non-solid patterns
 }
@@ -17,7 +17,7 @@ static std::string patternToHex(const Cairo::RefPtr<Cairo::Pattern>& pat) {
 // Helper to deserialize Hex to Pattern
 static Cairo::RefPtr<Cairo::Pattern> hexToPattern(const std::string& hex) {
     double r, g, b, a;
-    hexToCairo(hex, r, g, b, a);
+    Utils::hexToCairo(hex, r, g, b, a);
     return Cairo::SolidPattern::create_rgba(r, g, b, a);
 }
 

@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 pkg_check_modules(CAIROMM REQUIRED cairomm-1.0)
+# Optional WebKit2GTK for Linux, but we're switching to external browser
+# pkg_check_modules(WEBKIT2GTK REQUIRED webkit2gtk-4.1)
 
 # Include tinyxml2 from 3rdparty
 set(TINYXML2_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty/tinyxml2)
@@ -38,6 +40,7 @@ link_directories(${GTKMM_LIBRARY_DIRS} ${CAIROMM_LIBRARY_DIRS})
 
 # Define the locale directory for translations
 add_definitions(-DLOCALEDIR="${CMAKE_INSTALL_PREFIX}/share/locale")
+add_definitions(-DDOCDIR="${CMAKE_INSTALL_PREFIX}/share/doc/${PROJECT_NAME}")
 add_definitions(-DGETTEXT_PACKAGE="e4maps")
 
 # Add source files
@@ -56,9 +59,11 @@ if(WIN32)
         src/LayoutAlgorithm.cpp
         src/Theme.cpp
         src/ThemeEditor.cpp
+        src/Utils.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
         resources/e4maps.rc
     )
+    add_definitions(-DAPP_NAME_STR="\\\"${PROJECT_NAME}\\\"")
 else()
     add_executable(e4maps
         src/main.cpp
@@ -71,6 +76,7 @@ else()
         src/LayoutAlgorithm.cpp
         src/Theme.cpp
         src/ThemeEditor.cpp
+        src/Utils.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
     )
 endif()
@@ -173,6 +179,10 @@ install(FILES icons/e4maps-512.png
 
 install(FILES e4maps.desktop
         DESTINATION share/applications/)
+
+# Install documentation
+install(FILES docs/user_guide_en.html docs/user_guide_it.html
+        DESTINATION share/doc/${PROJECT_NAME})
 
 # Generate MO files from PO files and install them in the correct structure
 file(GLOB PO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/po/*.po)

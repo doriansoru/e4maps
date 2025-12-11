@@ -2,7 +2,13 @@
 #include "ThemeEditor.hpp"
 #include "Exporter.hpp"
 #include "NodeEditDialog.hpp"
+#include "Utils.hpp"  // Include our utility functions
 #include <algorithm>
+#include <cstdlib> // For std::getenv
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 // --- LOGICA RECENTI ---
 void MainWindow::loadRecentFiles() {
@@ -469,6 +475,70 @@ void MainWindow::on_edit_theme() {
         m_Map->theme = editor.getResult();
         m_Area.invalidateLayout();
         setModified(true);
+    }
+}
+
+void MainWindow::on_help_guide() {
+    std::string filename = "user_guide_en.html";
+
+    // Check current locale to determine if we should use Italian
+    const char* lang = std::getenv("LANG");
+    if (lang && std::string(lang).find("it") != std::string::npos) {
+        filename = "user_guide_it.html";
+    }
+
+    std::string path_str;
+
+#ifdef _WIN32
+    // On Windows, look for docs relative to the executable
+    std::vector<char> path(MAX_PATH);
+    if (GetModuleFileNameA(NULL, path.data(), path.size())) {
+        std::string exePath(path.data());
+        std::string::size_type pos = exePath.find_last_of("\\/");
+        if (pos != std::string::npos) {
+            std::string exeDir = exePath.substr(0, pos);
+
+            // List of potential relative paths to check
+            std::vector<std::string> searchPaths = {
+                exeDir + "\\..\\share\\doc\\" + APP_NAME_STR + "\\" + filename,
+                exeDir + "\\share\\doc\\" + APP_NAME_STR + "\\" + filename,
+                exeDir + "\\..\\share\\docs\\" + APP_NAME_STR + "\\" + filename,
+                exeDir + "\\share\\docs\\" + APP_NAME_STR + "\\" + filename,
+                exeDir + "\\share\\docs\\" + filename,
+                exeDir + "\\docs\\" + filename,
+                exeDir + "\\..\\docs\\" + filename,  // For NSIS installer structure
+                exeDir + "\\docs\\" + filename       // Direct docs folder
+            };
+
+            for (const auto& potentialPath : searchPaths) {
+                if (std::filesystem::exists(potentialPath)) {
+                    path_str = potentialPath;
+                    break;
+                }
+            }
+        }
+    }
+#else
+    // On Linux, use the configured DOCDIR
+    std::filesystem::path docPath(DOCDIR);
+    docPath /= filename;
+    if (std::filesystem::exists(docPath)) {
+        path_str = docPath.string();
+    } else {
+         // Fallback for development
+         if (std::filesystem::exists("docs/" + filename)) {
+             path_str = std::filesystem::absolute("docs/" + filename).string();
+         } else if (std::filesystem::exists("../docs/" + filename)) {
+             path_str = std::filesystem::absolute("../docs/" + filename).string();
+         }
+    }
+#endif
+
+    if (!path_str.empty()) {
+        // Open the documentation directly in the external browser without any dialog
+        Utils::openInBrowser("file://" + path_str);
+    } else {
+        Gtk::MessageDialog(*this, _("Help file not found."), false, Gtk::MESSAGE_ERROR).run();
     }
 }
 

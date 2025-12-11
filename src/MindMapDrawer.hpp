@@ -26,7 +26,7 @@ public:
         if (path.empty()) return {};
 
         // Validate the file is a supported image type
-        if (!::isValidImageFile(path)) {
+        if (!Utils::isValidImageFile(path)) {
             std::cerr << "Warning: Attempting to load unsupported image file: " << path << std::endl;
             return {};
         }

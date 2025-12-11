@@ -155,7 +155,7 @@ int NodeEditDialog::getNewImgHeight() const {
 
 std::string NodeEditDialog::validateImage(const std::string& path, const std::string& contextName) {
     if (path.empty()) return "";
-    if (!isValidImageFile(path)) {
+    if (!Utils::isValidImageFile(path)) {
         Gtk::MessageDialog warnDialog(*this,
             _("Selected image file format is not supported. Image will not be loaded."),
             false, Gtk::MESSAGE_WARNING);
