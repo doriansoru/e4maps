@@ -1,32 +1,9 @@
 #include "Utils.hpp"
-#include <cstdlib>
 #include <stdexcept>
 #include <string>
-
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <unistd.h>
-#include <sys/wait.h>
-#endif
+#include <gtkmm.h> // Required for Gtk::show_uri_on_window
 
 namespace Utils {
-    std::string escapeXml(const std::string& data) {
-        std::string buffer;
-        buffer.reserve(data.size());
-        for(size_t pos = 0; pos != data.size(); ++pos) {
-            switch(data[pos]) {
-                case '&':  buffer.append("&amp;");       break;
-                case '"': buffer.append("&quot;");      break;
-                case '\'': buffer.append("&apos;");      break;
-                case '<':  buffer.append("&lt;");        break;
-                case '>':  buffer.append("&gt;");        break;
-                default:   buffer.append(&data[pos], 1); break;
-            }
-        }
-        return buffer;
-    }
-
     bool isValidImageFile(const std::string& path) {
         if (path.empty()) return false;
 
@@ -72,20 +49,7 @@ namespace Utils {
         return std::string(buffer);
     }
 
-    void openInBrowser(const std::string& url) {
-#ifdef _WIN32
-        ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
-#elif __APPLE__
-        std::string command = "open \"" + url + "\"";
-        system(command.c_str());
-#else
-        std::string command = "xdg-open \"" + url + "\"";
-        int result = system(command.c_str());
-        if (result == -1) {
-            // Fallback to x-www-browser if xdg-open is not available
-            command = "x-www-browser \"" + url + "\"";
-            system(command.c_str());
-        }
-#endif
+    void openInBrowser(Gtk::Window& parent, const std::string& url) {
+        parent.show_uri(url, GDK_CURRENT_TIME);
     }
 }

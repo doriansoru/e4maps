@@ -429,20 +429,22 @@ void MainWindow::on_cut() {
         if (nonRootNodes.empty()) return; // Only root was selected
 
         auto cutCmd = std::make_unique<CutMultipleNodesCommand>(nonRootNodes);
+        auto* cutCmdPtr = cutCmd.get();
         m_commandManager.executeCommand(std::move(cutCmd));
 
         // Store the copies in clipboard
-        m_clipboard = cutCmd->getNodesCopy();
+        m_clipboard = cutCmdPtr->getNodesCopy();
 
         setModified(true);
         m_Area.invalidateLayout();
     } else {
         // All selected nodes are non-root, cut them all
         auto cutCmd = std::make_unique<CutMultipleNodesCommand>(selectedNodes);
+        auto* cutCmdPtr = cutCmd.get();
         m_commandManager.executeCommand(std::move(cutCmd));
 
         // Store the copies in clipboard
-        m_clipboard = cutCmd->getNodesCopy();
+        m_clipboard = cutCmdPtr->getNodesCopy();
 
         setModified(true);
         m_Area.invalidateLayout();
@@ -536,7 +538,7 @@ void MainWindow::on_help_guide() {
 
     if (!path_str.empty()) {
         // Open the documentation directly in the external browser without any dialog
-        Utils::openInBrowser("file://" + path_str);
+        Utils::openInBrowser(*this, "file://" + path_str);
     } else {
         Gtk::MessageDialog(*this, _("Help file not found."), false, Gtk::MESSAGE_ERROR).run();
     }

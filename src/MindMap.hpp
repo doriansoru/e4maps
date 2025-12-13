@@ -85,31 +85,6 @@ public:
                 py >= y - height/2 - margin && py <= y + height/2 + margin);
     }
     
-    // Old string-based toXML method (for backwards compatibility)
-    std::string toXML(int indentLevel = 0) {
-        std::stringstream ss;
-        std::string indent(indentLevel * 2, ' ');
-
-        ss << indent << "<node text=\"" << Utils::escapeXml(text) << "\" "
-           << "font=\"" << Utils::escapeXml(fontDesc) << "\" "
-           << "img=\"" << Utils::escapeXml(imagePath) << "\" "
-           << "iw=\"" << imgWidth << "\" ih=\"" << imgHeight << "\" "
-           << "ctext=\"" << Utils::escapeXml(connText) << "\" "
-           << "cimg=\"" << Utils::escapeXml(connImagePath) << "\" "
-           << "r=\"" << (int)(color.r*255) << "\" g=\"" << (int)(color.g*255) << "\" b=\"" << (int)(color.b*255) << "\" "
-           << "tr=\"" << (int)(textColor.r*255) << "\" tg=\"" << (int)(textColor.g*255) << "\" tb=\"" << (int)(textColor.b*255) << "\" "
-           << "x=\"" << x << "\" y=\"" << y << "\" manual=\"" << manualPosition << "\" "
-           << "ovr_c=\"" << overrideColor << "\" "
-           << "ovr_t=\"" << overrideTextColor << "\" "
-           << "ovr_f=\"" << overrideFont << "\">\n";
-
-        for(auto& child : children) {
-            ss << child->toXML(indentLevel + 1);
-        }
-
-        ss << indent << "</node>\n";
-        return ss.str();
-    }
 
     // New tinyxml2-based method for file I/O
     tinyxml2::XMLElement* toXMLElement(tinyxml2::XMLDocument* doc) const {

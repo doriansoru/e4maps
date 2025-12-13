@@ -71,6 +71,47 @@ After compilation, you can run the application from the build directory:
 ./e4maps
 ```
 
+## Building on macOS
+
+### Prerequisites
+
+1. **Xcode Command Line Tools**:
+   ```bash
+   xcode-select --install
+   ```
+
+2. **Homebrew**:
+   If not installed, get it from [brew.sh](https://brew.sh/).
+
+### Install Dependencies
+
+```bash
+brew install cmake pkg-config gtkmm3 gettext
+```
+
+### Compile the Project
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/doriansoru/e4maps.git
+   cd e4maps
+   ```
+
+2. Create a build directory and compile:
+   Note: We need to specify the path to `gettext` as it is keg-only on macOS.
+
+   ```bash
+   mkdir build && cd build
+   cmake .. -DCMAKE_PREFIX_PATH=$(brew --prefix gettext)
+   make
+   ```
+
+### Running the Application
+
+```bash
+./e4maps
+```
+
 ## Building on Windows
 
 ### Option 1: Using MSYS2 (Recommended)
