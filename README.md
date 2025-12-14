@@ -2,7 +2,7 @@
 
 E4Maps is a simple mind mapping software.
 
-This project was developed exclusively using `gemini-cli` and `Qwen3-Coder`.
+This project was developed exclusively using `gemini-cli`, `Qwen3-Coder`, and `Mistral Vibe`.
 
 ![A screenshot of e4maps](screenshot.png)
 

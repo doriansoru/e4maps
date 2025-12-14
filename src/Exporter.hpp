@@ -143,7 +143,7 @@ public:
         if (!map || !map->root) return;
 
         // Pre-calculate all node dimensions to ensure arrows are positioned correctly
-        drawer.preCalculateNodeDimensions(map->root, map->theme);
+        drawer.preCalculateNodeDimensions(map->root, map->theme, cr);
 
         // Check if any nodes have manual positioning
         bool hasManualPositions = hasManualPositionsRecursive(map->root);

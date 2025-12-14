@@ -34,6 +34,7 @@ class MapArea : public Gtk::DrawingArea {
 
 public:
     sigc::signal<void, std::shared_ptr<Node>> signal_edit_node;
+    sigc::signal<void, GdkEventButton*, std::shared_ptr<Node>> signal_node_context_menu;
     sigc::signal<void> signal_map_modified;
 
     MapArea(std::shared_ptr<MindMap> m) : drawingContext(m) {
@@ -68,6 +69,8 @@ public:
     void zoomIn();
     void zoomOut();
     void resetView();
+    
+    bool getNodeScreenRect(std::shared_ptr<Node> node, Gdk::Rectangle& rect);
 
 protected:
     bool on_button_press_event(GdkEventButton* event) override;

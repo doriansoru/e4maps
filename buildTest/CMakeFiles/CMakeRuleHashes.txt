@@ -1,0 +1,6 @@
+# Hashes of file build rules.
+66ef6e96119ac17321a97714d68e288a CMakeFiles/compile-po-to-mo
+a70db201e70205e3853b6fa03da79c9d CMakeFiles/compile-translations
+8329b1c060811193acb754cae3866fd6 CMakeFiles/update-all-translations
+7d96eaecd63a360a517d965455a713b8 CMakeFiles/update-translations
+3a670288ab40f102c675d21e9de26bad po/it/LC_MESSAGES/e4maps.mo

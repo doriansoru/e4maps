@@ -25,12 +25,47 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
 
     m_Area.signal_edit_node.connect(sigc::mem_fun(*this, &MainWindow::open_edit_dialog));
     m_Area.signal_map_modified.connect(sigc::mem_fun(*this, &MainWindow::on_map_modified));
+    m_Area.signal_node_context_menu.connect(sigc::mem_fun(*this, &MainWindow::on_node_context_menu));
     m_Area.set_hexpand(true); m_Area.set_vexpand(true);
-    m_VBox.pack_start(m_Area);
+    
+    // Setup Overlay for inline editing
+    m_Overlay.add(m_Area);
+    
+    // Setup Inline Editor
+    m_InlineEditor.set_wrap_mode(Gtk::WRAP_WORD);
+    m_InlineEditor.set_accepts_tab(false);
+    
+    // Style the editor
+    auto css = Gtk::CssProvider::create();
+    try {
+        css->load_from_data("textview { border: 1px solid #3465a4; border-radius: 4px; padding: 4px; } text { background-color: white; color: black; }");
+        m_InlineEditor.get_style_context()->add_provider(css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    } catch(...) {}
+
+    m_EditorScroll.add(m_InlineEditor);
+    m_EditorScroll.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    m_EditorScroll.set_halign(Gtk::ALIGN_START);
+    m_EditorScroll.set_valign(Gtk::ALIGN_START);
+    m_EditorScroll.hide(); // Hidden by default
+    
+    m_Overlay.add_overlay(m_EditorScroll);
+    m_VBox.pack_start(m_Overlay);
+
     m_VBox.pack_start(m_StatusBar, Gtk::PACK_SHRINK);  // Add status bar at the bottom
+
+    // Connect Editor Signals
+    m_InlineEditor.signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_editor_key_press), false);
+    // Use a lambda for focus out to cleanly finish editing
+    m_InlineEditor.signal_focus_out_event().connect([this](GdkEventFocus*){
+        if (m_EditorScroll.is_visible()) {
+            finish_inline_edit(true);
+        }
+        return false;
+    });
 
     setModified(false);  // Initialize as not modified
     show_all();
+    m_EditorScroll.hide(); // Ensure hidden after show_all
 }
 
 // Method to check if document has been modified and prompt user to save
@@ -49,9 +84,138 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
         on_remove_node();
         return true; // Event handled
     }
+    
+    // Check for F2 to start inline editing
+    if (event->keyval == GDK_KEY_F2) {
+        auto node = m_Area.getSelectedNode();
+        if (node) {
+            start_inline_edit(node);
+        }
+        return true;
+    }
 
     // Call base class's handler for other keys
     return Gtk::Window::on_key_press_event(event);
+}
+
+void MainWindow::start_inline_edit(std::shared_ptr<Node> node) {
+    if (!node) return;
+    
+    Gdk::Rectangle rect;
+    if (m_Area.getNodeScreenRect(node, rect)) {
+        m_editingNode = node;
+        m_InlineEditor.get_buffer()->set_text(node->text);
+        
+        // Position the editor
+        // We set margins to position the overlay widget
+        m_EditorScroll.set_margin_left(rect.get_x());
+        m_EditorScroll.set_margin_top(rect.get_y());
+        
+        // Set size - slightly larger than node or min size
+        int width = std::max(rect.get_width() + 20, 150);
+        int height = std::max(rect.get_height() + 20, 50);
+        m_EditorScroll.set_size_request(width, height);
+        
+        m_EditorScroll.show();
+        m_InlineEditor.grab_focus();
+        
+        // Select all text
+        auto buffer = m_InlineEditor.get_buffer();
+        buffer->select_range(buffer->begin(), buffer->end());
+    }
+}
+
+void MainWindow::finish_inline_edit(bool save) {
+    if (save && m_editingNode) {
+        std::string newText = m_InlineEditor.get_buffer()->get_text();
+        if (newText != m_editingNode->text) {
+            // Create command
+            // We pass current values as both old and new for non-text properties
+            auto cmd = std::make_unique<EditNodeCommand>(
+                m_editingNode,
+                m_editingNode->text, newText,
+                m_editingNode->fontDesc, m_editingNode->fontDesc,
+                m_editingNode->color, m_editingNode->color,
+                m_editingNode->textColor, m_editingNode->textColor,
+                m_editingNode->imagePath, m_editingNode->imagePath,
+                m_editingNode->imgWidth, m_editingNode->imgWidth,
+                m_editingNode->imgHeight, m_editingNode->imgHeight,
+                m_editingNode->connText, m_editingNode->connText,
+                m_editingNode->connImagePath, m_editingNode->connImagePath,
+                m_editingNode->overrideColor, m_editingNode->overrideColor,
+                m_editingNode->overrideTextColor, m_editingNode->overrideTextColor,
+                m_editingNode->overrideFont, m_editingNode->overrideFont
+            );
+            
+            m_commandManager.executeCommand(std::move(cmd));
+            m_Area.invalidateLayout();
+            on_map_modified();
+        }
+    }
+    
+    m_EditorScroll.hide();
+    m_editingNode = nullptr;
+    m_Area.grab_focus(); // Return focus to map
+}
+
+bool MainWindow::on_editor_key_press(GdkEventKey* event) {
+    if (event->keyval == GDK_KEY_Return) {
+        if (event->state & GDK_SHIFT_MASK) {
+            // Shift+Enter: Insert newline (default behavior), so return false
+            return false; 
+        } else {
+            // Enter: Finish editing
+            finish_inline_edit(true);
+            return true;
+        }
+    }
+    if (event->keyval == GDK_KEY_Escape) {
+        finish_inline_edit(false);
+        return true;
+    }
+    return false; // Propagate other keys
+}
+
+void MainWindow::on_node_context_menu(GdkEventButton* event, std::shared_ptr<Node> node) {
+    if (!node) return;
+
+    // Clear existing items
+    auto children = m_NodeContextMenu.get_children();
+    for (auto* child : children) {
+        m_NodeContextMenu.remove(*child);
+    }
+
+    // 1. Edit Text (Inline)
+    auto itemEdit = Gtk::manage(new Gtk::MenuItem(_("Edit Text")));
+    itemEdit->signal_activate().connect([this, node]() {
+        start_inline_edit(node);
+    });
+    m_NodeContextMenu.append(*itemEdit);
+
+    // 2. Properties (Dialog)
+    auto itemProps = Gtk::manage(new Gtk::MenuItem(_("Properties...")));
+    itemProps->signal_activate().connect([this, node]() {
+        open_edit_dialog(node);
+    });
+    m_NodeContextMenu.append(*itemProps);
+    
+    // Separator
+    m_NodeContextMenu.append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
+    
+    // 3. Add Child
+    auto itemAdd = Gtk::manage(new Gtk::MenuItem(_("Add Branch")));
+    itemAdd->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_add_node));
+    m_NodeContextMenu.append(*itemAdd);
+
+    // 4. Remove
+    if (!node->isRoot()) {
+        auto itemRemove = Gtk::manage(new Gtk::MenuItem(_("Remove Branch")));
+        itemRemove->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_remove_node));
+        m_NodeContextMenu.append(*itemRemove);
+    }
+
+    m_NodeContextMenu.show_all();
+    m_NodeContextMenu.popup(event->button, event->time);
 }
 
 // Method to set modified status and update window title

@@ -100,29 +100,28 @@ public:
 
 class MindMapDrawer {
 public:
-    // Helper to create a Pango Layout for text dimension calculation
-    // This uses a dummy surface to create a Pango::Layout without actual rendering
-    static Glib::RefPtr<Pango::Layout> create_dummy_pango_layout() {
-        return Pango::Layout::create(Cairo::Context::create(Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 1, 1)));
-    }
-
     // Pre-calculate node dimensions to ensure arrows are positioned correctly
-    void preCalculateNodeDimensions(std::shared_ptr<Node> node, const Theme& theme, int depth = 0) {
+    void preCalculateNodeDimensions(std::shared_ptr<Node> node, const Theme& theme, const Cairo::RefPtr<Cairo::Context>& cr, int depth = 0) {
         if (!node) return;
-        calculateNodeDimensions(node, theme, depth);
+        calculateNodeDimensions(node, theme, cr, depth);
         for (auto& child : node->children) {
-            preCalculateNodeDimensions(child, theme, depth + 1);
+            preCalculateNodeDimensions(child, theme, cr, depth + 1);
         }
     }
 
     // Calculate node dimensions without drawing
-    void calculateNodeDimensions(std::shared_ptr<Node> node, const Theme& theme, int depth) {
+    void calculateNodeDimensions(std::shared_ptr<Node> node, const Theme& theme, const Cairo::RefPtr<Cairo::Context>& cr, int depth) {
         if (!node) return;
 
         NodeStyle style = theme.getStyle(depth);
 
+        // Apply manual font override if present (same priority as in drawNode)
+        if (node->overrideFont && !node->fontDesc.empty()) {
+            style.fontDescription = Pango::FontDescription(node->fontDesc);
+        }
+
         // Calculate text size
-        auto layout = create_dummy_pango_layout();
+        auto layout = Pango::Layout::create(cr);
         layout->set_text(node->text);
         Pango::FontDescription font(style.fontDescription);
         layout->set_font_description(font);
@@ -195,7 +194,7 @@ public:
         if (node->overrideTextColor) {
             style.textColor = Cairo::SolidPattern::create_rgb(node->textColor.r, node->textColor.g, node->textColor.b);
         }
-        if (node->overrideFont) {
+        if (node->overrideFont && !node->fontDesc.empty()) {
             style.fontDescription = Pango::FontDescription(node->fontDesc);
         }
 

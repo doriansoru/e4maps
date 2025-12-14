@@ -2,6 +2,9 @@
 #define MAINWINDOW_HPP
 
 #include <gtkmm.h>
+#include <gtkmm/overlay.h>
+#include <gtkmm/textview.h>
+#include <gtkmm/scrolledwindow.h>
 #include <gdkmm/pixbuf.h>
 #include <gdkmm/general.h>
 #include <gdk/gdkkeysyms.h> // Per i tasti
@@ -29,6 +32,16 @@ class MainWindow : public Gtk::Window {
     Gtk::HeaderBar m_HeaderBar;
     Gtk::Statusbar m_StatusBar;
     guint m_StatusContextId;
+
+    // Inline editing components
+    Gtk::Overlay m_Overlay;
+    Gtk::ScrolledWindow m_EditorScroll;
+    Gtk::TextView m_InlineEditor;
+    std::shared_ptr<Node> m_editingNode;
+    sigc::connection m_editorFocusOutConn;
+    
+    // Context Menu
+    Gtk::Menu m_NodeContextMenu;
 
     std::shared_ptr<MindMap> m_Map;
     MapArea m_Area;
@@ -87,6 +100,12 @@ private:
     void on_paste();
     void on_edit_theme();
     void on_help_guide();
+
+    // Inline editing methods
+    void start_inline_edit(std::shared_ptr<Node> node);
+    void finish_inline_edit(bool save);
+    bool on_editor_key_press(GdkEventKey* event);
+    void on_node_context_menu(GdkEventButton* event, std::shared_ptr<Node> node);
 
     // Method to check if document has been modified and prompt user to save
     bool on_delete_event(GdkEventAny* event) override;

@@ -217,6 +217,15 @@ public:
     }
 
     bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr, int width, int height) {
+        if (!map || !map->root) {
+             return true;
+        }
+
+        if (m_dimensions_dirty) {
+            drawer.preCalculateNodeDimensions(map->root, map->theme, cr);
+            m_dimensions_dirty = false;
+        }
+
         cr->save();
         cr->translate(width/2.0 + viewport.offsetX, height/2.0 + viewport.offsetY);
         cr->scale(viewport.scale, viewport.scale);
@@ -224,16 +233,6 @@ public:
         cr->set_source_rgb(1, 1, 1);
         cr->paint();
 
-        if (!map || !map->root) {
-            cr->restore();
-            return true;
-        }
-
-        if (m_dimensions_dirty) {
-            drawer.preCalculateNodeDimensions(map->root, map->theme);
-            m_dimensions_dirty = false;
-        }
-        
         // Drawing is now decoupled from heavy layout calculation.
         // Layout happens in background thread.
 

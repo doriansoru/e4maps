@@ -91,12 +91,30 @@ public:
         auto element = doc->NewElement("node");
 
         element->SetAttribute("text", text.c_str());
-        element->SetAttribute("font", fontDesc.c_str());
-        element->SetAttribute("img", imagePath.c_str());
-        element->SetAttribute("iw", imgWidth);
-        element->SetAttribute("ih", imgHeight);
+
+        // Only save font attribute if it's being overridden
+        if (overrideFont) {
+            element->SetAttribute("font", fontDesc.c_str());
+        }
+
+        // Only save image attributes if they exist
+        if (!imagePath.empty()) {
+            element->SetAttribute("img", imagePath.c_str());
+        }
+        if (imgWidth > 0) {
+            element->SetAttribute("iw", imgWidth);
+        }
+        if (imgHeight > 0) {
+            element->SetAttribute("ih", imgHeight);
+        }
+
         element->SetAttribute("ctext", connText.c_str());
-        element->SetAttribute("cimg", connImagePath.c_str());
+
+        // Only save connection image attribute if it exists
+        if (!connImagePath.empty()) {
+            element->SetAttribute("cimg", connImagePath.c_str());
+        }
+
         element->SetAttribute("r", (int)(color.r*255));
         element->SetAttribute("g", (int)(color.g*255));
         element->SetAttribute("b", (int)(color.b*255));
@@ -106,7 +124,7 @@ public:
         element->SetAttribute("x", x);
         element->SetAttribute("y", y);
         element->SetAttribute("manual", manualPosition ? 1 : 0);
-        
+
         // Save override flags
         element->SetAttribute("ovr_c", overrideColor ? 1 : 0);
         element->SetAttribute("ovr_t", overrideTextColor ? 1 : 0);
@@ -140,7 +158,7 @@ public:
         double x = element->DoubleAttribute("x", 0.0);
         double y = element->DoubleAttribute("y", 0.0);
         bool manual = element->IntAttribute("manual", 0) == 1;
-        
+
         // Load override flags with legacy compatibility
         bool ovr_c = false;
         if (element->QueryBoolAttribute("ovr_c", &ovr_c) != tinyxml2::XML_SUCCESS) {
@@ -155,12 +173,30 @@ public:
 
         bool ovr_f = false;
         if (element->QueryBoolAttribute("ovr_f", &ovr_f) != tinyxml2::XML_SUCCESS) {
+            // Legacy: If ovr_f is missing, we consider it an override ONLY if the font attribute exists.
             if (element->Attribute("font")) ovr_f = true;
         }
 
         // Create node with the extracted data
         std::string textStr = text ? text : "";
-        std::string fontStr = font ? font : "Sans Bold 14";  // Default font if not provided
+
+        // For font, set the font string appropriately
+        std::string fontStr = "Sans Bold 14";  // Default font for new nodes
+        if (ovr_f && font) {
+            // Font override is true and font exists in file - use it
+            fontStr = font;
+        } else if (!ovr_f && font) {
+            // Font exists in file but override flag is false (user explicitly unset it)
+            // Store the original font value but it won't be used due to override flag = false
+            fontStr = font;
+        } else if (!ovr_f && !font) {
+            // No font in file and no override intended - use default
+            fontStr = "Sans Bold 14";
+        } else if (ovr_f && !font) {
+            // This shouldn't happen in normal scenarios, but for safety use default
+            fontStr = "Sans Bold 14";
+        }
+
         std::string imgStr = img ? img : "";
         std::string ctextStr = ctext ? ctext : "";
         std::string cimgStr = cimg ? cimg : "";
@@ -176,7 +212,7 @@ public:
         node->x = x;
         node->y = y;
         node->manualPosition = manual;
-        
+
         node->overrideColor = ovr_c;
         node->overrideTextColor = ovr_t;
         node->overrideFont = ovr_f;

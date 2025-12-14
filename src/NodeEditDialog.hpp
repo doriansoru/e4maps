@@ -46,20 +46,30 @@ private:
     bool m_origOvrT;
     bool m_origOvrF;
 
-    Gtk::Entry m_entryText;
+    Gtk::TextView m_entryText;
+    Glib::RefPtr<Gtk::TextBuffer> m_textBuffer;
     Gtk::FontButton m_btnFont;
     Gtk::ColorButton m_btnTextColor;
     Gtk::ColorButton m_colorBtnConn;
     
     Gtk::FileChooserButton m_btnImg;
+    Gtk::Button m_btnClearImg;
     Gtk::SpinButton m_spinW;
     Gtk::SpinButton m_spinH;
 
     Gtk::Entry m_entryConnText;
     Gtk::FileChooserButton m_btnConnImg;
+    Gtk::Button m_btnClearConnImg;
     
     // Validation helper
     std::string validateImage(const std::string& path, const std::string& contextName);
+    
+    // Key press event handler for text view
+    bool on_text_key_press(GdkEventKey* event);
+    
+    // Image clearing handlers
+    void on_clear_image_clicked();
+    void on_clear_conn_image_clicked();
 };
 
 #endif // NODE_EDIT_DIALOG_HPP

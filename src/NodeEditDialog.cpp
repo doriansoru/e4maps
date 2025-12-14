@@ -32,9 +32,34 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
 
     // 1. Text
     Gtk::Label* lblText = Gtk::manage(new Gtk::Label(_("Node Text:")));
-    m_entryText.set_text(node->text);
+    
+    // Create a ScrolledWindow for the TextView
+    Gtk::ScrolledWindow* textScroll = Gtk::manage(new Gtk::ScrolledWindow());
+    textScroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    textScroll->set_min_content_height(100); // Set a minimum height for the text area
+    
+    m_entryText.set_wrap_mode(Gtk::WRAP_WORD);
+    m_entryText.set_accepts_tab(false);
+    m_textBuffer = Gtk::TextBuffer::create();
+    m_entryText.set_buffer(m_textBuffer);
+    m_textBuffer->set_text(node->text);
+    
+    // Style the text view to match the inline editor
+    auto css = Gtk::CssProvider::create();
+    try {
+        css->load_from_data("scrolledwindow { border: 1px solid #3465a4; border-radius: 4px; padding: 4px; background-color: white; } entry { border: 1px solid #3465a4; border-radius: 4px; padding: 4px; } textview { border: none; background-color: transparent; }");
+        textScroll->get_style_context()->add_provider(css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        m_entryConnText.get_style_context()->add_provider(css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        m_entryText.get_style_context()->add_provider(css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    } catch(...) {}
+    
+    textScroll->add(m_entryText);
+    
     grid->attach(*lblText, 0, 0, 1, 1); 
-    grid->attach(m_entryText, 1, 0, 1, 1);
+    grid->attach(*textScroll, 1, 0, 1, 1);
+    
+    // Connect key press event for Shift+Enter handling
+    m_entryText.signal_key_press_event().connect(sigc::mem_fun(*this, &NodeEditDialog::on_text_key_press), false);
 
     // 2. Font and Text Color
     Gtk::Label* lblFont = Gtk::manage(new Gtk::Label(_("Font:")));
@@ -76,6 +101,11 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
     m_btnImg.add_filter(filter);
     
     boxImg->pack_start(m_btnImg);
+    
+    // Add clear button for node image
+    m_btnClearImg.set_label(_("Clear"));
+    m_btnClearImg.signal_clicked().connect(sigc::mem_fun(*this, &NodeEditDialog::on_clear_image_clicked));
+    boxImg->pack_start(m_btnClearImg, Gtk::PACK_SHRINK);
 
     Gtk::Label* lblW = Gtk::manage(new Gtk::Label(_("W:"))); 
     m_spinW.set_adjustment(Gtk::Adjustment::create(node->imgWidth, 0, 2000, 10));
@@ -111,9 +141,18 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
         grid->attach(m_entryConnText, 1, 7, 1, 1);
 
         Gtk::Label* lblConnImg = Gtk::manage(new Gtk::Label(_("Branch Icon:")));
+        Gtk::Box* boxConnImg = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
         if(!node->connImagePath.empty()) m_btnConnImg.set_filename(node->connImagePath);
+        
+        boxConnImg->pack_start(m_btnConnImg);
+        
+        // Add clear button for connection image
+        m_btnClearConnImg.set_label(_("Clear"));
+        m_btnClearConnImg.signal_clicked().connect(sigc::mem_fun(*this, &NodeEditDialog::on_clear_conn_image_clicked));
+        boxConnImg->pack_start(m_btnClearConnImg, Gtk::PACK_SHRINK);
+        
         grid->attach(*lblConnImg, 0, 8, 1, 1); 
-        grid->attach(m_btnConnImg, 1, 8, 1, 1);
+        grid->attach(*boxConnImg, 1, 8, 1, 1);
     }
 
     get_content_area()->pack_start(*grid, Gtk::PACK_SHRINK);
@@ -123,7 +162,7 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
 }
 
 std::string NodeEditDialog::getNewText() const {
-    return m_entryText.get_text();
+    return m_textBuffer->get_text();
 }
 
 std::string NodeEditDialog::getNewFont() const {
@@ -205,4 +244,37 @@ std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
         m_origOvrT, true, // Text Color override
         m_origOvrF, true  // Font override
     );
+}
+
+bool NodeEditDialog::on_text_key_press(GdkEventKey* event) {
+    if (event->keyval == GDK_KEY_Return) {
+        if (event->state & GDK_SHIFT_MASK) {
+            // Shift+Enter: Insert newline (default behavior), so return false
+            return false; 
+        } else {
+            // Enter: Finish editing (save and close dialog)
+            response(Gtk::RESPONSE_OK);
+            return true;
+        }
+    }
+    if (event->keyval == GDK_KEY_Escape) {
+        response(Gtk::RESPONSE_CANCEL);
+        return true;
+    }
+    return false; // Propagate other keys
+}
+
+void NodeEditDialog::on_clear_image_clicked() {
+    // Clear the image selection
+    m_btnImg.unselect_all();
+    m_btnImg.set_filename("");
+    // Reset dimensions to auto (0)
+    m_spinW.set_value(0);
+    m_spinH.set_value(0);
+}
+
+void NodeEditDialog::on_clear_conn_image_clicked() {
+    // Clear the connection image selection
+    m_btnConnImg.unselect_all();
+    m_btnConnImg.set_filename("");
 }

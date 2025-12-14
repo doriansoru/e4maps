@@ -9,6 +9,19 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
     // Handle node selection and dragging
     auto clickedNode = drawingContext.hitTest(event->x, event->y, width, height);
 
+    // Handle Right Click (Context Menu)
+    if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
+        if (clickedNode) {
+            // Select the node user clicked on (good UX)
+            drawingContext.setSelectedNode(clickedNode);
+            queue_draw();
+            
+            // Emit signal for main window to show menu
+            signal_node_context_menu.emit(event, clickedNode);
+            return true; // Stop propagation
+        }
+    }
+
     // Check if Ctrl is pressed for panning - BUT only if not clicking on a node
     if ((event->state & GDK_CONTROL_MASK) && !clickedNode) {
         isPanning = true;
@@ -242,4 +255,29 @@ void MapArea::moveSubtree(std::shared_ptr<Node> node, double dx, double dy) {
         // Recursively move the child's subtree
         moveSubtree(child, dx, dy);
     }
+}
+
+bool MapArea::getNodeScreenRect(std::shared_ptr<Node> node, Gdk::Rectangle& rect) {
+    if (!node) return false;
+    
+    Gtk::Allocation allocation = get_allocation();
+    const int width = allocation.get_width();
+    const int height = allocation.get_height();
+    
+    const Viewport& vp = drawingContext.getViewport();
+    
+    // Calculate center of node in screen coordinates
+    double screenX = width / 2.0 + vp.offsetX + node->x * vp.scale;
+    double screenY = height / 2.0 + vp.offsetY + node->y * vp.scale;
+    
+    // Calculate dimensions in screen coordinates
+    double screenW = node->width * vp.scale;
+    double screenH = node->height * vp.scale;
+    
+    rect.set_x((int)(screenX - screenW / 2.0));
+    rect.set_y((int)(screenY - screenH / 2.0));
+    rect.set_width((int)std::ceil(screenW));
+    rect.set_height((int)std::ceil(screenH));
+    
+    return true;
 }

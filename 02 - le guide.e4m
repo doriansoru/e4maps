@@ -1,0 +1,14 @@
+<mindmap>
+    <theme name="Default">
+        <level_styles>
+            <style bg="#CCCCE5" bg_hover="#CCCCCC" border="#666699" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans Bold 18" text_color="#000000" corner_r="5" pad_h="20" pad_v="10" conn_color="#7F7F7F" conn_w="1" conn_dash="false" level="0"/>
+            <style bg="#E5E5CC" bg_hover="#CCCCCC" border="#999966" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans Bold 14" text_color="#000000" corner_r="5" pad_h="15" pad_v="7" conn_color="#7F7F7F" conn_w="1" conn_dash="false" level="1"/>
+            <style bg="#F2F2F2" bg_hover="#CCCCCC" border="#B2B2B2" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans Italic 12" text_color="#000000" corner_r="5" pad_h="10" pad_v="5" conn_color="#7F7F7F" conn_w="1" conn_dash="false" level="2"/>
+        </level_styles>
+    </theme>
+    <node text="LE GUIDE" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="33,488189697265625" y="3,245758056640625" manual="1" ovr_c="1" ovr_t="1" ovr_f="1">
+        <node text="inventario" font="Sans Bold 14" img="" iw="0" ih="0" ctext="più attinente a" cimg="" r="132" g="103" b="188" tr="0" tg="0" tb="0" x="-120,1934814453125" y="-107,17420959472656" manual="1" ovr_c="1" ovr_t="1" ovr_f="1">
+            <node text="Rappresenta l’archivio nella sua complessità, orga­nicità e oggettività" font="Sans Bold 14" img="" iw="0" ih="0" ctext="" cimg="" r="157" g="7" b="102" tr="0" tg="0" tb="0" x="99,523345947265625" y="-248,01066589355469" manual="1" ovr_c="1" ovr_t="1" ovr_f="1"/>
+        </node>
+    </node>
+</mindmap>
