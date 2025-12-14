@@ -4,6 +4,12 @@
 #include <libintl.h>
 #include <locale.h>
 #include <string>
+#include <cstdlib>
+
+#ifdef __APPLE__
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 #ifdef _WIN32
 #include <windows.h>
 #include <vector>
@@ -17,6 +23,30 @@
 // Initialize the translation system
 inline void init_translation(const std::string& domain, const std::string& directory) {
     std::string localeDir = directory;
+
+#ifdef __APPLE__
+    // On macOS, GUI apps might not inherit the shell's locale environment variables.
+    CFArrayRef languages = CFLocaleCopyPreferredLanguages();
+    if (languages) {
+        if (CFArrayGetCount(languages) > 0) {
+            CFStringRef language = (CFStringRef)CFArrayGetValueAtIndex(languages, 0);
+            char langBuf[64];
+            if (CFStringGetCString(language, langBuf, sizeof(langBuf), kCFStringEncodingUTF8)) {
+                std::string langStr(langBuf);
+                // Convert typical macOS locale (e.g., "en-US") to POSIX format (e.g., "en_US")
+                for (char &c : langStr) {
+                    if (c == '-') c = '_';
+                }
+                // Ensure UTF-8
+                if (langStr.find('.') == std::string::npos) {
+                     langStr += ".UTF-8";
+                }
+                setenv("LANG", langStr.c_str(), 1);
+            }
+        }
+        CFRelease(languages);
+    }
+#endif
     
 #ifdef _WIN32
     // On Windows, determine the locale directory relative to the executable

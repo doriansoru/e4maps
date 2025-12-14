@@ -6,6 +6,10 @@
 #include <algorithm>
 #include <cstdlib> // For std::getenv
 
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#endif
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -491,7 +495,28 @@ void MainWindow::on_help_guide() {
 
     std::string path_str;
 
-#ifdef _WIN32
+#ifdef __APPLE__
+    // On macOS, look for docs relative to the bundle structure
+    // Bundle/Contents/MacOS/e4maps_bin
+    // Bundle/Contents/Resources/share/doc/e4maps/user_guide_xx.html
+    char path[1024];
+    uint32_t size = sizeof(path);
+    if (_NSGetExecutablePath(path, &size) == 0) {
+        std::filesystem::path exePath(path);
+        // Go up from MacOS/executable to Contents/Resources/share/doc/e4maps/
+        std::filesystem::path docPath = exePath.parent_path().parent_path() / "Resources" / "share" / "doc" / "e4maps" / filename;
+        
+        if (std::filesystem::exists(docPath)) {
+             path_str = docPath.string();
+        } else {
+            // Fallback: try standard share/doc location if installed via brew or standard prefix
+             std::filesystem::path standardPath = exePath.parent_path().parent_path() / "Resources" / "share" / "doc" / "e4maps" / filename;
+             if (std::filesystem::exists(standardPath)) {
+                 path_str = standardPath.string();
+             }
+        }
+    }
+#elif defined(_WIN32)
     // On Windows, look for docs relative to the executable
     std::vector<char> path(MAX_PATH);
     if (GetModuleFileNameA(NULL, path.data(), path.size())) {

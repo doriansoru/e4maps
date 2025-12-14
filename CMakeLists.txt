@@ -104,6 +104,13 @@ target_sources(e4maps PRIVATE ${HEADER_FILES})
 
 target_link_libraries(e4maps PRIVATE ${GTKMM_LIBRARIES} ${CAIROMM_LIBRARIES} ${EXTRA_LIBS} m)
 
+if(APPLE)
+    find_library(CORE_FOUNDATION_FRAMEWORK CoreFoundation)
+    if(CORE_FOUNDATION_FRAMEWORK)
+        target_link_libraries(e4maps PRIVATE ${CORE_FOUNDATION_FRAMEWORK})
+    endif()
+endif()
+
 # i18n support
 if(GETTEXT_FOUND)
     # Define POT file and translation template
