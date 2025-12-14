@@ -8,6 +8,7 @@
 
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
+#include <sys/syslimits.h> // For PATH_MAX
 #endif
 
 #ifdef _WIN32
@@ -45,6 +46,21 @@ inline void init_translation(const std::string& domain, const std::string& direc
             }
         }
         CFRelease(languages);
+    }
+
+    // Locate the locale directory inside the application bundle
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    if (mainBundle) {
+        CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+        if (resourcesURL) {
+            char path[PATH_MAX];
+            if (CFURLGetFileSystemRepresentation(resourcesURL, true, (UInt8*)path, PATH_MAX)) {
+                std::string resourcesPath(path);
+                // The script puts translations in Resources/share/locale
+                localeDir = resourcesPath + "/share/locale";
+            }
+            CFRelease(resourcesURL);
+        }
     }
 #endif
     
