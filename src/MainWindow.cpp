@@ -36,11 +36,17 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
     m_InlineEditor.set_accepts_tab(false);
     
     // Style the editor
-    auto css = Gtk::CssProvider::create();
+    // Base style for structural properties
+    auto baseCss = Gtk::CssProvider::create();
     try {
-        css->load_from_data("textview { border: 1px solid #3465a4; border-radius: 4px; padding: 4px; } text { background-color: white; color: black; }");
-        m_InlineEditor.get_style_context()->add_provider(css, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        // Removed specific colors from base style to allow dynamic overrides
+        baseCss->load_from_data("textview { border: 1px solid #3465a4; border-radius: 4px; padding: 4px; }");
+        m_InlineEditor.get_style_context()->add_provider(baseCss, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     } catch(...) {}
+
+    // Initialize dynamic provider
+    m_dynamicCssProvider = Gtk::CssProvider::create();
+    m_InlineEditor.get_style_context()->add_provider(m_dynamicCssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 
     m_EditorScroll.add(m_InlineEditor);
     m_EditorScroll.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -106,6 +112,88 @@ void MainWindow::start_inline_edit(std::shared_ptr<Node> node) {
         m_editingNode = node;
         m_InlineEditor.get_buffer()->set_text(node->text);
         
+        // --- 1. Determine Node Style (Theme + Overrides) ---
+        int depth = 0;
+        auto p = node->parent.lock();
+        while(p) { depth++; p = p->parent.lock(); }
+        
+        NodeStyle style = m_Map->theme.getStyle(depth);
+        double scale = m_Area.getScale();
+        
+        // Resolve Colors
+        double tr = 0, tg = 0, tb = 0, ta = 1;
+        double br = 1, bg = 1, bb = 1, ba = 1;
+
+        // Text Color
+        if (node->overrideTextColor) {
+            tr = node->textColor.r; tg = node->textColor.g; tb = node->textColor.b;
+        } else {
+            auto solid = Cairo::RefPtr<Cairo::SolidPattern>::cast_dynamic(style.textColor);
+            if (solid) solid->get_rgba(tr, tg, tb, ta);
+        }
+
+        // Background Color
+        auto solidBg = Cairo::RefPtr<Cairo::SolidPattern>::cast_dynamic(style.backgroundColor);
+        if (solidBg) solidBg->get_rgba(br, bg, bb, ba);
+        
+                        // Convert to Hex
+                        std::string textHex = Utils::cairoToHex(tr, tg, tb, ta);
+                        std::string bgHex = Utils::cairoToHex(br, bg, bb, ba);        
+                // Resolve Font & Scale
+                std::string fontStr = (node->overrideFont && !node->fontDesc.empty()) 
+                                      ? node->fontDesc : (std::string)style.fontDescription.to_string();
+                
+                Pango::FontDescription pfd(fontStr);
+                // Scale the font size
+                int sizePango = pfd.get_size();
+                double sizePixels = (double)sizePango / Pango::SCALE;
+                
+                if (!pfd.get_size_is_absolute()) {
+                    // Convert points to pixels (Standard 96 DPI / 72 Points per inch = 1.3333...)
+                    sizePixels *= (96.0 / 72.0);
+                }
+                
+                sizePixels *= scale;
+                // Ensure minimum visible font size
+                if (sizePixels < 8.0) sizePixels = 8.0;
+
+                // Calculate Padding (Scaled)
+                // Default to 4px if style padding is small, but try to match
+                int pad = (int)(style.horizontalPadding * scale);
+                if (pad < 2) pad = 2;
+        
+                // --- 2. Generate CSS ---
+                std::ostringstream cssData;
+                cssData << "textview { "
+                        << "background-color: " << bgHex << "; "
+                        << "background-image: none; "
+                        << "color: " << textHex << "; "
+                        << "caret-color: " << textHex << "; "
+                        << "font-family: '" << pfd.get_family() << "'; "
+                        << "font-size: " << (int)sizePixels << "px; " 
+                        << "font-weight: " << (pfd.get_weight() >= Pango::WEIGHT_BOLD ? "bold" : "normal") << "; "
+                        << "font-style: " << (pfd.get_style() == Pango::STYLE_ITALIC ? "italic" : "normal") << "; "
+                        << "border: 1px solid alpha(" << textHex << ", 0.3); " 
+                        << "border-radius: " << (int)(style.cornerRadius * scale) << "px; " 
+                        << "padding: " << pad << "px; " 
+                        << "}"
+                        << "textview text { "
+                        << "background-color: " << bgHex << "; "
+                        << "background-image: none; "
+                        << "color: " << textHex << "; "
+                        << "}"
+                        << "selection { "
+                        << "background-color: alpha(@theme_selected_bg_color, 0.5); "
+                        << "color: @theme_selected_fg_color; "
+                        << "}";        try {
+            // Load data into the existing provider which is already attached with PRIORITY_USER
+            m_dynamicCssProvider->load_from_data(cssData.str());
+        } catch(const Gtk::CssProviderError& ex) {
+            std::cerr << "CSS Error: " << ex.what() << std::endl;
+        } catch(...) {
+            std::cerr << "Unknown CSS Error" << std::endl;
+        }
+        
         // Position the editor
         // We set margins to position the overlay widget
         m_EditorScroll.set_margin_left(rect.get_x());
@@ -142,9 +230,11 @@ void MainWindow::finish_inline_edit(bool save) {
                 m_editingNode->imgHeight, m_editingNode->imgHeight,
                 m_editingNode->connText, m_editingNode->connText,
                 m_editingNode->connImagePath, m_editingNode->connImagePath,
+                m_editingNode->connFontDesc, m_editingNode->connFontDesc,
                 m_editingNode->overrideColor, m_editingNode->overrideColor,
                 m_editingNode->overrideTextColor, m_editingNode->overrideTextColor,
-                m_editingNode->overrideFont, m_editingNode->overrideFont
+                m_editingNode->overrideFont, m_editingNode->overrideFont,
+                m_editingNode->overrideConnFont, m_editingNode->overrideConnFont
             );
             
             m_commandManager.executeCommand(std::move(cmd));

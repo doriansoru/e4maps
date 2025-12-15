@@ -60,6 +60,8 @@ public:
         drawingContext.setSelectedNodes(nodes);
         queue_draw();
     }
+    
+    double getScale() const { return drawingContext.getViewport().scale; }
 
     void invalidateLayout() {
         drawingContext.invalidateLayout();

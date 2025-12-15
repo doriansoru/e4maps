@@ -41,6 +41,7 @@ private:
     Gtk::SpinButton m_spinShadowOffY;
     Gtk::SpinButton m_spinShadowBlur;
     Gtk::FontButton m_btnFont;
+    Gtk::FontButton m_btnConnFont;
     Gtk::ColorButton m_btnTextColor;
     Gtk::SpinButton m_spinCornerRadius;
     Gtk::SpinButton m_spinPadH;

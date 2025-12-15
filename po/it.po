@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e4maps 1.0.0\n"
 "Report-Msgid-Bugs-To: doriansoru@gmail.com\n"
-"POT-Creation-Date: 2025-12-14 21:04+0100\n"
-"PO-Revision-Date: 2025-12-14 21:05+0100\n"
+"POT-Creation-Date: 2025-12-15 16:48+0100\n"
+"PO-Revision-Date: 2025-12-15 16:49+0100\n"
 "Last-Translator: Dorian Soru <doriansoru@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -27,55 +27,55 @@ msgstr "IDEA CENTRALE"
 msgid "E4maps - New Map"
 msgstr "E4maps - Nuova mappa"
 
-#: src/MainWindow.cpp:189
+#: src/MainWindow.cpp:279
 msgid "Edit Text"
 msgstr "Modifica testo"
 
-#: src/MainWindow.cpp:196
+#: src/MainWindow.cpp:286
 msgid "Properties..."
 msgstr "Proprietà..."
 
-#: src/MainWindow.cpp:206 src/MainWindow_UI.cpp:50
+#: src/MainWindow.cpp:296 src/MainWindow_UI.cpp:50
 msgid "Add Branch"
 msgstr "Aggiungi collegamento"
 
-#: src/MainWindow.cpp:212 src/MainWindow_UI.cpp:44
+#: src/MainWindow.cpp:302 src/MainWindow_UI.cpp:44
 msgid "Remove Branch"
 msgstr "Rimuovi collegamento"
 
-#: src/MainWindow.cpp:225 src/MainWindow_Actions.cpp:47
+#: src/MainWindow.cpp:315 src/MainWindow_Actions.cpp:47
 msgid "E4maps - "
 msgstr "E4maps - "
 
-#: src/MainWindow.cpp:229 src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16
+#: src/MainWindow.cpp:319 src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16
 msgid "New Map"
 msgstr "Nuova mappa"
 
-#: src/MainWindow.cpp:244
+#: src/MainWindow.cpp:334
 msgid "The document contains unsaved changes."
 msgstr "Il documento contiene modifiche non salvate."
 
-#: src/MainWindow.cpp:249
+#: src/MainWindow.cpp:339
 msgid "Do you want to save the changes?"
 msgstr "Vuoi salvare le modifiche?"
 
-#: src/MainWindow.cpp:250
+#: src/MainWindow.cpp:340
 msgid "Close without saving"
 msgstr "Chiudi senza salvare"
 
-#: src/MainWindow.cpp:251 src/MainWindow.cpp:279 src/NodeEditDialog.cpp:159
-#: src/ThemeEditor.cpp:95 src/MainWindow_Actions.cpp:92
-#: src/MainWindow_Actions.cpp:115 src/MainWindow_Actions.cpp:136
-#: src/MainWindow_Actions.cpp:243
+#: src/MainWindow.cpp:341 src/MainWindow.cpp:369 src/ThemeEditor.cpp:95
+#: src/MainWindow_Actions.cpp:92 src/MainWindow_Actions.cpp:115
+#: src/MainWindow_Actions.cpp:136 src/MainWindow_Actions.cpp:243
+#: src/NodeEditDialog.cpp:171
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/MainWindow.cpp:252 src/MainWindow.cpp:279 src/NodeEditDialog.cpp:160
-#: src/MainWindow_Actions.cpp:92
+#: src/MainWindow.cpp:342 src/MainWindow.cpp:369 src/MainWindow_Actions.cpp:92
+#: src/NodeEditDialog.cpp:172
 msgid "Save"
 msgstr "Salva"
 
-#: src/MainWindow.cpp:278 src/MainWindow_UI.cpp:28
+#: src/MainWindow.cpp:368 src/MainWindow_UI.cpp:28
 #: src/MainWindow_Actions.cpp:91
 msgid "Save Map"
 msgstr "Salva mappa"
@@ -88,35 +88,35 @@ msgstr "Aggiungi nodo"
 msgid "Remove Node"
 msgstr "Rimuovi nodo"
 
-#: src/Command.hpp:185 src/NodeEditDialog.cpp:7
+#: src/Command.hpp:195 src/NodeEditDialog.cpp:7
 msgid "Edit Node"
 msgstr "Modifica nodo"
 
-#: src/Command.hpp:254
+#: src/Command.hpp:264
 msgid "Move Node"
 msgstr "Sposta nodo"
 
-#: src/Command.hpp:285
+#: src/Command.hpp:295
 msgid "Copy Node"
 msgstr "Copia nodo"
 
-#: src/Command.hpp:332
+#: src/Command.hpp:342
 msgid "Cut Node"
 msgstr "Taglia nodo"
 
-#: src/Command.hpp:378
+#: src/Command.hpp:388
 msgid "Paste Node"
 msgstr "Incolla nodo"
 
-#: src/Command.hpp:493
+#: src/Command.hpp:503
 msgid "Copy Multiple Nodes"
 msgstr "Copia più nodi"
 
-#: src/Command.hpp:566
+#: src/Command.hpp:576
 msgid "Cut Multiple Nodes"
 msgstr "Taglia più nodi"
 
-#: src/Command.hpp:626
+#: src/Command.hpp:636
 msgid "Paste Multiple Nodes"
 msgstr "Incolla più nodi"
 
@@ -130,87 +130,17 @@ msgid ""
 "\n"
 msgstr "  FILE       Opzionale percorso di un file .e4m da aprire all'avvio.\n"
 
-#: src/MindMap.hpp:272
+#: src/MindMap.hpp:290
 msgid "Cannot open file"
 msgstr "Impossibile aprire il file"
 
-#: src/MindMap.hpp:279
+#: src/MindMap.hpp:297
 msgid "Invalid XML file"
 msgstr "File XML non valido"
 
-#: src/MindMap.hpp:297
+#: src/MindMap.hpp:315
 msgid "Unknown file format"
 msgstr "Formato di file sconosciuto"
-
-#: src/NodeEditDialog.cpp:34
-msgid "Node Text:"
-msgstr "Testo del nodo:"
-
-#: src/NodeEditDialog.cpp:65 src/ThemeEditor.cpp:176
-msgid "Font:"
-msgstr "Carattere:"
-
-#: src/NodeEditDialog.cpp:70 src/ThemeEditor.cpp:179
-msgid "Text Color:"
-msgstr "Colore del testo:"
-
-#: src/NodeEditDialog.cpp:78
-msgid "Connection Color:"
-msgstr "Colore della connessione:"
-
-#: src/NodeEditDialog.cpp:89
-msgid "Node Image:"
-msgstr "Immagine del nodo"
-
-#: src/NodeEditDialog.cpp:92
-msgid "Choose Image"
-msgstr "Seleziona immagine"
-
-#: src/NodeEditDialog.cpp:97
-msgid "Images"
-msgstr "Immagini"
-
-#: src/NodeEditDialog.cpp:106 src/NodeEditDialog.cpp:150
-msgid "Clear"
-msgstr "Rimuovi"
-
-#: src/NodeEditDialog.cpp:110
-msgid "W:"
-msgstr "L"
-
-#: src/NodeEditDialog.cpp:114
-msgid "H:"
-msgstr "A"
-
-#: src/NodeEditDialog.cpp:127
-msgid "Choose Icon"
-msgstr "Seleziona icona"
-
-#: src/NodeEditDialog.cpp:135
-msgid "--- Branch Annotation ---"
-msgstr "--- Annotazione del collegamento ---"
-
-#: src/NodeEditDialog.cpp:138
-msgid "Branch Text:"
-msgstr "Testo del collegamento:"
-
-#: src/NodeEditDialog.cpp:143
-msgid "Branch Icon:"
-msgstr "Icona del collegamento:"
-
-#: src/NodeEditDialog.cpp:199
-msgid "Selected image file format is not supported. Image will not be loaded."
-msgstr ""
-"Il formato di file dell'immagine selezionata non è supportato. L'immagine "
-"non sarà caricata."
-
-#: src/NodeEditDialog.cpp:208
-msgid "Node Image"
-msgstr "Immagine del nodo"
-
-#: src/NodeEditDialog.cpp:213
-msgid "Connection Image"
-msgstr "Colore del collegamento"
 
 #: src/ThemeEditor.cpp:25
 msgid "Theme Editor"
@@ -279,9 +209,17 @@ msgstr "Testo"
 msgid "Font"
 msgstr "Carattere"
 
+#: src/ThemeEditor.cpp:176 src/NodeEditDialog.cpp:67
+msgid "Font:"
+msgstr "Carattere:"
+
 #: src/ThemeEditor.cpp:178
 msgid "Text Color"
 msgstr "Colore del testo"
+
+#: src/ThemeEditor.cpp:179 src/NodeEditDialog.cpp:72
+msgid "Text Color:"
+msgstr "Colore del testo:"
 
 #: src/ThemeEditor.cpp:184
 msgid "Layout & Shadow"
@@ -320,6 +258,14 @@ msgid "Line Width:"
 msgstr "Spessore della linea:"
 
 #: src/ThemeEditor.cpp:210
+msgid "Branch Font"
+msgstr "Font del collegamento"
+
+#: src/ThemeEditor.cpp:211 src/NodeEditDialog.cpp:159
+msgid "Branch Font:"
+msgstr "Font del collegamento:"
+
+#: src/ThemeEditor.cpp:213
 msgid "Dashed Line:"
 msgstr "Linea tratteggiata:"
 
@@ -531,6 +477,68 @@ msgstr "Nuovo"
 #: src/MainWindow_Actions.cpp:568
 msgid "Help file not found."
 msgstr "File della guida non trovato."
+
+#: src/NodeEditDialog.cpp:36
+msgid "Node Text:"
+msgstr "Testo del nodo:"
+
+#: src/NodeEditDialog.cpp:80
+msgid "Connection Color:"
+msgstr "Colore della connessione:"
+
+#: src/NodeEditDialog.cpp:91
+msgid "Node Image:"
+msgstr "Immagine del nodo"
+
+#: src/NodeEditDialog.cpp:94
+msgid "Choose Image"
+msgstr "Seleziona immagine"
+
+#: src/NodeEditDialog.cpp:99
+msgid "Images"
+msgstr "Immagini"
+
+#: src/NodeEditDialog.cpp:108 src/NodeEditDialog.cpp:152
+msgid "Clear"
+msgstr "Rimuovi"
+
+#: src/NodeEditDialog.cpp:112
+msgid "W:"
+msgstr "L"
+
+#: src/NodeEditDialog.cpp:116
+msgid "H:"
+msgstr "A"
+
+#: src/NodeEditDialog.cpp:129
+msgid "Choose Icon"
+msgstr "Seleziona icona"
+
+#: src/NodeEditDialog.cpp:137
+msgid "--- Branch Annotation ---"
+msgstr "--- Annotazione del collegamento ---"
+
+#: src/NodeEditDialog.cpp:140
+msgid "Branch Text:"
+msgstr "Testo del collegamento:"
+
+#: src/NodeEditDialog.cpp:145
+msgid "Branch Icon:"
+msgstr "Icona del collegamento:"
+
+#: src/NodeEditDialog.cpp:217
+msgid "Selected image file format is not supported. Image will not be loaded."
+msgstr ""
+"Il formato di file dell'immagine selezionata non è supportato. L'immagine "
+"non sarà caricata."
+
+#: src/NodeEditDialog.cpp:226
+msgid "Node Image"
+msgstr "Immagine del nodo"
+
+#: src/NodeEditDialog.cpp:231
+msgid "Connection Image"
+msgstr "Colore del collegamento"
 
 #~ msgid "Close"
 #~ msgstr "Chiudi"

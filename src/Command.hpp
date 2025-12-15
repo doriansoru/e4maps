@@ -104,11 +104,13 @@ private:
     int oldImgHeight, newImgHeight;
     std::string oldConnText, newConnText;
     std::string oldConnImagePath, newConnImagePath;
+    std::string oldConnFontDesc, newConnFontDesc;
     
     // Override flags
     bool oldOvrC, newOvrC;
     bool oldOvrT, newOvrT;
     bool oldOvrF, newOvrF;
+    bool oldOvrCF, newOvrCF;
     
     bool executed;
 
@@ -122,9 +124,11 @@ public:
                     int oldW, int newW, int oldH, int newH,
                     const std::string& oldConnTxt, const std::string& newConnTxt,
                     const std::string& oldConnImgPath, const std::string& newConnImgPath,
+                    const std::string& oldConnFont, const std::string& newConnFont,
                     bool oldOc, bool newOc,
                     bool oldOt, bool newOt,
-                    bool oldOf, bool newOf)
+                    bool oldOf, bool newOf,
+                    bool oldOvrCf, bool newOvrCf)
         : node(nodeToEdit), oldText(oldTxt), newText(newTxt),
           oldFontDesc(oldFont), newFontDesc(newFont),
           oldColor(oldCol), newColor(newCol),
@@ -134,9 +138,11 @@ public:
           oldImgHeight(oldH), newImgHeight(newH),
           oldConnText(oldConnTxt), newConnText(newConnTxt),
           oldConnImagePath(oldConnImgPath), newConnImagePath(newConnImgPath),
+          oldConnFontDesc(oldConnFont), newConnFontDesc(newConnFont),
           oldOvrC(oldOc), newOvrC(newOc),
           oldOvrT(oldOt), newOvrT(newOt),
           oldOvrF(oldOf), newOvrF(newOf),
+          oldOvrCF(oldOvrCf), newOvrCF(newOvrCf),
           executed(false) {}
 
     void execute() override {
@@ -151,10 +157,12 @@ public:
             node->imgHeight = newImgHeight;
             node->connText = newConnText;
             node->connImagePath = newConnImagePath;
+            node->connFontDesc = newConnFontDesc;
             
             node->overrideColor = newOvrC;
             node->overrideTextColor = newOvrT;
             node->overrideFont = newOvrF;
+            node->overrideConnFont = newOvrCF;
             
             executed = true;
         }
@@ -172,10 +180,12 @@ public:
             node->imgHeight = oldImgHeight;
             node->connText = oldConnText;
             node->connImagePath = oldConnImagePath;
+            node->connFontDesc = oldConnFontDesc;
             
             node->overrideColor = oldOvrC;
             node->overrideTextColor = oldOvrT;
             node->overrideFont = oldOvrF;
+            node->overrideConnFont = oldOvrCF;
             
             executed = false;
         }

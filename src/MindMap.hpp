@@ -36,6 +36,8 @@ public:
     
     std::string connText;
     std::string connImagePath;
+    std::string connFontDesc;
+    bool overrideConnFont = false;
 
     Color color; // Connection color (incoming branch)
     Color textColor = {0.0, 0.0, 0.0}; // Node text color
@@ -62,11 +64,11 @@ public:
         return ++_nextId;
     }
 
-    Node(const std::string& t, Color c) : text(t), color(c), id(generateId()) {
-        // Default font
-        fontDesc = "Sans Bold 14"; 
-    }
-
+        Node(const std::string& t, Color c) : text(t), color(c), id(generateId()) {
+            // Default font
+            fontDesc = "Sans Bold 14";
+            connFontDesc = "";
+        }
     void addChild(std::shared_ptr<Node> child) {
         child->parent = weak_from_this();
         children.push_back(child);
@@ -110,6 +112,11 @@ public:
 
         element->SetAttribute("ctext", connText.c_str());
 
+        // Only save connection font attribute if it's being overridden
+        if (overrideConnFont) {
+            element->SetAttribute("conn_font", connFontDesc.c_str());
+        }
+
         // Only save connection image attribute if it exists
         if (!connImagePath.empty()) {
             element->SetAttribute("cimg", connImagePath.c_str());
@@ -129,6 +136,7 @@ public:
         element->SetAttribute("ovr_c", overrideColor ? 1 : 0);
         element->SetAttribute("ovr_t", overrideTextColor ? 1 : 0);
         element->SetAttribute("ovr_f", overrideFont ? 1 : 0);
+        element->SetAttribute("ovr_cf", overrideConnFont ? 1 : 0);
 
         // Add child nodes recursively
         for(const auto& child : children) {
@@ -144,6 +152,7 @@ public:
         // Get attributes from the XML element
         const char* text = element->Attribute("text");
         const char* font = element->Attribute("font");
+        const char* conn_font = element->Attribute("conn_font");
         const char* img = element->Attribute("img");
         int iw = element->IntAttribute("iw", 0);
         int ih = element->IntAttribute("ih", 0);
@@ -177,6 +186,12 @@ public:
             if (element->Attribute("font")) ovr_f = true;
         }
 
+        bool ovr_cf = false;
+        if (element->QueryBoolAttribute("ovr_cf", &ovr_cf) != tinyxml2::XML_SUCCESS) {
+            // Legacy: If ovr_cf is missing, we consider it an override ONLY if the conn_font attribute exists.
+            if (element->Attribute("conn_font")) ovr_cf = true;
+        }
+
         // Create node with the extracted data
         std::string textStr = text ? text : "";
 
@@ -199,6 +214,7 @@ public:
 
         std::string imgStr = img ? img : "";
         std::string ctextStr = ctext ? ctext : "";
+        std::string connFontStr = conn_font ? conn_font : "";
         std::string cimgStr = cimg ? cimg : "";
 
         auto node = std::make_shared<Node>(textStr, Color{r/255.0, g/255.0, b/255.0});
@@ -209,6 +225,7 @@ public:
         node->imgHeight = ih;
         node->connText = ctextStr;
         node->connImagePath = cimgStr;
+        node->connFontDesc = connFontStr;
         node->x = x;
         node->y = y;
         node->manualPosition = manual;
@@ -216,6 +233,7 @@ public:
         node->overrideColor = ovr_c;
         node->overrideTextColor = ovr_t;
         node->overrideFont = ovr_f;
+        node->overrideConnFont = ovr_cf;
 
         // Process child elements
         for (tinyxml2::XMLElement* childElement = element->FirstChildElement("node");
@@ -325,6 +343,7 @@ inline std::shared_ptr<Node> cloneNodeTree(std::shared_ptr<Node> original) {
     copy->imgHeight = original->imgHeight;
     copy->connText = original->connText;
     copy->connImagePath = original->connImagePath;
+    copy->connFontDesc = original->connFontDesc;
     copy->x = original->x;
     copy->y = original->y;
     copy->width = original->width;
@@ -336,6 +355,7 @@ inline std::shared_ptr<Node> cloneNodeTree(std::shared_ptr<Node> original) {
     copy->overrideColor = original->overrideColor;
     copy->overrideTextColor = original->overrideTextColor;
     copy->overrideFont = original->overrideFont;
+    copy->overrideConnFont = original->overrideConnFont;
     
     for (const auto& child : original->children) {
         auto childCopy = cloneNodeTree(child);

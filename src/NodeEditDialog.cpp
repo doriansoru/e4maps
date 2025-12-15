@@ -17,9 +17,11 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
     m_origImgHeight = node->imgHeight;
     m_origConnText = node->connText;
     m_origConnImagePath = node->connImagePath;
+    m_origConnFontDesc = node->connFontDesc;
     m_origOvrC = node->overrideColor;
     m_origOvrT = node->overrideTextColor;
     m_origOvrF = node->overrideFont;
+    m_origOvrCF = node->overrideConnFont;
 
     // Setup UI
     Gtk::Grid* grid = Gtk::manage(new Gtk::Grid());
@@ -153,6 +155,16 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
         
         grid->attach(*lblConnImg, 0, 8, 1, 1); 
         grid->attach(*boxConnImg, 1, 8, 1, 1);
+
+        Gtk::Label* lblConnFont = Gtk::manage(new Gtk::Label(_("Branch Font:")));
+        if (node->overrideConnFont && !node->connFontDesc.empty()) {
+            m_btnConnFont.set_font_name(node->connFontDesc);
+        } else {
+            // Default to what MindMapDrawer uses for connection text
+            m_btnConnFont.set_font_name("Sans Italic 12"); 
+        }
+        grid->attach(*lblConnFont, 0, 9, 1, 1);
+        grid->attach(m_btnConnFont, 1, 9, 1, 1);
     }
 
     get_content_area()->pack_start(*grid, Gtk::PACK_SHRINK);
@@ -192,6 +204,12 @@ int NodeEditDialog::getNewImgHeight() const {
     return m_spinH.get_value_as_int();
 }
 
+std::string NodeEditDialog::getNewConnFont() const {
+    // Only applies to non-root nodes
+    if (m_node->isRoot()) return m_node->connFontDesc; 
+    return m_btnConnFont.get_font_name();
+}
+
 std::string NodeEditDialog::validateImage(const std::string& path, const std::string& contextName) {
     if (path.empty()) return "";
     if (!Utils::isValidImageFile(path)) {
@@ -226,6 +244,7 @@ std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
 
     std::string newConnText = getNewConnText();
     std::string newConnImagePath = getNewConnImagePath();
+    std::string newConnFont = getNewConnFont();
 
     // Create and return the edit command
     // We assume that if the user explicitly edits/saves via the dialog, 
@@ -240,9 +259,11 @@ std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
         m_origImgHeight, newImgHeight,
         m_origConnText, newConnText,
         m_origConnImagePath, newConnImagePath,
+        m_origConnFontDesc, newConnFont,
         m_origOvrC, true, // Color override
         m_origOvrT, true, // Text Color override
-        m_origOvrF, true  // Font override
+        m_origOvrF, true,  // Font override
+        m_origOvrCF, true // Conn Font override
     );
 }
 

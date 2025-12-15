@@ -207,6 +207,9 @@ Gtk::Widget* ThemeEditor::createPropertyGrid() {
     m_spinConnWidth.set_digits(1);
     addProperty(*grid, row++, _("Line Width:"), m_spinConnWidth);
     
+    m_btnConnFont.set_title(_("Branch Font")); // Set title for the font chooser dialog
+    addProperty(*grid, row++, _("Branch Font:"), m_btnConnFont);
+    
     addProperty(*grid, row++, _("Dashed Line:"), m_checkConnDash);
 
     return grid;
@@ -241,6 +244,7 @@ void ThemeEditor::loadStyleProperties(const NodeStyle& style) {
 
     m_btnConnColor.set_rgba(patternToRGBA(style.connectionColor));
     m_spinConnWidth.set_value(style.connectionWidth);
+    m_btnConnFont.set_font_name(style.connectionFontDescription.to_string());
     m_checkConnDash.set_active(style.connectionDash);
 }
 
@@ -276,6 +280,7 @@ void ThemeEditor::saveCurrentStyle() {
         style->verticalPadding = m_spinPadV.get_value();
         style->connectionColor = rgbaToPattern(m_btnConnColor.get_rgba());
         style->connectionWidth = m_spinConnWidth.get_value();
+        style->connectionFontDescription = Pango::FontDescription(m_btnConnFont.get_font_name());
         style->connectionDash = m_checkConnDash.get_active();
     }
 }

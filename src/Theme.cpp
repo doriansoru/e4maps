@@ -44,6 +44,10 @@ NodeStyle::NodeStyle()
     fontDescription.set_family("Sans");
     fontDescription.set_weight(Pango::WEIGHT_NORMAL);
     fontDescription.set_size(12 * Pango::SCALE); // 12pt
+
+    connectionFontDescription.set_family("Sans");
+    connectionFontDescription.set_style(Pango::STYLE_ITALIC);
+    connectionFontDescription.set_size(12 * Pango::SCALE); // 9pt
 }
 
 tinyxml2::XMLElement* NodeStyle::toXMLElement(tinyxml2::XMLDocument* doc, const std::string& elementName) const {
@@ -58,6 +62,7 @@ tinyxml2::XMLElement* NodeStyle::toXMLElement(tinyxml2::XMLDocument* doc, const 
     el->SetAttribute("shadow_off_y", shadowOffsetY);
     el->SetAttribute("shadow_blur", shadowBlurRadius);
     el->SetAttribute("font", fontDescription.to_string().c_str());
+    el->SetAttribute("conn_font", connectionFontDescription.to_string().c_str());
     el->SetAttribute("text_color", patternToHex(textColor).c_str());
     el->SetAttribute("corner_r", cornerRadius);
     el->SetAttribute("pad_h", horizontalPadding);
@@ -84,6 +89,7 @@ NodeStyle NodeStyle::fromXMLElement(tinyxml2::XMLElement* element) {
     if (element->Attribute("shadow_blur")) style.shadowBlurRadius = element->DoubleAttribute("shadow_blur");
     
     if (element->Attribute("font")) style.fontDescription = Pango::FontDescription(element->Attribute("font"));
+    if (element->Attribute("conn_font")) style.connectionFontDescription = Pango::FontDescription(element->Attribute("conn_font"));
     if (element->Attribute("text_color")) style.textColor = hexToPattern(element->Attribute("text_color"));
     
     if (element->Attribute("corner_r")) style.cornerRadius = element->DoubleAttribute("corner_r");

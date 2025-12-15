@@ -29,6 +29,7 @@ struct NodeStyle {
 
     // Text properties
     Pango::FontDescription fontDescription;
+    Pango::FontDescription connectionFontDescription;
     Cairo::RefPtr<Cairo::Pattern> textColor;
 
     // Node shape and padding

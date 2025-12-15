@@ -39,6 +39,7 @@ class MainWindow : public Gtk::Window {
     Gtk::TextView m_InlineEditor;
     std::shared_ptr<Node> m_editingNode;
     sigc::connection m_editorFocusOutConn;
+    Glib::RefPtr<Gtk::CssProvider> m_dynamicCssProvider;
     
     // Context Menu
     Gtk::Menu m_NodeContextMenu;

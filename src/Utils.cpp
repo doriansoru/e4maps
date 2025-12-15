@@ -63,14 +63,10 @@ namespace Utils {
             std::string command = "open \"" + url + "\"";
             system(command.c_str());
         #else
-            // Linux and other Unix-like systems - try modern GTK first, fallback to xdg-open
-            try {
-                Gtk::show_uri_on_window(parent, url, GDK_CURRENT_TIME);
-            } catch (...) {
-                // Fallback to xdg-open if GTK method fails
-                std::string command = "xdg-open \"" + url + "\"";
-                system(command.c_str());
-            }
+            // Linux and other Unix-like systems
+            // Fallback to xdg-open since Gtk::show_uri causes build issues on some systems
+            std::string command = "xdg-open \"" + url + "\"";
+            system(command.c_str());
         #endif
     }
 }

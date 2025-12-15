@@ -306,10 +306,16 @@ public:
                 }
                 
                 if (!child->connText.empty()) {
+                    Pango::FontDescription conn_font;
+                    if (child->overrideConnFont && !child->connFontDesc.empty()) {
+                        conn_font = Pango::FontDescription(child->connFontDesc);
+                    } else {
+                        conn_font = style.connectionFontDescription;
+                    }
+
                     auto layout = Pango::Layout::create(cr);
                     layout->set_text(child->connText);
-                    Pango::FontDescription font("Sans Italic 9");
-                    layout->set_font_description(font);
+                    layout->set_font_description(conn_font);
                     layout->get_pixel_size(tw, th);
                     totalContentWidth += tw; 
                 }
@@ -327,6 +333,12 @@ public:
                 }
 
                 if (!child->connText.empty()) {
+                    Pango::FontDescription conn_font;
+                    if (child->overrideConnFont && !child->connFontDesc.empty()) {
+                        conn_font = Pango::FontDescription(child->connFontDesc);
+                    } else {
+                        conn_font = style.connectionFontDescription;
+                    }
                     // Small background for readability
                     cr->set_source_rgba(1, 1, 1, 0.8);
                     rounded_rectangle(cr, currentX - 2, -th - padding - 2, tw + 4, th + 4, 3.0);
@@ -335,8 +347,7 @@ public:
                     cr->set_source_rgb(0.3, 0.3, 0.3);
                     auto layout = Pango::Layout::create(cr);
                     layout->set_text(child->connText);
-                    Pango::FontDescription font("Sans Italic 9");
-                    layout->set_font_description(font);
+                    layout->set_font_description(conn_font);
                     cr->move_to(currentX, -th - padding); 
                     layout->show_in_cairo_context(cr);
                 }

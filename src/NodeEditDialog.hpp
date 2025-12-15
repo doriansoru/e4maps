@@ -25,6 +25,7 @@ public:
 
     int getNewImgWidth() const;
     int getNewImgHeight() const;
+    std::string getNewConnFont() const;
 
     // Factory method to create an EditNodeCommand from the dialog state
     std::unique_ptr<EditNodeCommand> createEditCommand();
@@ -42,9 +43,11 @@ private:
     int m_origImgHeight;
     std::string m_origConnText;
     std::string m_origConnImagePath;
+    std::string m_origConnFontDesc;
     bool m_origOvrC;
     bool m_origOvrT;
     bool m_origOvrF;
+    bool m_origOvrCF;
 
     Gtk::TextView m_entryText;
     Glib::RefPtr<Gtk::TextBuffer> m_textBuffer;
@@ -60,6 +63,7 @@ private:
     Gtk::Entry m_entryConnText;
     Gtk::FileChooserButton m_btnConnImg;
     Gtk::Button m_btnClearConnImg;
+    Gtk::FontButton m_btnConnFont;
     
     // Validation helper
     std::string validateImage(const std::string& path, const std::string& contextName);
