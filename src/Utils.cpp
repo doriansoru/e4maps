@@ -3,6 +3,11 @@
 #include <string>
 #include <gtkmm.h> // Required for Gtk::show_uri_on_window
 
+#ifdef _WIN32
+#include <windows.h>
+#include <shellapi.h> // For ShellExecute
+#endif
+
 namespace Utils {
     bool isValidImageFile(const std::string& path) {
         if (path.empty()) return false;
@@ -50,6 +55,22 @@ namespace Utils {
     }
 
     void openInBrowser(Gtk::Window& parent, const std::string& url) {
-        parent.show_uri(url, GDK_CURRENT_TIME);
+        #ifdef _WIN32
+            // Windows-specific implementation
+            ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+        #elif __APPLE__
+            // macOS implementation
+            std::string command = "open \"" + url + "\"";
+            system(command.c_str());
+        #else
+            // Linux and other Unix-like systems - try modern GTK first, fallback to xdg-open
+            try {
+                Gtk::show_uri_on_window(parent, url, GDK_CURRENT_TIME);
+            } catch (...) {
+                // Fallback to xdg-open if GTK method fails
+                std::string command = "xdg-open \"" + url + "\"";
+                system(command.c_str());
+            }
+        #endif
     }
 }

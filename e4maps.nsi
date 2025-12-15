@@ -18,11 +18,6 @@ InstallDirRegKey HKCU "Software\e4maps" ""
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_UNPAGE_FINISH
 
-; Show completion message after installation
-Function .onInstSuccess
-  MessageBox MB_OK|MB_ICONINFORMATION "Installation completed successfully!$\\n\\nYou can now launch e4maps from the Start Menu or Desktop (if selected)."
-FunctionEnd
-
 ; Language
 !insertmacro MUI_LANGUAGE "English"
 
