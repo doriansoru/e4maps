@@ -2,23 +2,12 @@
 #define MAPAREA_HPP
 
 #include <gtkmm.h>
-#include <gdkmm/pixbuf.h>
-#include <gdkmm/general.h>
-#include <gdk/gdkkeysyms.h> // Per i tasti
-#include <pangomm.h>
-#include <filesystem>
-#include <fstream>
-#include <deque>
-#include <stack>
-#include "MindMap.hpp"
-#include "Exporter.hpp"
-#include "MindMapDrawer.hpp"  // Include for ImageCache
-#include "DrawingContext.hpp"  // Include for DrawingContext and Viewport
-#include "Command.hpp"  // Include for command pattern
-#include "Translation.hpp"
-#include "Utils.hpp"  // Include for utility functions
-#include "ConfigManager.hpp"  // Include for configuration management
-#include "LayoutAlgorithm.hpp"  // Include for improved layout algorithms
+#include <memory>
+#include "DrawingContext.hpp"
+
+// Forward declarations
+class MindMap;
+class Node;
 
 class MapArea : public Gtk::DrawingArea {
     DrawingContext drawingContext;
@@ -37,36 +26,20 @@ public:
     sigc::signal<void, GdkEventButton*, std::shared_ptr<Node>> signal_node_context_menu;
     sigc::signal<void> signal_map_modified;
 
-    MapArea(std::shared_ptr<MindMap> m) : drawingContext(m) {
-        add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK |
-                   Gdk::POINTER_MOTION_MASK | Gdk::SCROLL_MASK);
-        drawingContext.setRedrawCallback([this](){ this->queue_draw(); });
-    }
+    explicit MapArea(std::shared_ptr<MindMap> m);
+    ~MapArea() override = default;
 
     std::shared_ptr<Node> getSelectedNode() const { return drawingContext.getSelectedNode(); }
 
     const std::vector<std::shared_ptr<Node>>& getSelectedNodes() const { return drawingContext.getSelectedNodes(); }
 
-    void setMap(std::shared_ptr<MindMap> m) {
-        drawingContext.setMap(m);
-        ImageCache::getInstance().clear();
-        // Center the view to show all content
-        Gtk::Allocation allocation = get_allocation();
-        drawingContext.centerView(allocation.get_width(), allocation.get_height());
-        queue_draw();
-    }
+    void setMap(std::shared_ptr<MindMap> m);
 
-    void setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes) {
-        drawingContext.setSelectedNodes(nodes);
-        queue_draw();
-    }
+    void setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes);
     
     double getScale() const { return drawingContext.getViewport().scale; }
 
-    void invalidateLayout() {
-        drawingContext.invalidateLayout();
-        queue_draw();
-    }
+    void invalidateLayout();
 
     void zoomIn();
     void zoomOut();
@@ -75,12 +48,22 @@ public:
     bool getNodeScreenRect(std::shared_ptr<Node> node, Gdk::Rectangle& rect);
 
 protected:
+    // Helper to zoom at a specific screen point
+    void zoomAtPoint(double factor, double screenX, double screenY);
+
     bool on_button_press_event(GdkEventButton* event) override;
     bool on_button_release_event(GdkEventButton* event) override;
     bool on_motion_notify_event(GdkEventMotion* event) override;
     bool on_scroll_event(GdkEventScroll* event) override;
     bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
     bool on_configure_event(GdkEventConfigure* event) override;
+
+private:
+    // Event handling helpers
+    bool handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> clickedNode);
+    bool handlePanningStart(GdkEventButton* event);
+    bool handlePanningMove(GdkEventMotion* event);
+    bool handleNodeDragMove(GdkEventMotion* event);
 
     // Helper method to move an entire subtree by an offset
     void moveSubtree(std::shared_ptr<Node> node, double dx, double dy);

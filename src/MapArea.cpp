@@ -1,5 +1,30 @@
 #include "MapArea.hpp"
 #include "Constants.hpp"
+#include "MindMap.hpp"
+#include "MindMapDrawer.hpp"
+#include <gdk/gdkkeysyms.h>
+#include <cmath>
+#include <algorithm>
+
+MapArea::MapArea(std::shared_ptr<MindMap> m) : drawingContext(m) {
+    add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK |
+               Gdk::POINTER_MOTION_MASK | Gdk::SCROLL_MASK);
+    drawingContext.setRedrawCallback([this](){ this->queue_draw(); });
+}
+
+void MapArea::setMap(std::shared_ptr<MindMap> m) {
+    drawingContext.setMap(m);
+    ImageCache::getInstance().clear();
+    // Center the view to show all content
+    Gtk::Allocation allocation = get_allocation();
+    drawingContext.centerView(allocation.get_width(), allocation.get_height());
+    queue_draw();
+}
+
+void MapArea::setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes) {
+    drawingContext.setSelectedNodes(nodes);
+    queue_draw();
+}
 
 bool MapArea::on_button_press_event(GdkEventButton* event) {
     Gtk::Allocation allocation = get_allocation();
@@ -24,64 +49,18 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
 
     // Check if Ctrl is pressed for panning - BUT only if not clicking on a node
     if ((event->state & GDK_CONTROL_MASK) && !clickedNode) {
-        isPanning = true;
-        panStartOffsetX = drawingContext.getViewport().offsetX;
-        panStartOffsetY = drawingContext.getViewport().offsetY;
-        dragStartX = event->x;
-        dragStartY = event->y;
-        return true;
+        return handlePanningStart(event);
     }
+    
     if (event->type == GDK_2BUTTON_PRESS && clickedNode) {
         drawingContext.setSelectedNode(clickedNode);
         signal_edit_node.emit(clickedNode);
         queue_draw();
         return true;
     }
+    
     if (clickedNode) {
-        // Check if Ctrl is pressed to toggle selection
-        bool isCtrlPressed = (event->state & GDK_CONTROL_MASK) != 0;
-
-        if (isCtrlPressed) {
-            // Toggle the clicked node in the selection
-            bool wasSelected = drawingContext.isNodeSelected(clickedNode);
-
-            if (wasSelected) {
-                drawingContext.removeNodeFromSelection(clickedNode);
-            } else {
-                drawingContext.addNodeToSelection(clickedNode);
-            }
-
-            // We're not dragging in this case, just selecting/deselecting
-            isDragging = false;
-        } else {
-            // Regular click - if the clicked node is already selected AND there are multiple selections,
-            // drag all selected nodes; otherwise, select only this node
-            bool isAlreadySelected = drawingContext.isNodeSelected(clickedNode);
-            bool hasMultipleSelection = drawingContext.getSelectedNodesCount() > 1;
-
-            if (isAlreadySelected && hasMultipleSelection) {
-                // The clicked node is part of a multi-selection, drag all selected nodes
-                isDragging = true;
-                isFirstDragMotion = true;  // Reset for this drag operation
-                dragStartX = event->x;
-                dragStartY = event->y;
-                // Store original position of the clicked node to calculate movement
-                auto [worldX, worldY] = drawingContext.screenToWorld(event->x, event->y, width, height);
-                nodeStartX = clickedNode->x;
-                nodeStartY = clickedNode->y;
-            } else {
-                // Select only this node and drag it
-                drawingContext.setSelectedNode(clickedNode);
-                isDragging = true;
-                isFirstDragMotion = true;  // Reset for this drag operation
-                dragStartX = event->x;
-                dragStartY = event->y;
-                // Store original node position in world coordinates
-                auto [worldX, worldY] = drawingContext.screenToWorld(event->x, event->y, width, height);
-                nodeStartX = clickedNode->x;
-                nodeStartY = clickedNode->y;
-            }
-        }
+        return handleNodeSelection(event, clickedNode);
     } else {
         // Clicked on empty space - clear selection
         bool isCtrlPressed = (event->state & GDK_CONTROL_MASK) != 0;
@@ -94,6 +73,67 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
     return true;
 }
 
+bool MapArea::handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> clickedNode) {
+    if (!clickedNode) return false;
+
+    Gtk::Allocation allocation = get_allocation();
+    const int width = allocation.get_width();
+    const int height = allocation.get_height();
+
+    // Check if Ctrl is pressed to toggle selection
+    bool isCtrlPressed = (event->state & GDK_CONTROL_MASK) != 0;
+
+    if (isCtrlPressed) {
+        // Toggle the clicked node in the selection
+        bool wasSelected = drawingContext.isNodeSelected(clickedNode);
+
+        if (wasSelected) {
+            drawingContext.removeNodeFromSelection(clickedNode);
+        } else {
+            drawingContext.addNodeToSelection(clickedNode);
+        }
+
+        // We're not dragging in this case, just selecting/deselecting
+        isDragging = false;
+    } else {
+        // Regular click - if the clicked node is already selected AND there are multiple selections,
+        // drag all selected nodes; otherwise, select only this node
+        bool isAlreadySelected = drawingContext.isNodeSelected(clickedNode);
+        bool hasMultipleSelection = drawingContext.getSelectedNodesCount() > 1;
+
+        if (isAlreadySelected && hasMultipleSelection) {
+            // The clicked node is part of a multi-selection, drag all selected nodes
+            isDragging = true;
+            isFirstDragMotion = true;  // Reset for this drag operation
+            dragStartX = event->x;
+            dragStartY = event->y;
+            // Store original position of the clicked node to calculate movement
+            nodeStartX = clickedNode->x;
+            nodeStartY = clickedNode->y;
+        } else {
+            // Select only this node and drag it
+            drawingContext.setSelectedNode(clickedNode);
+            isDragging = true;
+            isFirstDragMotion = true;  // Reset for this drag operation
+            dragStartX = event->x;
+            dragStartY = event->y;
+            // Store original node position in world coordinates
+            nodeStartX = clickedNode->x;
+            nodeStartY = clickedNode->y;
+        }
+    }
+    return true;
+}
+
+bool MapArea::handlePanningStart(GdkEventButton* event) {
+    isPanning = true;
+    panStartOffsetX = drawingContext.getViewport().offsetX;
+    panStartOffsetY = drawingContext.getViewport().offsetY;
+    dragStartX = event->x;
+    dragStartY = event->y;
+    return true;
+}
+
 bool MapArea::on_button_release_event(GdkEventButton* event) {
     isDragging = false;
     isPanning = false;
@@ -103,105 +143,83 @@ bool MapArea::on_button_release_event(GdkEventButton* event) {
 
 bool MapArea::on_motion_notify_event(GdkEventMotion* event) {
     if (isPanning) {
-        // Panning: update viewport offset
-        double dx = event->x - dragStartX;
-        double dy = event->y - dragStartY;
-        Viewport vp = drawingContext.getViewport();
-        vp.offsetX = panStartOffsetX + dx;
-        vp.offsetY = panStartOffsetY + dy;
-        drawingContext.setViewport(vp);
-        queue_draw();
-        return true;
+        return handlePanningMove(event);
     } else if (isDragging) {
-        // Check which dragging mode we're in: single node or multiple nodes
-        auto selectedNodes = drawingContext.getSelectedNodes();
-        if (!selectedNodes.empty()) {
-            // Dragging nodes: update position incrementally
-            Gtk::Allocation allocation = get_allocation();
-            const int width = allocation.get_width();
-            const int height = allocation.get_height();
-
-            auto [worldCurrentX, worldCurrentY] = drawingContext.screenToWorld(event->x, event->y, width, height);
-
-            // Calculate incremental offset from previous position
-            double deltaX, deltaY;
-            if (isFirstDragMotion) {
-                // On first motion event, use absolute position to avoid jumps
-                // Calculate how much the mouse has moved from the start position
-                auto [worldStartX, worldStartY] = drawingContext.screenToWorld(dragStartX, dragStartY, width, height);
-                deltaX = worldCurrentX - worldStartX;
-                deltaY = worldCurrentY - worldStartY;
-
-                // Set the reference points for incremental movement
-                prevMouseWorldX = worldCurrentX;
-                prevMouseWorldY = worldCurrentY;
-                isFirstDragMotion = false;
-            } else {
-                // Calculate incremental movement since last event
-                deltaX = worldCurrentX - prevMouseWorldX;
-                deltaY = worldCurrentY - prevMouseWorldY;
-
-                // Update the reference points for next iteration
-                prevMouseWorldX = worldCurrentX;
-                prevMouseWorldY = worldCurrentY;
-            }
-
-            // Move all selected nodes by the same delta
-            for (auto& node : selectedNodes) {
-                if (node) {
-                    // Apply the incremental offset to the current node position
-                    node->x += deltaX;
-                    node->y += deltaY;
-                    node->manualPosition = true;
-
-                    // Move the entire subtree by the same incremental offset
-                    moveSubtree(node, deltaX, deltaY);
-                }
-            }
-
-            queue_draw();
-            // Signal that the map has been modified
-            signal_map_modified.emit();
-            return true;
-        }
+        return handleNodeDragMove(event);
     }
     return false;
+}
+
+bool MapArea::handlePanningMove(GdkEventMotion* event) {
+    double dx = event->x - dragStartX;
+    double dy = event->y - dragStartY;
+    Viewport vp = drawingContext.getViewport();
+    vp.offsetX = panStartOffsetX + dx;
+    vp.offsetY = panStartOffsetY + dy;
+    drawingContext.setViewport(vp);
+    queue_draw();
+    return true;
+}
+
+bool MapArea::handleNodeDragMove(GdkEventMotion* event) {
+    // Check which dragging mode we're in: single node or multiple nodes
+    auto selectedNodes = drawingContext.getSelectedNodes();
+    if (selectedNodes.empty()) return false;
+
+    // Dragging nodes: update position incrementally
+    Gtk::Allocation allocation = get_allocation();
+    const int width = allocation.get_width();
+    const int height = allocation.get_height();
+
+    auto [worldCurrentX, worldCurrentY] = drawingContext.screenToWorld(event->x, event->y, width, height);
+
+    // Calculate incremental offset from previous position
+    double deltaX, deltaY;
+    if (isFirstDragMotion) {
+        // On first motion event, use absolute position to avoid jumps
+        // Calculate how much the mouse has moved from the start position
+        auto [worldStartX, worldStartY] = drawingContext.screenToWorld(dragStartX, dragStartY, width, height);
+        deltaX = worldCurrentX - worldStartX;
+        deltaY = worldCurrentY - worldStartY;
+
+        // Set the reference points for incremental movement
+        prevMouseWorldX = worldCurrentX;
+        prevMouseWorldY = worldCurrentY;
+        isFirstDragMotion = false;
+    } else {
+        // Calculate incremental movement since last event
+        deltaX = worldCurrentX - prevMouseWorldX;
+        deltaY = worldCurrentY - prevMouseWorldY;
+
+        // Update the reference points for next iteration
+        prevMouseWorldX = worldCurrentX;
+        prevMouseWorldY = worldCurrentY;
+    }
+
+    // Move all selected nodes by the same delta
+    for (auto& node : selectedNodes) {
+        if (node) {
+            // Apply the incremental offset to the current node position
+            node->x += deltaX;
+            node->y += deltaY;
+            node->manualPosition = true;
+
+            // Move the entire subtree by the same incremental offset
+            moveSubtree(node, deltaX, deltaY);
+        }
+    }
+
+    queue_draw();
+    // Signal that the map has been modified
+    signal_map_modified.emit();
+    return true;
 }
 
 bool MapArea::on_scroll_event(GdkEventScroll* event) {
     // Handle zoom with scroll wheel (reduce zoom factor to make it much less aggressive)
     double zoomFactor = (event->direction == GDK_SCROLL_UP) ? 1.05 : 1.0/1.05;
-
-    Viewport vp = drawingContext.getViewport();
-
-    // Calculate the zoom factor based on scroll direction
-    double newScale = vp.scale * zoomFactor;
-    // Limit zoom to reasonable levels
-    newScale = std::max(E4Maps::MIN_ZOOM, std::min(E4Maps::MAX_ZOOM, newScale));
-
-    // Calculate mouse position relative to center of the view
-    Gtk::Allocation allocation = get_allocation();
-    const int width = allocation.get_width();
-    const int height = allocation.get_height();
-
-    // Calculate the world coordinates of the point currently under the mouse cursor
-    // In the current coordinate system:
-    // ScreenX = width/2 + vp.offsetX + worldX * vp.scale
-    // So: worldX = (ScreenX - width/2 - vp.offsetX) / vp.scale
-    double worldMouseX = (event->x - width/2.0 - vp.offsetX) / vp.scale;
-    double worldMouseY = (event->y - height/2.0 - vp.offsetY) / vp.scale;
-
-    // Update the scale
-    vp.scale = newScale;
-
-    // Adjust offsets to keep the same world point under the mouse cursor
-    // ScreenX = width/2 + newOffsetX + worldX * newScale
-    // So: newOffsetX = ScreenX - width/2 - worldX * newScale
-    vp.offsetX = event->x - width/2.0 - worldMouseX * vp.scale;
-    vp.offsetY = event->y - height/2.0 - worldMouseY * vp.scale;
-
-    drawingContext.setViewport(vp);
-    queue_draw();
+    
+    zoomAtPoint(zoomFactor, event->x, event->y);
     return true;
 }
 
@@ -219,20 +237,44 @@ bool MapArea::on_configure_event(GdkEventConfigure* event) {
     return Gtk::DrawingArea::on_configure_event(event);
 }
 
-void MapArea::zoomIn() {
+void MapArea::zoomAtPoint(double factor, double screenX, double screenY) {
     Viewport vp = drawingContext.getViewport();
-    vp.scale *= E4Maps::ZOOM_FACTOR_IN;  // Reduced from 1.2 to make zoom less aggressive
-    vp.scale = std::min(E4Maps::MAX_ZOOM, vp.scale);  // Limit maximum zoom
+    
+    // Calculate new scale
+    double newScale = vp.scale * factor;
+    // Limit zoom to reasonable levels
+    newScale = std::max(E4Maps::MIN_ZOOM, std::min(E4Maps::MAX_ZOOM, newScale));
+    
+    // If scale didn't change (hit limits), do nothing
+    if (newScale == vp.scale) return;
+
+    Gtk::Allocation allocation = get_allocation();
+    const int width = allocation.get_width();
+    const int height = allocation.get_height();
+
+    // Calculate world coordinates of the point under mouse/center
+    double worldX = (screenX - width/2.0 - vp.offsetX) / vp.scale;
+    double worldY = (screenY - height/2.0 - vp.offsetY) / vp.scale;
+
+    // Update scale
+    vp.scale = newScale;
+
+    // Adjust offsets to keep the same world point under the screen point
+    vp.offsetX = screenX - width/2.0 - worldX * vp.scale;
+    vp.offsetY = screenY - height/2.0 - worldY * vp.scale;
+
     drawingContext.setViewport(vp);
     queue_draw();
 }
 
+void MapArea::zoomIn() {
+    Gtk::Allocation allocation = get_allocation();
+    zoomAtPoint(E4Maps::ZOOM_FACTOR_IN, allocation.get_width() / 2.0, allocation.get_height() / 2.0);
+}
+
 void MapArea::zoomOut() {
-    Viewport vp = drawingContext.getViewport();
-    vp.scale *= E4Maps::ZOOM_FACTOR_OUT;  // Reduced from 1.0/1.2 to make zoom less aggressive
-    vp.scale = std::max(E4Maps::MIN_ZOOM, vp.scale);  // Limit minimum zoom
-    drawingContext.setViewport(vp);
-    queue_draw();
+    Gtk::Allocation allocation = get_allocation();
+    zoomAtPoint(E4Maps::ZOOM_FACTOR_OUT, allocation.get_width() / 2.0, allocation.get_height() / 2.0);
 }
 
 void MapArea::resetView() {
@@ -280,4 +322,9 @@ bool MapArea::getNodeScreenRect(std::shared_ptr<Node> node, Gdk::Rectangle& rect
     rect.set_height((int)std::ceil(screenH));
     
     return true;
+}
+
+void MapArea::invalidateLayout() {
+    drawingContext.invalidateLayout();
+    queue_draw();
 }

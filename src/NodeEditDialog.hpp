@@ -74,6 +74,12 @@ private:
     // Image clearing handlers
     void on_clear_image_clicked();
     void on_clear_conn_image_clicked();
+
+    // Change tracking
+    bool m_fontChanged;
+    bool m_textColorChanged;
+    bool m_connColorChanged;
+    bool m_connFontChanged;
 };
 
 #endif // NODE_EDIT_DIALOG_HPP

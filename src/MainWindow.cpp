@@ -31,6 +31,19 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
     // Setup Overlay for inline editing
     m_Overlay.add(m_Area);
     
+    setupInlineEditor();
+    
+    m_Overlay.add_overlay(m_EditorScroll);
+    m_VBox.pack_start(m_Overlay);
+
+    m_VBox.pack_start(m_StatusBar, Gtk::PACK_SHRINK);  // Add status bar at the bottom
+
+    setModified(false);  // Initialize as not modified
+    show_all();
+    m_EditorScroll.hide(); // Ensure hidden after show_all
+}
+
+void MainWindow::setupInlineEditor() {
     // Setup Inline Editor
     m_InlineEditor.set_wrap_mode(Gtk::WRAP_WORD);
     m_InlineEditor.set_accepts_tab(false);
@@ -53,11 +66,6 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
     m_EditorScroll.set_halign(Gtk::ALIGN_START);
     m_EditorScroll.set_valign(Gtk::ALIGN_START);
     m_EditorScroll.hide(); // Hidden by default
-    
-    m_Overlay.add_overlay(m_EditorScroll);
-    m_VBox.pack_start(m_Overlay);
-
-    m_VBox.pack_start(m_StatusBar, Gtk::PACK_SHRINK);  // Add status bar at the bottom
 
     // Connect Editor Signals
     m_InlineEditor.signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_editor_key_press), false);
@@ -68,10 +76,6 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
         }
         return false;
     });
-
-    setModified(false);  // Initialize as not modified
-    show_all();
-    m_EditorScroll.hide(); // Ensure hidden after show_all
 }
 
 // Method to check if document has been modified and prompt user to save
@@ -104,6 +108,87 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
     return Gtk::Window::on_key_press_event(event);
 }
 
+std::string MainWindow::generateCssForNode(std::shared_ptr<Node> node, double scale) {
+    if (!node) return "";
+    
+    // Determine Node Style (Theme + Overrides)
+    int depth = 0;
+    auto p = node->parent.lock();
+    while(p) { depth++; p = p->parent.lock(); }
+    
+    NodeStyle style = m_Map->theme.getStyle(depth);
+    
+    // Resolve Colors
+    double tr = 0, tg = 0, tb = 0, ta = 1;
+    double br = 1, bg = 1, bb = 1, ba = 1;
+
+    // Text Color
+    if (node->overrideTextColor) {
+        tr = node->textColor.r; tg = node->textColor.g; tb = node->textColor.b;
+    } else {
+        auto solid = Cairo::RefPtr<Cairo::SolidPattern>::cast_dynamic(style.textColor);
+        if (solid) solid->get_rgba(tr, tg, tb, ta);
+    }
+
+    // Background Color
+    auto solidBg = Cairo::RefPtr<Cairo::SolidPattern>::cast_dynamic(style.backgroundColor);
+    if (solidBg) solidBg->get_rgba(br, bg, bb, ba);
+    
+    // Convert to Hex
+    std::string textHex = Utils::cairoToHex(tr, tg, tb, ta);
+    std::string bgHex = Utils::cairoToHex(br, bg, bb, ba);        
+
+    // Resolve Font & Scale
+    std::string fontStr = (node->overrideFont && !node->fontDesc.empty()) 
+                          ? node->fontDesc : (std::string)style.fontDescription.to_string();
+    
+    Pango::FontDescription pfd(fontStr);
+    // Scale the font size
+    int sizePango = pfd.get_size();
+    double sizePixels = (double)sizePango / Pango::SCALE;
+    
+    if (!pfd.get_size_is_absolute()) {
+        // Convert points to pixels (Standard 96 DPI / 72 Points per inch = 1.3333...)
+        sizePixels *= (96.0 / 72.0);
+    }
+    
+    sizePixels *= scale;
+    // Ensure minimum visible font size
+    if (sizePixels < 8.0) sizePixels = 8.0;
+
+    // Calculate Padding (Scaled)
+    // Default to 4px if style padding is small, but try to match
+    int pad = (int)(style.horizontalPadding * scale);
+    if (pad < 2) pad = 2;
+
+    // --- Generate CSS ---
+    std::ostringstream cssData;
+    cssData << "textview { "
+            << "background-color: " << bgHex << "; "
+            << "background-image: none; "
+            << "color: " << textHex << "; "
+            << "caret-color: " << textHex << "; "
+            << "font-family: '" << pfd.get_family() << "'; "
+            << "font-size: " << (int)sizePixels << "px; " 
+            << "font-weight: " << (pfd.get_weight() >= Pango::WEIGHT_BOLD ? "bold" : "normal") << "; "
+            << "font-style: " << (pfd.get_style() == Pango::STYLE_ITALIC ? "italic" : "normal") << "; "
+            << "border: 1px solid alpha(" << textHex << ", 0.3); " 
+            << "border-radius: " << (int)(style.cornerRadius * scale) << "px; " 
+            << "padding: " << pad << "px; " 
+            << "}"
+            << "textview text { "
+            << "background-color: " << bgHex << "; "
+            << "background-image: none; "
+            << "color: " << textHex << "; "
+            << "}"
+            << "selection { "
+            << "background-color: alpha(@theme_selected_bg_color, 0.5); "
+            << "color: @theme_selected_fg_color; "
+            << "}";
+    
+    return cssData.str();
+}
+
 void MainWindow::start_inline_edit(std::shared_ptr<Node> node) {
     if (!node) return;
     
@@ -112,82 +197,11 @@ void MainWindow::start_inline_edit(std::shared_ptr<Node> node) {
         m_editingNode = node;
         m_InlineEditor.get_buffer()->set_text(node->text);
         
-        // --- 1. Determine Node Style (Theme + Overrides) ---
-        int depth = 0;
-        auto p = node->parent.lock();
-        while(p) { depth++; p = p->parent.lock(); }
-        
-        NodeStyle style = m_Map->theme.getStyle(depth);
-        double scale = m_Area.getScale();
-        
-        // Resolve Colors
-        double tr = 0, tg = 0, tb = 0, ta = 1;
-        double br = 1, bg = 1, bb = 1, ba = 1;
-
-        // Text Color
-        if (node->overrideTextColor) {
-            tr = node->textColor.r; tg = node->textColor.g; tb = node->textColor.b;
-        } else {
-            auto solid = Cairo::RefPtr<Cairo::SolidPattern>::cast_dynamic(style.textColor);
-            if (solid) solid->get_rgba(tr, tg, tb, ta);
-        }
-
-        // Background Color
-        auto solidBg = Cairo::RefPtr<Cairo::SolidPattern>::cast_dynamic(style.backgroundColor);
-        if (solidBg) solidBg->get_rgba(br, bg, bb, ba);
-        
-                        // Convert to Hex
-                        std::string textHex = Utils::cairoToHex(tr, tg, tb, ta);
-                        std::string bgHex = Utils::cairoToHex(br, bg, bb, ba);        
-                // Resolve Font & Scale
-                std::string fontStr = (node->overrideFont && !node->fontDesc.empty()) 
-                                      ? node->fontDesc : (std::string)style.fontDescription.to_string();
-                
-                Pango::FontDescription pfd(fontStr);
-                // Scale the font size
-                int sizePango = pfd.get_size();
-                double sizePixels = (double)sizePango / Pango::SCALE;
-                
-                if (!pfd.get_size_is_absolute()) {
-                    // Convert points to pixels (Standard 96 DPI / 72 Points per inch = 1.3333...)
-                    sizePixels *= (96.0 / 72.0);
-                }
-                
-                sizePixels *= scale;
-                // Ensure minimum visible font size
-                if (sizePixels < 8.0) sizePixels = 8.0;
-
-                // Calculate Padding (Scaled)
-                // Default to 4px if style padding is small, but try to match
-                int pad = (int)(style.horizontalPadding * scale);
-                if (pad < 2) pad = 2;
-        
-                // --- 2. Generate CSS ---
-                std::ostringstream cssData;
-                cssData << "textview { "
-                        << "background-color: " << bgHex << "; "
-                        << "background-image: none; "
-                        << "color: " << textHex << "; "
-                        << "caret-color: " << textHex << "; "
-                        << "font-family: '" << pfd.get_family() << "'; "
-                        << "font-size: " << (int)sizePixels << "px; " 
-                        << "font-weight: " << (pfd.get_weight() >= Pango::WEIGHT_BOLD ? "bold" : "normal") << "; "
-                        << "font-style: " << (pfd.get_style() == Pango::STYLE_ITALIC ? "italic" : "normal") << "; "
-                        << "border: 1px solid alpha(" << textHex << ", 0.3); " 
-                        << "border-radius: " << (int)(style.cornerRadius * scale) << "px; " 
-                        << "padding: " << pad << "px; " 
-                        << "}"
-                        << "textview text { "
-                        << "background-color: " << bgHex << "; "
-                        << "background-image: none; "
-                        << "color: " << textHex << "; "
-                        << "}"
-                        << "selection { "
-                        << "background-color: alpha(@theme_selected_bg_color, 0.5); "
-                        << "color: @theme_selected_fg_color; "
-                        << "}";        try {
+        std::string cssData = generateCssForNode(node, m_Area.getScale());
+             
+        try {
             // Load data into the existing provider which is already attached with PRIORITY_USER
-            m_dynamicCssProvider->load_from_data(cssData.str());
+            m_dynamicCssProvider->load_from_data(cssData);
         } catch(const Gtk::CssProviderError& ex) {
             std::cerr << "CSS Error: " << ex.what() << std::endl;
         } catch(...) {

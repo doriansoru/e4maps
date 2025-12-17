@@ -5,7 +5,11 @@
 
 NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
     : Gtk::Dialog(_("Edit Node"), parent, true),
-      m_node(node)
+      m_node(node),
+      m_fontChanged(false),
+      m_textColorChanged(false),
+      m_connColorChanged(false),
+      m_connFontChanged(false)
 {
     // Capture original state
     m_origText = node->text;
@@ -167,6 +171,15 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
         grid->attach(m_btnConnFont, 1, 9, 1, 1);
     }
 
+    // Connect change tracking signals
+    m_btnFont.signal_font_set().connect([this](){ m_fontChanged = true; });
+    m_btnTextColor.signal_color_set().connect([this](){ m_textColorChanged = true; });
+    
+    if (!node->isRoot()) {
+        m_colorBtnConn.signal_color_set().connect([this](){ m_connColorChanged = true; });
+        m_btnConnFont.signal_font_set().connect([this](){ m_connFontChanged = true; });
+    }
+
     get_content_area()->pack_start(*grid, Gtk::PACK_SHRINK);
     add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
     add_button(_("Save"), Gtk::RESPONSE_OK);
@@ -234,21 +247,47 @@ std::string NodeEditDialog::getNewConnImagePath() {
 std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
     // Get new values from UI
     std::string newText = getNewText();
-    std::string newFont = getNewFont();
-    Color newTxtColor = getNewTextColor();
-    Color newCol = getNewColor();
     
+    // Logic for properties with overrides:
+    // Only use the new value and set override to true if the user changed it.
+    // Otherwise, keep the original value and original override state.
+
+    std::string newFont = m_origFont;
+    bool newOvrF = m_origOvrF;
+    if (m_fontChanged) {
+        newFont = getNewFont();
+        newOvrF = true;
+    }
+
+    Color newTxtColor = m_origTextColor;
+    bool newOvrT = m_origOvrT;
+    if (m_textColorChanged) {
+        newTxtColor = getNewTextColor();
+        newOvrT = true;
+    }
+
+    Color newCol = m_origColor;
+    bool newOvrC = m_origOvrC;
+    if (m_connColorChanged && !m_node->isRoot()) {
+        newCol = getNewColor();
+        newOvrC = true;
+    }
+
+    std::string newConnFont = m_origConnFontDesc;
+    bool newOvrCF = m_origOvrCF;
+    if (m_connFontChanged && !m_node->isRoot()) {
+        newConnFont = getNewConnFont();
+        newOvrCF = true;
+    }
+
     std::string newNodeImagePath = getNewImagePath();
     int newImgWidth = getNewImgWidth();
     int newImgHeight = getNewImgHeight();
 
     std::string newConnText = getNewConnText();
     std::string newConnImagePath = getNewConnImagePath();
-    std::string newConnFont = getNewConnFont();
 
     // Create and return the edit command
-    // We assume that if the user explicitly edits/saves via the dialog, 
-    // they intend to override the theme defaults for these specific properties.
     return std::make_unique<EditNodeCommand>(
         m_node, m_origText, newText,
         m_origFont, newFont,
@@ -260,10 +299,10 @@ std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
         m_origConnText, newConnText,
         m_origConnImagePath, newConnImagePath,
         m_origConnFontDesc, newConnFont,
-        m_origOvrC, true, // Color override
-        m_origOvrT, true, // Text Color override
-        m_origOvrF, true,  // Font override
-        m_origOvrCF, true // Conn Font override
+        m_origOvrC, newOvrC,
+        m_origOvrT, newOvrT,
+        m_origOvrF, newOvrF,
+        m_origOvrCF, newOvrCF
     );
 }
 

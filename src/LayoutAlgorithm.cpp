@@ -66,7 +66,7 @@ namespace LayoutAlgorithms {
         if (!root) return;
         
         // Collect all nodes for the force-directed algorithm
-        std::vector<std::shared_ptr<LayoutNode>> layoutNodes;
+        std::vector<LayoutNode> layoutNodes;
         std::vector<std::pair<int, int>> edges; // connections between nodes
         
         // Helper function to traverse and collect nodes
@@ -74,13 +74,11 @@ namespace LayoutAlgorithms {
             [&](std::shared_ptr<Node> node, int parentId) {
                 int currentIndex = layoutNodes.size();
                 
-                auto layoutNode = std::make_shared<LayoutNode>(
+                layoutNodes.emplace_back(
                     node, 
                     node->x,  // Use existing position as initial
                     node->y
                 );
-                
-                layoutNodes.push_back(layoutNode);
                 
                 // Add edges for connections
                 for (auto& child : node->children) {
@@ -102,31 +100,29 @@ namespace LayoutAlgorithms {
         for (int iter = 0; iter < iterations; iter++) {
             // Reset forces
             for (auto& ln : layoutNodes) {
-                if (!ln->fixed) {
-                    ln->fx = 0;
-                    ln->fy = 0;
+                if (!ln.fixed) {
+                    ln.fx = 0;
+                    ln.fy = 0;
                 }
             }
 
             // Calculate repulsive forces
             for (size_t i = 0; i < layoutNodes.size(); i++) {
-                if (layoutNodes[i]->fixed) continue;
+                if (layoutNodes[i].fixed) continue;
                 
-                for (size_t j = i + 1; j < layoutNodes.size(); j++) {
-                    if (layoutNodes[j]->fixed) continue;
+                for (size_t j = 0; j < layoutNodes.size(); j++) {
+                    if (i == j) continue;
                     
-                    double dx = layoutNodes[i]->x - layoutNodes[j]->x;
-                    double dy = layoutNodes[i]->y - layoutNodes[j]->y;
+                    double dx = layoutNodes[i].x - layoutNodes[j].x;
+                    double dy = layoutNodes[i].y - layoutNodes[j].y;
                     double distance = std::sqrt(dx * dx + dy * dy) + 0.1; // Avoid division by zero
                     
                     double force = repulsion / (distance * distance);
                     double fx = force * dx / distance;
                     double fy = force * dy / distance;
                     
-                    layoutNodes[i]->fx += fx;
-                    layoutNodes[i]->fy += fy;
-                    layoutNodes[j]->fx -= fx;
-                    layoutNodes[j]->fy -= fy;
+                    layoutNodes[i].fx += fx;
+                    layoutNodes[i].fy += fy;
                 }
             }
 
@@ -135,47 +131,43 @@ namespace LayoutAlgorithms {
                 auto& ln1 = layoutNodes[edge.first];
                 auto& ln2 = layoutNodes[edge.second];
                 
-                if (ln1->fixed && ln2->fixed) continue; // If both are fixed, no spring force
+                if (ln1.fixed && ln2.fixed) continue; // If both are fixed, no spring force
                 
-                double dx = ln2->x - ln1->x;
-                double dy = ln2->y - ln1->y;
+                double dx = ln2.x - ln1.x;
+                double dy = ln2.y - ln1.y;
                 double distance = std::sqrt(dx * dx + dy * dy) + 0.1;
                 
                 double force = (distance * distance) / k; // Spring force
                 double fx = force * dx / distance;
                 double fy = force * dy / distance;
                 
-                if (!ln1->fixed) {
-                    ln1->fx += fx;
-                    ln1->fy += fy;
+                if (!ln1.fixed) {
+                    ln1.fx += fx;
+                    ln1.fy += fy;
                 }
-                if (!ln2->fixed) {
-                    ln2->fx -= fx;
-                    ln2->fy -= fy;
+                if (!ln2.fixed) {
+                    ln2.fx -= fx;
+                    ln2.fy -= fy;
                 }
             }
 
             // Update positions
             for (auto& ln : layoutNodes) {
-                if (ln->fixed) continue; // Don't move manually positioned nodes
+                if (ln.fixed) continue; // Don't move manually positioned nodes
                 
-                double displacement = std::sqrt(ln->fx * ln->fx + ln->fy * ln->fy);
+                double displacement = std::sqrt(ln.fx * ln.fx + ln.fy * ln.fy);
                 if (displacement > 0) {
                     double factor = std::min(maxDisplacement, displacement) / displacement;
-                    ln->x += ln->fx * factor;
-                    ln->y += ln->fy * factor;
+                    ln.x += ln.fx * factor;
+                    ln.y += ln.fy * factor;
                 }
-                
-                // Apply boundary constraints
-                ln->x = std::max(50.0, std::min(static_cast<double>(width - 50), ln->x));
-                ln->y = std::max(50.0, std::min(static_cast<double>(height - 50), ln->y));
             }
         }
 
         // Update original nodes with new positions
         for (size_t i = 0; i < layoutNodes.size(); i++) {
-            layoutNodes[i]->node->x = layoutNodes[i]->x;
-            layoutNodes[i]->node->y = layoutNodes[i]->y;
+            layoutNodes[i].node->x = layoutNodes[i].x;
+            layoutNodes[i].node->y = layoutNodes[i].y;
         }
     }
 

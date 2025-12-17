@@ -1,18 +1,15 @@
 #include "Utils.hpp"
 #include <stdexcept>
 #include <string>
+#include <iostream>
+#include <cstdlib> // For system()
 #include <gtkmm.h> // Required for Gtk::show_uri_on_window
-
-#ifdef _WIN32
-#include <windows.h>
-#include <shellapi.h> // For ShellExecute
-#endif
 
 namespace Utils {
     bool isValidImageFile(const std::string& path) {
         if (path.empty()) return false;
 
-        std::vector<std::string> validExtensions = {".png", ".jpg", ".jpeg", ".gif", ".bmp"};
+        static const std::vector<std::string> validExtensions = {".png", ".jpg", ".jpeg", ".gif", ".bmp"};
         std::string lowerPath = path;
         std::transform(lowerPath.begin(), lowerPath.end(), lowerPath.begin(), ::tolower);
 
@@ -54,19 +51,18 @@ namespace Utils {
         return std::string(buffer);
     }
 
-    void openInBrowser(Gtk::Window& parent, const std::string& url) {
+    void openInBrowser(Gtk::Window& /*parent*/, const std::string& url) {
+        // Fallback to system command
         #ifdef _WIN32
-            // Windows-specific implementation
-            ShellExecuteA(NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL);
+            std::string command = "start \"" + url + "\"";
         #elif __APPLE__
-            // macOS implementation
             std::string command = "open \"" + url + "\"";
-            system(command.c_str());
         #else
-            // Linux and other Unix-like systems
-            // Fallback to xdg-open since Gtk::show_uri causes build issues on some systems
             std::string command = "xdg-open \"" + url + "\"";
-            system(command.c_str());
         #endif
+        
+        if (system(command.c_str()) != 0) {
+            std::cerr << "Failed to open URL: " << url << std::endl;
+        }
     }
 }

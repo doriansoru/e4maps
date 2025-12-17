@@ -15,7 +15,6 @@
 #include <stack>
 #include "MindMap.hpp"
 #include "Exporter.hpp"
-#include "MindMapDrawer.hpp"  // Include for ImageCache
 #include "DrawingContext.hpp"  // Include for DrawingContext and Viewport
 #include "Command.hpp"  // Include for command pattern
 #include "Translation.hpp"
@@ -103,6 +102,8 @@ private:
     void on_help_guide();
 
     // Inline editing methods
+    void setupInlineEditor();
+    std::string generateCssForNode(std::shared_ptr<Node> node, double scale);
     void start_inline_edit(std::shared_ptr<Node> node);
     void finish_inline_edit(bool save);
     bool on_editor_key_press(GdkEventKey* event);

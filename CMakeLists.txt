@@ -60,6 +60,7 @@ if(WIN32)
         src/Theme.cpp
         src/ThemeEditor.cpp
         src/Utils.cpp
+        src/MindMap.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
         resources/e4maps.rc
     )
@@ -77,6 +78,7 @@ else()
         src/Theme.cpp
         src/ThemeEditor.cpp
         src/Utils.cpp
+        src/MindMap.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
     )
 endif()
