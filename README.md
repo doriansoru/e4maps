@@ -112,6 +112,19 @@ brew install cmake pkg-config gtkmm3 gettext
 ./e4maps
 ```
 
+### Running the macOS Release
+
+If you download a pre-compiled release (DMG or Zip), please note that the application is signed with an **ad-hoc signature** (no Apple Developer ID).
+
+To run it for the first time:
+
+1. Drag the app to your Applications folder (or wherever you prefer).
+2. **Right-click (or Control-click)** on the `e4maps` icon.
+3. Select **Open** from the context menu.
+4. Click **Open** in the dialog box that appears.
+
+You only need to do this once. Afterwards, you can double-click the app normally.
+
 ## Building on Windows
 
 ### Option 1: Using MSYS2 (Recommended)
