@@ -31,6 +31,7 @@ struct NodeStyle {
     Pango::FontDescription fontDescription;
     Pango::FontDescription connectionFontDescription;
     Cairo::RefPtr<Cairo::Pattern> textColor;
+    Cairo::RefPtr<Cairo::Pattern> textHoverColor;
 
     // Node shape and padding
     double cornerRadius;
@@ -41,6 +42,7 @@ struct NodeStyle {
     Cairo::RefPtr<Cairo::Pattern> connectionColor;
     double connectionWidth;
     bool connectionDash;
+    int connectionType; // 0 = arrow/freccia, 1 = branch/asse Tony Buzan
 
     NodeStyle(); // Default constructor
     

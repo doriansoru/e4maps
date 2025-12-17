@@ -14,6 +14,7 @@ class MapArea : public Gtk::DrawingArea {
 
     bool isDragging = false;
     bool isPanning = false;
+    bool isPreDragging = false;  // Flag to indicate potential dragging (for threshold detection)
     double dragStartX, dragStartY;
     double panStartOffsetX, panStartOffsetY;
     double nodeStartX, nodeStartY;

@@ -50,6 +50,9 @@ public:
 
     // Unique ID for mapping during layout
     int id;
+
+    // UI Cache (type-erased to avoid strict dependencies in Model)
+    mutable std::shared_ptr<void> _layoutCache;
     
     static int generateId();
 

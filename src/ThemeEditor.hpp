@@ -43,12 +43,14 @@ private:
     Gtk::FontButton m_btnFont;
     Gtk::FontButton m_btnConnFont;
     Gtk::ColorButton m_btnTextColor;
+    Gtk::ColorButton m_btnTextHoverColor;
     Gtk::SpinButton m_spinCornerRadius;
     Gtk::SpinButton m_spinPadH;
     Gtk::SpinButton m_spinPadV;
     Gtk::ColorButton m_btnConnColor;
     Gtk::SpinButton m_spinConnWidth;
     Gtk::CheckButton m_checkConnDash;
+    Gtk::ComboBoxText m_comboConnType;
 
     // Selection State
     int m_selectedLevel = -1;

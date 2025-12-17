@@ -107,6 +107,9 @@ namespace LayoutAlgorithms {
             }
 
             // Calculate repulsive forces
+            double cutoff = 800.0; // Performance: Ignore repulsion for distant nodes
+            double cutoffSq = cutoff * cutoff;
+
             for (size_t i = 0; i < layoutNodes.size(); i++) {
                 if (layoutNodes[i].fixed) continue;
                 
@@ -115,14 +118,19 @@ namespace LayoutAlgorithms {
                     
                     double dx = layoutNodes[i].x - layoutNodes[j].x;
                     double dy = layoutNodes[i].y - layoutNodes[j].y;
-                    double distance = std::sqrt(dx * dx + dy * dy) + 0.1; // Avoid division by zero
+                    double distSq = dx * dx + dy * dy;
                     
-                    double force = repulsion / (distance * distance);
-                    double fx = force * dx / distance;
-                    double fy = force * dy / distance;
+                    // Optimization: Skip far nodes
+                    if (distSq > cutoffSq) continue;
+
+                    double distance = std::sqrt(distSq) + 0.1; // Avoid division by zero
                     
-                    layoutNodes[i].fx += fx;
-                    layoutNodes[i].fy += fy;
+                    // force = repulsion / dist^2
+                    // fx = force * (dx / dist) = repulsion * dx / dist^3
+                    double factor = repulsion / (distance * distance * distance);
+                    
+                    layoutNodes[i].fx += factor * dx;
+                    layoutNodes[i].fy += factor * dy;
                 }
             }
 

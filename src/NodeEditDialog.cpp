@@ -77,8 +77,24 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
     Gdk::RGBA currentTextColor; 
     currentTextColor.set_rgba(node->textColor.r, node->textColor.g, node->textColor.b);
     m_btnTextColor.set_rgba(currentTextColor);
+    
+    // Checkbox for Override
+    m_checkOvrTextColor.set_label(_("Custom"));
+    m_checkOvrTextColor.set_active(m_origOvrT);
+    m_btnTextColor.set_sensitive(m_origOvrT);
+    
+    m_checkOvrTextColor.signal_toggled().connect([this]() {
+        bool active = m_checkOvrTextColor.get_active();
+        m_btnTextColor.set_sensitive(active);
+        m_textColorChanged = true; // Mark as changed so command updates logic
+    });
+
+    Gtk::Box* boxTextColor = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+    boxTextColor->pack_start(m_btnTextColor, Gtk::PACK_EXPAND_WIDGET);
+    boxTextColor->pack_start(m_checkOvrTextColor, Gtk::PACK_SHRINK);
+
     grid->attach(*lblTextColor, 0, 2, 1, 1); 
-    grid->attach(m_btnTextColor, 1, 2, 1, 1);
+    grid->attach(*boxTextColor, 1, 2, 1, 1);
 
     // 3. Connection Color (Hidden if Root)
     Gtk::Label* lblColorConn = Gtk::manage(new Gtk::Label(_("Connection Color:")));
@@ -260,11 +276,14 @@ std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
     }
 
     Color newTxtColor = m_origTextColor;
-    bool newOvrT = m_origOvrT;
-    if (m_textColorChanged) {
+    bool newOvrT = m_checkOvrTextColor.get_active();
+    
+    // Always update color if override is active, or if it was changed
+    if (newOvrT) {
         newTxtColor = getNewTextColor();
-        newOvrT = true;
-    }
+    } 
+    // If newOvrT is false, the color value effectively becomes irrelevant (theme used),
+    // but we preserve the last selected color in case they re-enable it later.
 
     Color newCol = m_origColor;
     bool newOvrC = m_origOvrC;

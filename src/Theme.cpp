@@ -31,7 +31,8 @@ NodeStyle::NodeStyle()
       horizontalPadding(10.0),
       verticalPadding(5.0),
       connectionWidth(1.0),
-      connectionDash(false)
+      connectionDash(false),
+      connectionType(1) // Default to organic curve style
 {
     // Default colors and patterns (can be overridden by theme or specific styles)
     backgroundColor = Cairo::SolidPattern::create_rgb(0.9, 0.9, 0.9); // Light gray
@@ -39,6 +40,7 @@ NodeStyle::NodeStyle()
     borderColor = Cairo::SolidPattern::create_rgb(0.2, 0.2, 0.2); // Dark gray
     shadowColor = Cairo::SolidPattern::create_rgba(0.0, 0.0, 0.0, 0.5); // Semi-transparent black
     textColor = Cairo::SolidPattern::create_rgb(0.0, 0.0, 0.0); // Black
+    textHoverColor = Cairo::SolidPattern::create_rgb(0.0, 0.0, 0.0); // Black
     connectionColor = Cairo::SolidPattern::create_rgb(0.5, 0.5, 0.5); // Gray
 
     fontDescription.set_family("Sans");
@@ -64,12 +66,14 @@ tinyxml2::XMLElement* NodeStyle::toXMLElement(tinyxml2::XMLDocument* doc, const 
     el->SetAttribute("font", fontDescription.to_string().c_str());
     el->SetAttribute("conn_font", connectionFontDescription.to_string().c_str());
     el->SetAttribute("text_color", patternToHex(textColor).c_str());
+    el->SetAttribute("text_color_hover", patternToHex(textHoverColor).c_str());
     el->SetAttribute("corner_r", cornerRadius);
     el->SetAttribute("pad_h", horizontalPadding);
     el->SetAttribute("pad_v", verticalPadding);
     el->SetAttribute("conn_color", patternToHex(connectionColor).c_str());
     el->SetAttribute("conn_w", connectionWidth);
     el->SetAttribute("conn_dash", connectionDash);
+    el->SetAttribute("conn_type", connectionType);
 
     return el;
 }
@@ -91,6 +95,7 @@ NodeStyle NodeStyle::fromXMLElement(tinyxml2::XMLElement* element) {
     if (element->Attribute("font")) style.fontDescription = Pango::FontDescription(element->Attribute("font"));
     if (element->Attribute("conn_font")) style.connectionFontDescription = Pango::FontDescription(element->Attribute("conn_font"));
     if (element->Attribute("text_color")) style.textColor = hexToPattern(element->Attribute("text_color"));
+    if (element->Attribute("text_color_hover")) style.textHoverColor = hexToPattern(element->Attribute("text_color_hover"));
     
     if (element->Attribute("corner_r")) style.cornerRadius = element->DoubleAttribute("corner_r");
     if (element->Attribute("pad_h")) style.horizontalPadding = element->DoubleAttribute("pad_h");
@@ -99,6 +104,7 @@ NodeStyle NodeStyle::fromXMLElement(tinyxml2::XMLElement* element) {
     if (element->Attribute("conn_color")) style.connectionColor = hexToPattern(element->Attribute("conn_color"));
     if (element->Attribute("conn_w")) style.connectionWidth = element->DoubleAttribute("conn_w");
     if (element->Attribute("conn_dash")) style.connectionDash = element->BoolAttribute("conn_dash");
+    if (element->Attribute("conn_type")) style.connectionType = element->IntAttribute("conn_type");
 
     return style;
 }
@@ -158,6 +164,7 @@ void Theme::initializeDefaultStyles() {
     rootStyle.fontDescription.set_size(18 * Pango::SCALE);
     rootStyle.horizontalPadding = 20.0;
     rootStyle.verticalPadding = 10.0;
+    rootStyle.connectionType = 1; // Default to organic curve style
     levelStyles[0] = rootStyle;
 
     // Level 1 (First level children)
@@ -168,6 +175,7 @@ void Theme::initializeDefaultStyles() {
     level1Style.fontDescription.set_size(14 * Pango::SCALE);
     level1Style.horizontalPadding = 15.0;
     level1Style.verticalPadding = 7.0;
+    level1Style.connectionType = 1; // Default to organic curve style
     levelStyles[1] = level1Style;
 
     // Level 2 (and deeper default)
@@ -177,6 +185,7 @@ void Theme::initializeDefaultStyles() {
     defaultLevelStyle.fontDescription.set_weight(Pango::WEIGHT_NORMAL);
     defaultLevelStyle.fontDescription.set_size(12 * Pango::SCALE);
     defaultLevelStyle.fontDescription.set_style(Pango::STYLE_ITALIC);
+    defaultLevelStyle.connectionType = 1; // Default to organic curve style
     levelStyles[2] = defaultLevelStyle;
 }
 

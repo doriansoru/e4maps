@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e4maps 1.0.0\n"
 "Report-Msgid-Bugs-To: doriansoru@gmail.com\n"
-"POT-Creation-Date: 2025-12-15 16:48+0100\n"
-"PO-Revision-Date: 2025-12-15 16:49+0100\n"
+"POT-Creation-Date: 2025-12-17 17:26+0100\n"
+"PO-Revision-Date: 2025-12-17 17:27+0100\n"
 "Last-Translator: Dorian Soru <doriansoru@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -27,55 +27,55 @@ msgstr "IDEA CENTRALE"
 msgid "E4maps - New Map"
 msgstr "E4maps - Nuova mappa"
 
-#: src/MainWindow.cpp:279
+#: src/MainWindow.cpp:293
 msgid "Edit Text"
 msgstr "Modifica testo"
 
-#: src/MainWindow.cpp:286
+#: src/MainWindow.cpp:300
 msgid "Properties..."
 msgstr "Proprietà..."
 
-#: src/MainWindow.cpp:296 src/MainWindow_UI.cpp:50
+#: src/MainWindow.cpp:310 src/MainWindow_UI.cpp:50
 msgid "Add Branch"
 msgstr "Aggiungi collegamento"
 
-#: src/MainWindow.cpp:302 src/MainWindow_UI.cpp:44
+#: src/MainWindow.cpp:316 src/MainWindow_UI.cpp:44
 msgid "Remove Branch"
 msgstr "Rimuovi collegamento"
 
-#: src/MainWindow.cpp:315 src/MainWindow_Actions.cpp:47
+#: src/MainWindow.cpp:329 src/MainWindow_Actions.cpp:47
 msgid "E4maps - "
 msgstr "E4maps - "
 
-#: src/MainWindow.cpp:319 src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16
+#: src/MainWindow.cpp:333 src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16
 msgid "New Map"
 msgstr "Nuova mappa"
 
-#: src/MainWindow.cpp:334
+#: src/MainWindow.cpp:348
 msgid "The document contains unsaved changes."
 msgstr "Il documento contiene modifiche non salvate."
 
-#: src/MainWindow.cpp:339
+#: src/MainWindow.cpp:353
 msgid "Do you want to save the changes?"
 msgstr "Vuoi salvare le modifiche?"
 
-#: src/MainWindow.cpp:340
+#: src/MainWindow.cpp:354
 msgid "Close without saving"
 msgstr "Chiudi senza salvare"
 
-#: src/MainWindow.cpp:341 src/MainWindow.cpp:369 src/ThemeEditor.cpp:95
-#: src/MainWindow_Actions.cpp:92 src/MainWindow_Actions.cpp:115
-#: src/MainWindow_Actions.cpp:136 src/MainWindow_Actions.cpp:243
-#: src/NodeEditDialog.cpp:171
+#: src/MainWindow.cpp:355 src/MainWindow.cpp:383 src/MainWindow_Actions.cpp:92
+#: src/MainWindow_Actions.cpp:115 src/MainWindow_Actions.cpp:136
+#: src/MainWindow_Actions.cpp:243 src/NodeEditDialog.cpp:200
+#: src/ThemeEditor.cpp:95
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/MainWindow.cpp:342 src/MainWindow.cpp:369 src/MainWindow_Actions.cpp:92
-#: src/NodeEditDialog.cpp:172
+#: src/MainWindow.cpp:356 src/MainWindow.cpp:383 src/MainWindow_Actions.cpp:92
+#: src/NodeEditDialog.cpp:201
 msgid "Save"
 msgstr "Salva"
 
-#: src/MainWindow.cpp:368 src/MainWindow_UI.cpp:28
+#: src/MainWindow.cpp:382 src/MainWindow_UI.cpp:28
 #: src/MainWindow_Actions.cpp:91
 msgid "Save Map"
 msgstr "Salva mappa"
@@ -129,145 +129,6 @@ msgid ""
 "  FILE       Optional path to a .e4m file to open on startup.\n"
 "\n"
 msgstr "  FILE       Opzionale percorso di un file .e4m da aprire all'avvio.\n"
-
-#: src/MindMap.hpp:290
-msgid "Cannot open file"
-msgstr "Impossibile aprire il file"
-
-#: src/MindMap.hpp:297
-msgid "Invalid XML file"
-msgstr "File XML non valido"
-
-#: src/MindMap.hpp:315
-msgid "Unknown file format"
-msgstr "Formato di file sconosciuto"
-
-#: src/ThemeEditor.cpp:25
-msgid "Theme Editor"
-msgstr "Editor del tema"
-
-#: src/ThemeEditor.cpp:29
-msgid "Level"
-msgstr "Livello"
-
-#: src/ThemeEditor.cpp:63
-msgid "Edit Style For:"
-msgstr "Modifica stile per:"
-
-#: src/ThemeEditor.cpp:69
-msgid ""
-"Levels inherit from their\n"
-"closest defined parent.\n"
-"Modify to override."
-msgstr "Modifica per personalizzare."
-
-#: src/ThemeEditor.cpp:96
-msgid "OK"
-msgstr "OK"
-
-#: src/ThemeEditor.cpp:148
-msgid "Appearance"
-msgstr "Aspetto"
-
-#: src/ThemeEditor.cpp:152
-msgid "Background Color"
-msgstr "Colore di sfondo"
-
-#: src/ThemeEditor.cpp:153
-msgid "Background:"
-msgstr "Sfondo:"
-
-#: src/ThemeEditor.cpp:155
-msgid "Hover Color"
-msgstr "Colore al passaggio del mouse"
-
-#: src/ThemeEditor.cpp:156
-msgid "Hover Background:"
-msgstr "Sfondo al passaggio del mouse:"
-
-#: src/ThemeEditor.cpp:158
-msgid "Border Color"
-msgstr "Colore del bordo"
-
-#: src/ThemeEditor.cpp:159
-msgid "Border Color:"
-msgstr "Colore del bordo:"
-
-#: src/ThemeEditor.cpp:163
-msgid "Border Width:"
-msgstr "Spessore del bordo"
-
-#: src/ThemeEditor.cpp:167
-msgid "Corner Radius:"
-msgstr "Raggio dell'angolo"
-
-#: src/ThemeEditor.cpp:171
-msgid "Text"
-msgstr "Testo"
-
-#: src/ThemeEditor.cpp:175
-msgid "Font"
-msgstr "Carattere"
-
-#: src/ThemeEditor.cpp:176 src/NodeEditDialog.cpp:67
-msgid "Font:"
-msgstr "Carattere:"
-
-#: src/ThemeEditor.cpp:178
-msgid "Text Color"
-msgstr "Colore del testo"
-
-#: src/ThemeEditor.cpp:179 src/NodeEditDialog.cpp:72
-msgid "Text Color:"
-msgstr "Colore del testo:"
-
-#: src/ThemeEditor.cpp:184
-msgid "Layout & Shadow"
-msgstr "Layout e ombra"
-
-#: src/ThemeEditor.cpp:189
-msgid "Horizontal Padding:"
-msgstr "Spaziatura orizzontale"
-
-#: src/ThemeEditor.cpp:192
-msgid "Vertical Padding:"
-msgstr "Spaziatura verticale"
-
-#: src/ThemeEditor.cpp:194
-msgid "Shadow Color"
-msgstr "Colore dell'ombra"
-
-#: src/ThemeEditor.cpp:195
-msgid "Shadow Color:"
-msgstr "Colore dell'ombra:"
-
-#: src/ThemeEditor.cpp:199
-msgid "Connections (To Children)"
-msgstr "Connessioni (ai figli)"
-
-#: src/ThemeEditor.cpp:203
-msgid "Line Color"
-msgstr "Colore della linea"
-
-#: src/ThemeEditor.cpp:204
-msgid "Line Color:"
-msgstr "Colore della linea:"
-
-#: src/ThemeEditor.cpp:208
-msgid "Line Width:"
-msgstr "Spessore della linea:"
-
-#: src/ThemeEditor.cpp:210
-msgid "Branch Font"
-msgstr "Font del collegamento"
-
-#: src/ThemeEditor.cpp:211 src/NodeEditDialog.cpp:159
-msgid "Branch Font:"
-msgstr "Font del collegamento:"
-
-#: src/ThemeEditor.cpp:213
-msgid "Dashed Line:"
-msgstr "Linea tratteggiata:"
 
 #: src/MainWindow_UI.cpp:22 src/MainWindow_Actions.cpp:114
 msgid "Open Map"
@@ -478,67 +339,230 @@ msgstr "Nuovo"
 msgid "Help file not found."
 msgstr "File della guida non trovato."
 
-#: src/NodeEditDialog.cpp:36
+#: src/NodeEditDialog.cpp:40
 msgid "Node Text:"
 msgstr "Testo del nodo:"
 
-#: src/NodeEditDialog.cpp:80
+#: src/NodeEditDialog.cpp:71 src/ThemeEditor.cpp:176
+msgid "Font:"
+msgstr "Carattere:"
+
+#: src/NodeEditDialog.cpp:76 src/ThemeEditor.cpp:179
+msgid "Text Color:"
+msgstr "Colore del testo:"
+
+#: src/NodeEditDialog.cpp:82
+msgid "Custom"
+msgstr "Personalizzato"
+
+#: src/NodeEditDialog.cpp:100
 msgid "Connection Color:"
 msgstr "Colore della connessione:"
 
-#: src/NodeEditDialog.cpp:91
+#: src/NodeEditDialog.cpp:111
 msgid "Node Image:"
 msgstr "Immagine del nodo"
 
-#: src/NodeEditDialog.cpp:94
+#: src/NodeEditDialog.cpp:114
 msgid "Choose Image"
 msgstr "Seleziona immagine"
 
-#: src/NodeEditDialog.cpp:99
+#: src/NodeEditDialog.cpp:119
 msgid "Images"
 msgstr "Immagini"
 
-#: src/NodeEditDialog.cpp:108 src/NodeEditDialog.cpp:152
+#: src/NodeEditDialog.cpp:128 src/NodeEditDialog.cpp:172
 msgid "Clear"
 msgstr "Rimuovi"
 
-#: src/NodeEditDialog.cpp:112
+#: src/NodeEditDialog.cpp:132
 msgid "W:"
 msgstr "L"
 
-#: src/NodeEditDialog.cpp:116
+#: src/NodeEditDialog.cpp:136
 msgid "H:"
 msgstr "A"
 
-#: src/NodeEditDialog.cpp:129
+#: src/NodeEditDialog.cpp:149
 msgid "Choose Icon"
 msgstr "Seleziona icona"
 
-#: src/NodeEditDialog.cpp:137
+#: src/NodeEditDialog.cpp:157
 msgid "--- Branch Annotation ---"
 msgstr "--- Annotazione del collegamento ---"
 
-#: src/NodeEditDialog.cpp:140
+#: src/NodeEditDialog.cpp:160
 msgid "Branch Text:"
 msgstr "Testo del collegamento:"
 
-#: src/NodeEditDialog.cpp:145
+#: src/NodeEditDialog.cpp:165
 msgid "Branch Icon:"
 msgstr "Icona del collegamento:"
 
-#: src/NodeEditDialog.cpp:217
+#: src/NodeEditDialog.cpp:179 src/ThemeEditor.cpp:214
+msgid "Branch Font:"
+msgstr "Font del collegamento:"
+
+#: src/NodeEditDialog.cpp:246
 msgid "Selected image file format is not supported. Image will not be loaded."
 msgstr ""
 "Il formato di file dell'immagine selezionata non è supportato. L'immagine "
 "non sarà caricata."
 
-#: src/NodeEditDialog.cpp:226
+#: src/NodeEditDialog.cpp:255
 msgid "Node Image"
 msgstr "Immagine del nodo"
 
-#: src/NodeEditDialog.cpp:231
+#: src/NodeEditDialog.cpp:260
 msgid "Connection Image"
 msgstr "Colore del collegamento"
+
+#: src/MindMap.cpp:237
+msgid "Cannot open file"
+msgstr "Impossibile aprire il file"
+
+#: src/MindMap.cpp:244
+msgid "Invalid XML file"
+msgstr "File XML non valido"
+
+#: src/MindMap.cpp:262
+msgid "Unknown file format"
+msgstr "Formato di file sconosciuto"
+
+#: src/ThemeEditor.cpp:25
+msgid "Theme Editor"
+msgstr "Editor del tema"
+
+#: src/ThemeEditor.cpp:29
+msgid "Level"
+msgstr "Livello"
+
+#: src/ThemeEditor.cpp:63
+msgid "Edit Style For:"
+msgstr "Modifica stile per:"
+
+#: src/ThemeEditor.cpp:69
+msgid ""
+"Levels inherit from their\n"
+"closest defined parent.\n"
+"Modify to override."
+msgstr "Modifica per personalizzare."
+
+#: src/ThemeEditor.cpp:96
+msgid "OK"
+msgstr "OK"
+
+#: src/ThemeEditor.cpp:148
+msgid "Appearance"
+msgstr "Aspetto"
+
+#: src/ThemeEditor.cpp:152
+msgid "Background Color"
+msgstr "Colore di sfondo"
+
+#: src/ThemeEditor.cpp:153
+msgid "Background:"
+msgstr "Sfondo:"
+
+#: src/ThemeEditor.cpp:155
+msgid "Hover Color"
+msgstr "Colore al passaggio del mouse"
+
+#: src/ThemeEditor.cpp:156
+msgid "Hover Background:"
+msgstr "Sfondo al passaggio del mouse:"
+
+#: src/ThemeEditor.cpp:158
+msgid "Border Color"
+msgstr "Colore del bordo"
+
+#: src/ThemeEditor.cpp:159
+msgid "Border Color:"
+msgstr "Colore del bordo:"
+
+#: src/ThemeEditor.cpp:163
+msgid "Border Width:"
+msgstr "Spessore del bordo"
+
+#: src/ThemeEditor.cpp:167
+msgid "Corner Radius:"
+msgstr "Raggio dell'angolo"
+
+#: src/ThemeEditor.cpp:171
+msgid "Text"
+msgstr "Testo"
+
+#: src/ThemeEditor.cpp:175
+msgid "Font"
+msgstr "Carattere"
+
+#: src/ThemeEditor.cpp:178
+msgid "Text Color"
+msgstr "Colore del testo"
+
+#: src/ThemeEditor.cpp:181
+msgid "Hover Text Color"
+msgstr "Colore al passaggio del mouse"
+
+#: src/ThemeEditor.cpp:182
+msgid "Hover Text Color:"
+msgstr "Colore al passaggio del mouse:"
+
+#: src/ThemeEditor.cpp:187
+msgid "Layout & Shadow"
+msgstr "Layout e ombra"
+
+#: src/ThemeEditor.cpp:192
+msgid "Horizontal Padding:"
+msgstr "Spaziatura orizzontale"
+
+#: src/ThemeEditor.cpp:195
+msgid "Vertical Padding:"
+msgstr "Spaziatura verticale"
+
+#: src/ThemeEditor.cpp:197
+msgid "Shadow Color"
+msgstr "Colore dell'ombra"
+
+#: src/ThemeEditor.cpp:198
+msgid "Shadow Color:"
+msgstr "Colore dell'ombra:"
+
+#: src/ThemeEditor.cpp:202
+msgid "Connections (To Children)"
+msgstr "Connessioni (ai figli)"
+
+#: src/ThemeEditor.cpp:206
+msgid "Line Color"
+msgstr "Colore della linea"
+
+#: src/ThemeEditor.cpp:207
+msgid "Line Color:"
+msgstr "Colore della linea:"
+
+#: src/ThemeEditor.cpp:211
+msgid "Line Width:"
+msgstr "Spessore della linea:"
+
+#: src/ThemeEditor.cpp:213
+msgid "Branch Font"
+msgstr "Font del collegamento"
+
+#: src/ThemeEditor.cpp:216
+msgid "Dashed Line:"
+msgstr "Linea tratteggiata:"
+
+#: src/ThemeEditor.cpp:219
+msgid "Arrow style"
+msgstr "Stile freccia"
+
+#: src/ThemeEditor.cpp:220
+msgid "Organic curve style"
+msgstr "Curva naturale"
+
+#: src/ThemeEditor.cpp:221
+msgid "Connection Type:"
+msgstr "Tipo di collegamento"
 
 #~ msgid "Close"
 #~ msgstr "Chiudi"

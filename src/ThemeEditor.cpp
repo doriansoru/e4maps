@@ -177,6 +177,9 @@ Gtk::Widget* ThemeEditor::createPropertyGrid() {
     
     m_btnTextColor.set_title(_("Text Color"));
     addProperty(*grid, row++, _("Text Color:"), m_btnTextColor);
+
+    m_btnTextHoverColor.set_title(_("Hover Text Color"));
+    addProperty(*grid, row++, _("Hover Text Color:"), m_btnTextHoverColor);
     
     // Section: Layout & Shadow
     grid->attach(*Gtk::manage(new Gtk::Separator(Gtk::ORIENTATION_HORIZONTAL)), 0, row++, 2, 1);
@@ -212,6 +215,11 @@ Gtk::Widget* ThemeEditor::createPropertyGrid() {
     
     addProperty(*grid, row++, _("Dashed Line:"), m_checkConnDash);
 
+    // Add combo box for connection type
+    m_comboConnType.append("0", _("Arrow style"));
+    m_comboConnType.append("1", _("Organic curve style"));
+    addProperty(*grid, row++, _("Connection Type:"), m_comboConnType);
+
     return grid;
 }
 
@@ -237,6 +245,7 @@ void ThemeEditor::loadStyleProperties(const NodeStyle& style) {
 
     m_btnFont.set_font_name(style.fontDescription.to_string());
     m_btnTextColor.set_rgba(patternToRGBA(style.textColor));
+    m_btnTextHoverColor.set_rgba(patternToRGBA(style.textHoverColor));
 
     m_spinCornerRadius.set_value(style.cornerRadius);
     m_spinPadH.set_value(style.horizontalPadding);
@@ -246,6 +255,10 @@ void ThemeEditor::loadStyleProperties(const NodeStyle& style) {
     m_spinConnWidth.set_value(style.connectionWidth);
     m_btnConnFont.set_font_name(style.connectionFontDescription.to_string());
     m_checkConnDash.set_active(style.connectionDash);
+
+    // Set connection type combo box
+    std::string connTypeStr = std::to_string(style.connectionType);
+    m_comboConnType.set_active_id(connTypeStr);
 }
 
 void ThemeEditor::saveCurrentStyle() {
@@ -275,6 +288,7 @@ void ThemeEditor::saveCurrentStyle() {
         style->shadowColor = rgbaToPattern(m_btnShadowColor.get_rgba());
         style->fontDescription = Pango::FontDescription(m_btnFont.get_font_name());
         style->textColor = rgbaToPattern(m_btnTextColor.get_rgba());
+        style->textHoverColor = rgbaToPattern(m_btnTextHoverColor.get_rgba());
         style->cornerRadius = m_spinCornerRadius.get_value();
         style->horizontalPadding = m_spinPadH.get_value();
         style->verticalPadding = m_spinPadV.get_value();
@@ -282,6 +296,14 @@ void ThemeEditor::saveCurrentStyle() {
         style->connectionWidth = m_spinConnWidth.get_value();
         style->connectionFontDescription = Pango::FontDescription(m_btnConnFont.get_font_name());
         style->connectionDash = m_checkConnDash.get_active();
+
+        // Get connection type from combo box
+        std::string activeId = m_comboConnType.get_active_id();
+        if (!activeId.empty()) {
+            style->connectionType = std::stoi(activeId);
+        } else {
+            style->connectionType = 0; // Default to arrow style
+        }
     }
 }
 

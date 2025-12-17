@@ -132,7 +132,8 @@ std::shared_ptr<Node> Node::fromXMLElement(tinyxml2::XMLElement* element) {
 
     bool ovr_t = false;
     if (element->QueryBoolAttribute("ovr_t", &ovr_t) != tinyxml2::XML_SUCCESS) {
-        if (element->Attribute("tr")) ovr_t = true;
+        // Legacy: Default to false (use theme) if not specified
+        ovr_t = false;
     }
 
     bool ovr_f = false;

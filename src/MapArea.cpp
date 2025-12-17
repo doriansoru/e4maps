@@ -76,10 +76,6 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
 bool MapArea::handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> clickedNode) {
     if (!clickedNode) return false;
 
-    Gtk::Allocation allocation = get_allocation();
-    const int width = allocation.get_width();
-    const int height = allocation.get_height();
-
     // Check if Ctrl is pressed to toggle selection
     bool isCtrlPressed = (event->state & GDK_CONTROL_MASK) != 0;
 
@@ -95,6 +91,7 @@ bool MapArea::handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> c
 
         // We're not dragging in this case, just selecting/deselecting
         isDragging = false;
+        isPreDragging = false;
     } else {
         // Regular click - if the clicked node is already selected AND there are multiple selections,
         // drag all selected nodes; otherwise, select only this node
@@ -102,19 +99,27 @@ bool MapArea::handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> c
         bool hasMultipleSelection = drawingContext.getSelectedNodesCount() > 1;
 
         if (isAlreadySelected && hasMultipleSelection) {
-            // The clicked node is part of a multi-selection, drag all selected nodes
-            isDragging = true;
-            isFirstDragMotion = true;  // Reset for this drag operation
+            // The clicked node is part of a multi-selection, prepare to drag all selected nodes
+            // Set it as the primary selected node to bring it to front if needed
+            drawingContext.setSelectedNode(clickedNode);  // This ensures clicked node becomes primary selection
+
+            // Prepare for potential dragging with threshold
+            isPreDragging = true;  // Indicate potential drag, will confirm on motion
+            isDragging = false;    // Actual dragging hasn't started yet
+            isFirstDragMotion = true;  // Reset for this potential drag operation
             dragStartX = event->x;
             dragStartY = event->y;
             // Store original position of the clicked node to calculate movement
             nodeStartX = clickedNode->x;
             nodeStartY = clickedNode->y;
         } else {
-            // Select only this node and drag it
+            // Select only this node - this handles single clicks properly
             drawingContext.setSelectedNode(clickedNode);
-            isDragging = true;
-            isFirstDragMotion = true;  // Reset for this drag operation
+
+            // Prepare for potential dragging with threshold
+            isPreDragging = true;  // Indicate potential drag, will confirm on motion
+            isDragging = false;    // Actual dragging hasn't started yet
+            isFirstDragMotion = true;  // Reset for this potential drag operation
             dragStartX = event->x;
             dragStartY = event->y;
             // Store original node position in world coordinates
@@ -122,6 +127,9 @@ bool MapArea::handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> c
             nodeStartY = clickedNode->y;
         }
     }
+
+    // Queue redraw to update visual representation of selection immediately
+    queue_draw();
     return true;
 }
 
@@ -135,8 +143,11 @@ bool MapArea::handlePanningStart(GdkEventButton* event) {
 }
 
 bool MapArea::on_button_release_event(GdkEventButton* event) {
+    // If we were in pre-drag state but didn't exceed threshold, node is selected but not dragged
+    // If we were in actual dragging state, dragging stops
     isDragging = false;
     isPanning = false;
+    isPreDragging = false;
     isFirstDragMotion = true;  // Reset for next drag operation
     return true;
 }
@@ -144,6 +155,20 @@ bool MapArea::on_button_release_event(GdkEventButton* event) {
 bool MapArea::on_motion_notify_event(GdkEventMotion* event) {
     if (isPanning) {
         return handlePanningMove(event);
+    } else if (isPreDragging && !isDragging) {
+        // Check if mouse has moved beyond drag threshold to start actual dragging
+        const double DRAG_THRESHOLD = 3.0; // Threshold in pixels to start dragging
+        double distance = sqrt(pow(event->x - dragStartX, 2) + pow(event->y - dragStartY, 2));
+
+        if (distance >= DRAG_THRESHOLD) {
+            // Mouse has moved beyond threshold, start actual dragging
+            isDragging = true;
+            isFirstDragMotion = true;  // Reset for this drag operation
+            // No need to re-select here as the node is already selected from button press
+        } else {
+            // Mouse hasn't moved enough, still in pre-drag state
+            return true;
+        }
     } else if (isDragging) {
         return handleNodeDragMove(event);
     }

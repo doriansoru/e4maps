@@ -52,6 +52,7 @@ private:
     Gtk::TextView m_entryText;
     Glib::RefPtr<Gtk::TextBuffer> m_textBuffer;
     Gtk::FontButton m_btnFont;
+    Gtk::CheckButton m_checkOvrTextColor; // New checkbox to toggle text color override
     Gtk::ColorButton m_btnTextColor;
     Gtk::ColorButton m_colorBtnConn;
     
