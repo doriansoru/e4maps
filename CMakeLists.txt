@@ -57,10 +57,10 @@ if(WIN32)
         src/MainWindow_Actions.cpp
         src/NodeEditDialog.cpp
         src/LayoutAlgorithm.cpp
+        src/MindMap.cpp
         src/Theme.cpp
         src/ThemeEditor.cpp
         src/Utils.cpp
-        src/MindMap.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
         resources/e4maps.rc
     )
@@ -75,10 +75,10 @@ else()
         src/MainWindow_Actions.cpp
         src/NodeEditDialog.cpp
         src/LayoutAlgorithm.cpp
+        src/MindMap.cpp
         src/Theme.cpp
         src/ThemeEditor.cpp
         src/Utils.cpp
-        src/MindMap.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
     )
 endif()
