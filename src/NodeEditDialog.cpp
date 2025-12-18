@@ -39,6 +39,30 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
     // 1. Text
     Gtk::Label* lblText = Gtk::manage(new Gtk::Label(_("Node Text:")));
     
+    // Formatting toolbar
+    Gtk::Box* toolbar = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+    toolbar->get_style_context()->add_class("linked"); // Group buttons visually
+    
+    m_btnBold.set_label("<b>B</b>");
+    m_btnBold.set_use_underline(false);
+    if(auto label = dynamic_cast<Gtk::Label*>(m_btnBold.get_child())) label->set_use_markup(true);
+    m_btnBold.set_tooltip_text(_("Bold"));
+    m_btnBold.signal_clicked().connect([this](){ apply_tag("<b>", "</b>"); });
+    
+    m_btnItalic.set_label("<i>I</i>");
+    if(auto label = dynamic_cast<Gtk::Label*>(m_btnItalic.get_child())) label->set_use_markup(true);
+    m_btnItalic.set_tooltip_text(_("Italic"));
+    m_btnItalic.signal_clicked().connect([this](){ apply_tag("<i>", "</i>"); });
+    
+    m_btnUnderline.set_label("<u>U</u>");
+    if(auto label = dynamic_cast<Gtk::Label*>(m_btnUnderline.get_child())) label->set_use_markup(true);
+    m_btnUnderline.set_tooltip_text(_("Underline"));
+    m_btnUnderline.signal_clicked().connect([this](){ apply_tag("<u>", "</u>"); });
+    
+    toolbar->pack_start(m_btnBold, Gtk::PACK_SHRINK);
+    toolbar->pack_start(m_btnItalic, Gtk::PACK_SHRINK);
+    toolbar->pack_start(m_btnUnderline, Gtk::PACK_SHRINK);
+
     // Create a ScrolledWindow for the TextView
     Gtk::ScrolledWindow* textScroll = Gtk::manage(new Gtk::ScrolledWindow());
     textScroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
@@ -61,8 +85,12 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
     
     textScroll->add(m_entryText);
     
+    Gtk::Box* textBox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 2));
+    textBox->pack_start(*toolbar, Gtk::PACK_SHRINK);
+    textBox->pack_start(*textScroll, Gtk::PACK_EXPAND_WIDGET);
+
     grid->attach(*lblText, 0, 0, 1, 1); 
-    grid->attach(*textScroll, 1, 0, 1, 1);
+    grid->attach(*textBox, 1, 0, 1, 1);
     
     // Connect key press event for Shift+Enter handling
     m_entryText.signal_key_press_event().connect(sigc::mem_fun(*this, &NodeEditDialog::on_text_key_press), false);
@@ -356,4 +384,22 @@ void NodeEditDialog::on_clear_conn_image_clicked() {
     // Clear the connection image selection
     m_btnConnImg.unselect_all();
     m_btnConnImg.set_filename("");
+}
+
+void NodeEditDialog::apply_tag(const std::string& tag_open, const std::string& tag_close) {
+    Gtk::TextIter start, end;
+    if (m_textBuffer->get_selection_bounds(start, end)) {
+        std::string selected_text = m_textBuffer->get_text(start, end);
+        m_textBuffer->erase(start, end);
+        // After erase, start is still a valid iterator at the deletion point
+        m_textBuffer->insert(start, tag_open + selected_text + tag_close);
+    } else {
+        // If no selection, just insert tags at cursor
+        m_textBuffer->insert_at_cursor(tag_open + tag_close);
+        // Move cursor between tags
+        Gtk::TextIter mark_iter = m_textBuffer->get_iter_at_mark(m_textBuffer->get_insert());
+        mark_iter.backward_chars(tag_close.length());
+        m_textBuffer->place_cursor(mark_iter);
+    }
+    m_entryText.grab_focus();
 }

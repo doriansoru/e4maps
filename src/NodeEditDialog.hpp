@@ -51,6 +51,11 @@ private:
 
     Gtk::TextView m_entryText;
     Glib::RefPtr<Gtk::TextBuffer> m_textBuffer;
+    
+    Gtk::Button m_btnBold;
+    Gtk::Button m_btnItalic;
+    Gtk::Button m_btnUnderline;
+    
     Gtk::FontButton m_btnFont;
     Gtk::CheckButton m_checkOvrTextColor; // New checkbox to toggle text color override
     Gtk::ColorButton m_btnTextColor;
@@ -75,6 +80,9 @@ private:
     // Image clearing handlers
     void on_clear_image_clicked();
     void on_clear_conn_image_clicked();
+    
+    // Formatting helpers
+    void apply_tag(const std::string& tag_open, const std::string& tag_close);
 
     // Change tracking
     bool m_fontChanged;

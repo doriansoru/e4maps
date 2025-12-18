@@ -138,14 +138,13 @@ public:
 
         if (cache && cache->layout && cache->text == node->text && cache->fontDesc == currentFontDesc) {
             layout = cache->layout;
-            // Update context if needed (Pango layouts are context bound)
-            // Ideally we check if context changed, but mostly it's same surface type.
-            // If the context scaling changed significantly, we might need to recreate, 
-            // but for now assume compatible context.
-            // Actually, Pango::Layout holds a ref to Pango::Context.
         } else {
             layout = Pango::Layout::create(cr);
-            layout->set_text(node->text);
+            try {
+                layout->set_markup(node->text);
+            } catch (const Glib::Error& e) {
+                layout->set_text(node->text); // Fallback to plain text on error
+            }
             layout->set_font_description(style.fontDescription);
             
             // Enable text wrapping
@@ -520,7 +519,11 @@ public:
 
                     // Create a layout to measure text dimensions
                     auto layout = Pango::Layout::create(cr);
-                    layout->set_text(child->connText);
+                    try {
+                        layout->set_markup(child->connText);
+                    } catch (const Glib::Error& e) {
+                        layout->set_text(child->connText);
+                    }
                     layout->set_font_description(conn_font);
 
                     int textW, textH;
@@ -613,7 +616,11 @@ public:
                     
                     cr->set_source_rgb(0.3, 0.3, 0.3);
                     auto layout = Pango::Layout::create(cr);
-                    layout->set_text(child->connText);
+                    try {
+                        layout->set_markup(child->connText);
+                    } catch (const Glib::Error& e) {
+                        layout->set_text(child->connText);
+                    }
                     layout->set_font_description(conn_font);
                     cr->move_to(currentX, -th - padding); 
                     layout->show_in_cairo_context(cr);
@@ -644,7 +651,11 @@ public:
         } else {
              // Fallback if cache invalid (e.g. if preCalculate wasn't called or props changed)
             layout = Pango::Layout::create(cr);
-            layout->set_text(node->text);
+            try {
+                layout->set_markup(node->text);
+            } catch (const Glib::Error& e) {
+                layout->set_text(node->text);
+            }
             layout->set_font_description(style.fontDescription);
             layout->set_width(E4Maps::MAX_NODE_WIDTH * Pango::SCALE);
             layout->set_wrap(Pango::WRAP_WORD);
