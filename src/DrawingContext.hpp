@@ -72,6 +72,12 @@ public:
     void invalidateLayout() {
         if (!map || !map->root) return;
         m_dimensions_dirty = true;
+
+        // Apply radial layout immediately for a fast, good starting point
+        // This avoids nodes overlapping while the background calculation runs
+        // Use current root position to avoid snapping the view
+        LayoutAlgorithms::calculateImprovedRadialLayout(map->root, map->root->x, map->root->y, 0, 2*M_PI, 0);
+
         if (m_isCalculating) return; 
 
         m_isCalculating = true;

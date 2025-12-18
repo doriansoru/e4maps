@@ -80,6 +80,11 @@ namespace LayoutAlgorithms {
                     node->y
                 );
                 
+                // Force root to be fixed to stabilize the view during auto-layout
+                if (node->isRoot()) {
+                    layoutNodes.back().fixed = true;
+                }
+                
                 // Add edges for connections
                 for (auto& child : node->children) {
                     collectNodes(child, currentIndex);
@@ -92,8 +97,8 @@ namespace LayoutAlgorithms {
         if (layoutNodes.empty()) return;
 
         // Force-directed algorithm parameters
-        const double k = 50.0; // Spring constant
-        const double repulsion = 200.0; // Repulsion constant
+        const double k = 200.0; // Spring constant (higher = further apart)
+        const double repulsion = 5000000.0; // Repulsion constant (much higher to combat overlap)
         const double maxDisplacement = 50.0; // Max movement per iteration
         const int iterations = 50;
 

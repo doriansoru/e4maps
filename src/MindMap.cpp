@@ -199,11 +199,16 @@ MindMap::MindMap() {}
 
 std::shared_ptr<Node> MindMap::hitTestRecursive(std::shared_ptr<Node> node, double x, double y) {
     if (!node) return nullptr;
-    if (node->contains(x, y)) return node;
-    for (auto& child : node->children) {
-        auto found = hitTestRecursive(child, x, y);
+    
+    // Check children first (reverse order to pick the one drawn last/on top)
+    for (auto it = node->children.rbegin(); it != node->children.rend(); ++it) {
+        auto found = hitTestRecursive(*it, x, y);
         if (found) return found;
     }
+    
+    // Check the node itself last
+    if (node->contains(x, y)) return node;
+    
     return nullptr;
 }
 

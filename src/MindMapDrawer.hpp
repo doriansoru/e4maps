@@ -225,6 +225,12 @@ public:
         double dy = endY - startY;
         double distance = std::sqrt(dx * dx + dy * dy);
 
+        // Safeguard against overlapping nodes (distance ~ 0) to avoid division by zero
+        if (distance < 0.1) {
+            cr->restore();
+            return;
+        }
+
         // Calculate midpoint and perpendicular offset for organic curve
         double midX = (startX + endX) / 2.0;
         double midY = (startY + endY) / 2.0;
@@ -398,6 +404,13 @@ public:
             double dx = child->x - node->x;
             double dy = child->y - node->y;
             double dist = std::sqrt(dx*dx + dy*dy);
+
+            // Skip drawing connection if nodes overlap (avoid division by zero and invalid matrix)
+            if (dist < 0.1) {
+                cr->restore();
+                drawNode(cr, child, depth + 1, theme, selectedNode, selectedNodes);
+                continue;
+            }
 
             // Smoother bezier curves with adjustable tension (for annotations positioning)
             double cpDist = dist * 0.4;

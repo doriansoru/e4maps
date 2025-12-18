@@ -290,6 +290,12 @@ void MainWindow::on_add_node() {
     if (!selected) return;
 
     auto newNode = std::make_shared<Node>(_("New"), Color::random());
+    
+    // Give the new node a slight offset from the parent so it's not perfectly overlapping
+    // The layout algorithm will refine this immediately, but a larger initial offset is better.
+    newNode->x = selected->x + 100.0;
+    newNode->y = selected->y + 100.0;
+
     auto addCmd = std::make_unique<AddNodeCommand>(selected, newNode);
     m_commandManager.executeCommand(std::move(addCmd));
 

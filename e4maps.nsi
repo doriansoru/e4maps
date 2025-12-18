@@ -24,7 +24,7 @@ InstallDirRegKey HKCU "Software\e4maps" ""
 ; Define sections for optional components
 Section "Main Application" SecMain
   SetOutPath $INSTDIR
-  File /r dist\*.*
+  File /r distWin\*.*
 
   ; Create start menu shortcuts
   CreateDirectory "$SMPROGRAMS\e4maps"
