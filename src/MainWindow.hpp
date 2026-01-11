@@ -100,6 +100,7 @@ private:
     void on_paste();
     void on_edit_theme();
     void on_help_guide();
+    void on_create_connection();
 
     // Inline editing methods
     void setupInlineEditor();

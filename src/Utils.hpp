@@ -12,6 +12,7 @@ namespace Utils {
     void hexToCairo(const std::string& hex, double& r, double& g, double& b, double& a);
     std::string cairoToHex(double r, double g, double b, double a = 1.0);
     void openInBrowser(Gtk::Window& parent, const std::string& url);
+    void setPangoLayoutText(Glib::RefPtr<Pango::Layout> layout, const std::string& text);
 }
 
 #endif // UTILS_HPP

@@ -164,7 +164,7 @@ public:
             }
         }
 
-        drawer.drawNode(cr, map->root, 0, map->theme);
+        drawer.drawNode(cr, map->root, 0, map->theme, nullptr, {}, map->connections);
     }
 
     // Helper to check if any nodes have manual positioning

@@ -104,6 +104,12 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
         return true;
     }
 
+    // Check for Ctrl+L to create connections
+    if (event->keyval == GDK_KEY_l && (event->state & GDK_CONTROL_MASK)) {
+        on_create_connection();
+        return true;
+    }
+
     // Call base class's handler for other keys
     return Gtk::Window::on_key_press_event(event);
 }

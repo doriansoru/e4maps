@@ -58,13 +58,17 @@ if(WIN32)
         src/NodeEditDialog.cpp
         src/LayoutAlgorithm.cpp
         src/MindMap.cpp
+        src/MapSerializer.cpp
         src/Theme.cpp
         src/ThemeEditor.cpp
         src/Utils.cpp
+        src/ImageCache.cpp
+        src/MindMapDrawer.cpp
+        src/Command.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
         resources/e4maps.rc
     )
-    add_definitions(-DAPP_NAME_STR="\\\"${PROJECT_NAME}\\\"")
+    add_definitions(-DAPP_NAME_STR="\"${PROJECT_NAME}\"" )
 else()
     add_executable(e4maps
         src/main.cpp
@@ -76,9 +80,13 @@ else()
         src/NodeEditDialog.cpp
         src/LayoutAlgorithm.cpp
         src/MindMap.cpp
+        src/MapSerializer.cpp
         src/Theme.cpp
         src/ThemeEditor.cpp
         src/Utils.cpp
+        src/ImageCache.cpp
+        src/MindMapDrawer.cpp
+        src/Command.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
     )
 endif()
@@ -90,6 +98,8 @@ set(HEADER_FILES
     src/Utils.hpp
     src/Exporter.hpp
     src/MindMap.hpp
+    src/MapSerializer.hpp
+    src/XmlConstants.hpp
     src/MindMapDrawer.hpp
     src/DrawingContext.hpp
     src/Command.hpp
@@ -100,6 +110,7 @@ set(HEADER_FILES
     src/MindMapUtils.hpp
     src/Theme.hpp
     src/ThemeEditor.hpp
+    src/ImageCache.hpp
 )
 
 target_sources(e4maps PRIVATE ${HEADER_FILES})

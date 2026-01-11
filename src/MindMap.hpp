@@ -6,15 +6,25 @@
 #include <memory>
 #include "Theme.hpp"
 
-// Forward declaration to avoid including tinyxml2.h in header
-namespace tinyxml2 {
-    class XMLDocument;
-    class XMLElement;
-}
+// Forward declaration for Connection
+class Node;
 
 struct Color {
     double r, g, b;
     static Color random();
+};
+
+struct Connection {
+    std::shared_ptr<Node> from;
+    std::shared_ptr<Node> to;
+    std::string text;           // Optional connection text
+    std::string imagePath;      // Optional connection image
+    Color color;               // Connection color
+    std::string fontDesc;      // Font for connection text
+    bool overrideFont = false; // Whether to override theme font
+
+    Connection(std::shared_ptr<Node> f, std::shared_ptr<Node> t)
+        : from(f), to(t), color({0.0, 0.0, 0.0}) {}
 };
 
 class Node : public std::enable_shared_from_this<Node> {
@@ -65,28 +75,26 @@ public:
     bool isRoot() const;
 
     bool contains(double px, double py) const;
-    
-
-    // New tinyxml2-based method for file I/O
-    tinyxml2::XMLElement* toXMLElement(tinyxml2::XMLDocument* doc) const;
-
-    static std::shared_ptr<Node> fromXMLElement(tinyxml2::XMLElement* element);
 };
 
 class MindMap {
 public:
     std::shared_ptr<Node> root;
     Theme theme;
+    std::vector<Connection> connections;  // New arbitrary connections
 
     MindMap(const std::string& rootText);
-    
+
     MindMap();
 
     std::shared_ptr<Node> hitTest(double x, double y);
-    
-    void saveToFile(const std::string& filename);
-    
-    static std::shared_ptr<MindMap> loadFromFile(const std::string& filename);
+
+
+
+    // Methods for managing arbitrary connections
+    void addConnection(std::shared_ptr<Node> from, std::shared_ptr<Node> to);
+    void removeConnection(size_t index);
+    void removeConnection(std::shared_ptr<Node> from, std::shared_ptr<Node> to);
 
 private:
     std::shared_ptr<Node> hitTestRecursive(std::shared_ptr<Node> node, double x, double y);

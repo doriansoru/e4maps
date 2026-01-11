@@ -2,6 +2,7 @@
 #include "Constants.hpp"
 #include "MindMap.hpp"
 #include "MindMapDrawer.hpp"
+#include "ImageCache.hpp"
 #include <gdk/gdkkeysyms.h>
 #include <cmath>
 #include <algorithm>

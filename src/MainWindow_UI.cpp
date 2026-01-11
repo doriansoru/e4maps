@@ -92,6 +92,11 @@ void MainWindow::initHeaderBar() {
     itemPaste->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_paste));
     menu->append(*itemPaste);
 
+    auto itemCreateConnection = Gtk::manage(new Gtk::MenuItem(_("Create Connection")));
+    itemCreateConnection->add_accelerator("activate", m_refAccelGroup, GDK_KEY_l, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+    itemCreateConnection->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_create_connection));
+    menu->append(*itemCreateConnection);
+
     menu->append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
     
     // --- Theme Section ---

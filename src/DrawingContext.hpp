@@ -242,7 +242,10 @@ public:
         // Drawing is now decoupled from heavy layout calculation.
         // Layout happens in background thread.
 
-        drawer.drawNode(cr, map->root, 0, map->theme, selectedNode, selectedNodes);
+        // Draw the tree structure first (which includes both child connections and arbitrary connections)
+        drawer.drawNode(cr, map->root, 0, map->theme, selectedNode, selectedNodes, map->connections);
+
+        // No need to draw arbitrary connections separately anymore since they're drawn with the tree
 
         cr->restore();
         return true;

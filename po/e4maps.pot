@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e4maps 1.0.0\n"
 "Report-Msgid-Bugs-To: doriansoru@gmail.com\n"
-"POT-Creation-Date: 2025-12-17 17:26+0100\n"
+"POT-Creation-Date: 2026-01-10 16:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,119 +17,25 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/MainWindow.cpp:4 src/MainWindow_Actions.cpp:308
-msgid "MAIN IDEA"
-msgstr ""
-
-#: src/MainWindow.cpp:8 src/MainWindow_Actions.cpp:313
-msgid "E4maps - New Map"
-msgstr ""
-
-#: src/MainWindow.cpp:293
-msgid "Edit Text"
-msgstr ""
-
-#: src/MainWindow.cpp:300
-msgid "Properties..."
-msgstr ""
-
-#: src/MainWindow.cpp:310 src/MainWindow_UI.cpp:50
-msgid "Add Branch"
-msgstr ""
-
-#: src/MainWindow.cpp:316 src/MainWindow_UI.cpp:44
-msgid "Remove Branch"
-msgstr ""
-
-#: src/MainWindow.cpp:329 src/MainWindow_Actions.cpp:47
-msgid "E4maps - "
-msgstr ""
-
-#: src/MainWindow.cpp:333 src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16
+#: src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16 src/MainWindow.cpp:339
 msgid "New Map"
-msgstr ""
-
-#: src/MainWindow.cpp:348
-msgid "The document contains unsaved changes."
-msgstr ""
-
-#: src/MainWindow.cpp:353
-msgid "Do you want to save the changes?"
-msgstr ""
-
-#: src/MainWindow.cpp:354
-msgid "Close without saving"
-msgstr ""
-
-#: src/MainWindow.cpp:355 src/MainWindow.cpp:383 src/MainWindow_Actions.cpp:92
-#: src/MainWindow_Actions.cpp:115 src/MainWindow_Actions.cpp:136
-#: src/MainWindow_Actions.cpp:243 src/NodeEditDialog.cpp:200
-#: src/ThemeEditor.cpp:95
-msgid "Cancel"
-msgstr ""
-
-#: src/MainWindow.cpp:356 src/MainWindow.cpp:383 src/MainWindow_Actions.cpp:92
-#: src/NodeEditDialog.cpp:201
-msgid "Save"
-msgstr ""
-
-#: src/MainWindow.cpp:382 src/MainWindow_UI.cpp:28
-#: src/MainWindow_Actions.cpp:91
-msgid "Save Map"
-msgstr ""
-
-#: src/Command.hpp:45
-msgid "Add Node"
-msgstr ""
-
-#: src/Command.hpp:90
-msgid "Remove Node"
-msgstr ""
-
-#: src/Command.hpp:195 src/NodeEditDialog.cpp:7
-msgid "Edit Node"
-msgstr ""
-
-#: src/Command.hpp:264
-msgid "Move Node"
-msgstr ""
-
-#: src/Command.hpp:295
-msgid "Copy Node"
-msgstr ""
-
-#: src/Command.hpp:342
-msgid "Cut Node"
-msgstr ""
-
-#: src/Command.hpp:388
-msgid "Paste Node"
-msgstr ""
-
-#: src/Command.hpp:503
-msgid "Copy Multiple Nodes"
-msgstr ""
-
-#: src/Command.hpp:576
-msgid "Cut Multiple Nodes"
-msgstr ""
-
-#: src/Command.hpp:636
-msgid "Paste Multiple Nodes"
-msgstr ""
-
-#: src/main.cpp:24
-msgid "Usage: "
-msgstr ""
-
-#: src/main.cpp:25
-msgid ""
-"  FILE       Optional path to a .e4m file to open on startup.\n"
-"\n"
 msgstr ""
 
 #: src/MainWindow_UI.cpp:22 src/MainWindow_Actions.cpp:114
 msgid "Open Map"
+msgstr ""
+
+#: src/MainWindow_UI.cpp:28 src/MainWindow_Actions.cpp:91
+#: src/MainWindow.cpp:388
+msgid "Save Map"
+msgstr ""
+
+#: src/MainWindow_UI.cpp:44 src/MainWindow.cpp:322
+msgid "Remove Branch"
+msgstr ""
+
+#: src/MainWindow_UI.cpp:50 src/MainWindow.cpp:316
+msgid "Add Branch"
 msgstr ""
 
 #: src/MainWindow_UI.cpp:59
@@ -156,77 +62,189 @@ msgstr ""
 msgid "Paste"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:98
+#: src/MainWindow_UI.cpp:95
+msgid "Create Connection"
+msgstr ""
+
+#: src/MainWindow_UI.cpp:103
 msgid "Edit Theme..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:105
+#: src/MainWindow_UI.cpp:110
 msgid "View"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:109
+#: src/MainWindow_UI.cpp:114
 msgid "Zoom In"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:114
+#: src/MainWindow_UI.cpp:119
 msgid "Zoom Out"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:119
+#: src/MainWindow_UI.cpp:124
 msgid "Reset View"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:127 src/MainWindow_Actions.cpp:137
+#: src/MainWindow_UI.cpp:132 src/MainWindow_Actions.cpp:137
 #: src/MainWindow_Actions.cpp:244
 msgid "Export"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:131
+#: src/MainWindow_UI.cpp:136
 msgid "To PNG..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:135
+#: src/MainWindow_UI.cpp:140
 msgid "To PDF..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:139
+#: src/MainWindow_UI.cpp:144
 msgid "To Freeplane..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:145
+#: src/MainWindow_UI.cpp:150
 msgid "Save As..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:152
+#: src/MainWindow_UI.cpp:157
 msgid "User Guide"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:157
+#: src/MainWindow_UI.cpp:162
 msgid "About"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:161
+#: src/MainWindow_UI.cpp:166
 msgid "Quit"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:194
+#: src/MainWindow_UI.cpp:199
 msgid "E4Maps"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:195
+#: src/MainWindow_UI.cpp:200
 msgid "1.0.0"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:196
+#: src/MainWindow_UI.cpp:201
 msgid "Copyright (c) 2025 Dorian Soru <doriansoru@gmail.com>"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:197
+#: src/MainWindow_UI.cpp:202
 msgid "A simple mind mapping application"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:200
+#: src/MainWindow_UI.cpp:205
 msgid "GitHub Repository"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:7 src/Command.hpp:195
+msgid "Edit Node"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:40
+msgid "Node Text:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:49
+msgid "Bold"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:54
+msgid "Italic"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:59
+msgid "Underline"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:99 src/ThemeEditor.cpp:176
+msgid "Font:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:104 src/ThemeEditor.cpp:179
+msgid "Text Color:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:110
+msgid "Custom"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:128
+msgid "Connection Color:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:139
+msgid "Node Image:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:142
+msgid "Choose Image"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:147
+msgid "Images"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:156 src/NodeEditDialog.cpp:200
+msgid "Clear"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:160
+msgid "W:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:164
+msgid "H:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:177
+msgid "Choose Icon"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:185
+msgid "--- Branch Annotation ---"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:188
+msgid "Branch Text:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:193
+msgid "Branch Icon:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:207 src/ThemeEditor.cpp:214
+msgid "Branch Font:"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:228 src/MainWindow_Actions.cpp:92
+#: src/MainWindow_Actions.cpp:115 src/MainWindow_Actions.cpp:136
+#: src/MainWindow_Actions.cpp:243 src/MainWindow.cpp:361 src/MainWindow.cpp:389
+#: src/ThemeEditor.cpp:95
+msgid "Cancel"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:229 src/MainWindow_Actions.cpp:92
+#: src/MainWindow.cpp:362 src/MainWindow.cpp:389
+msgid "Save"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:274
+msgid "Selected image file format is not supported. Image will not be loaded."
+msgstr ""
+
+#: src/NodeEditDialog.cpp:283
+msgid "Node Image"
+msgstr ""
+
+#: src/NodeEditDialog.cpp:288
+msgid "Connection Image"
+msgstr ""
+
+#: src/MainWindow_Actions.cpp:47 src/MainWindow.cpp:335
+msgid "E4maps - "
 msgstr ""
 
 #: src/MainWindow_Actions.cpp:51
@@ -333,96 +351,96 @@ msgstr ""
 msgid "New"
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:568
+#: src/MainWindow_Actions.cpp:314 src/MainWindow.cpp:4
+msgid "MAIN IDEA"
+msgstr ""
+
+#: src/MainWindow_Actions.cpp:319 src/MainWindow.cpp:8
+msgid "E4maps - New Map"
+msgstr ""
+
+#: src/MainWindow_Actions.cpp:574
 msgid "Help file not found."
 msgstr ""
 
-#: src/NodeEditDialog.cpp:40
-msgid "Node Text:"
+#: src/MainWindow_Actions.cpp:583
+msgid "Please select at least 2 nodes to connect."
 msgstr ""
 
-#: src/NodeEditDialog.cpp:71 src/ThemeEditor.cpp:176
-msgid "Font:"
+#: src/MainWindow_Actions.cpp:600
+msgid "Created "
 msgstr ""
 
-#: src/NodeEditDialog.cpp:76 src/ThemeEditor.cpp:179
-msgid "Text Color:"
+#: src/MainWindow_Actions.cpp:600
+msgid " connection(s)."
 msgstr ""
 
-#: src/NodeEditDialog.cpp:82
-msgid "Custom"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:100
-msgid "Connection Color:"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:111
-msgid "Node Image:"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:114
-msgid "Choose Image"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:119
-msgid "Images"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:128 src/NodeEditDialog.cpp:172
-msgid "Clear"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:132
-msgid "W:"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:136
-msgid "H:"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:149
-msgid "Choose Icon"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:157
-msgid "--- Branch Annotation ---"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:160
-msgid "Branch Text:"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:165
-msgid "Branch Icon:"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:179 src/ThemeEditor.cpp:214
-msgid "Branch Font:"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:246
-msgid "Selected image file format is not supported. Image will not be loaded."
-msgstr ""
-
-#: src/NodeEditDialog.cpp:255
-msgid "Node Image"
-msgstr ""
-
-#: src/NodeEditDialog.cpp:260
-msgid "Connection Image"
-msgstr ""
-
-#: src/MindMap.cpp:237
+#: src/MindMap.cpp:334
 msgid "Cannot open file"
 msgstr ""
 
-#: src/MindMap.cpp:244
+#: src/MindMap.cpp:341
 msgid "Invalid XML file"
 msgstr ""
 
-#: src/MindMap.cpp:262
+#: src/MindMap.cpp:404
 msgid "Unknown file format"
+msgstr ""
+
+#: src/MainWindow.cpp:299
+msgid "Edit Text"
+msgstr ""
+
+#: src/MainWindow.cpp:306
+msgid "Properties..."
+msgstr ""
+
+#: src/MainWindow.cpp:354
+msgid "The document contains unsaved changes."
+msgstr ""
+
+#: src/MainWindow.cpp:359
+msgid "Do you want to save the changes?"
+msgstr ""
+
+#: src/MainWindow.cpp:360
+msgid "Close without saving"
+msgstr ""
+
+#: src/Command.hpp:45
+msgid "Add Node"
+msgstr ""
+
+#: src/Command.hpp:90
+msgid "Remove Node"
+msgstr ""
+
+#: src/Command.hpp:264
+msgid "Move Node"
+msgstr ""
+
+#: src/Command.hpp:295
+msgid "Copy Node"
+msgstr ""
+
+#: src/Command.hpp:342
+msgid "Cut Node"
+msgstr ""
+
+#: src/Command.hpp:388
+msgid "Paste Node"
+msgstr ""
+
+#: src/Command.hpp:503
+msgid "Copy Multiple Nodes"
+msgstr ""
+
+#: src/Command.hpp:576
+msgid "Cut Multiple Nodes"
+msgstr ""
+
+#: src/Command.hpp:636
+msgid "Paste Multiple Nodes"
 msgstr ""
 
 #: src/ThemeEditor.cpp:25
@@ -558,4 +576,14 @@ msgstr ""
 
 #: src/ThemeEditor.cpp:221
 msgid "Connection Type:"
+msgstr ""
+
+#: src/main.cpp:24
+msgid "Usage: "
+msgstr ""
+
+#: src/main.cpp:25
+msgid ""
+"  FILE       Optional path to a .e4m file to open on startup.\n"
+"\n"
 msgstr ""

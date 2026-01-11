@@ -3,6 +3,7 @@
 #include "Exporter.hpp"
 #include "NodeEditDialog.hpp"
 #include "Utils.hpp"  // Include our utility functions
+#include "MapSerializer.hpp" // Include for MapSerializer
 #include <algorithm>
 #include <cstdlib> // For std::getenv
 
@@ -42,7 +43,7 @@ void MainWindow::on_reset_view() {
 
 void MainWindow::save_internal(const std::string& path) {
     try {
-        m_Map->saveToFile(path);
+        MapSerializer::save(m_Map, path);
         m_currentFilename = path;
         set_title(_("E4maps - ") + Glib::path_get_basename(path));
         setModified(false);  // Mark as not modified after successful save
@@ -64,7 +65,7 @@ void MainWindow::save_internal(const std::string& path) {
 
 void MainWindow::open_file_internal(const std::string& path) {
     try {
-        auto newMap = MindMap::loadFromFile(path);
+        auto newMap = MapSerializer::load(path);
         if (!newMap || !newMap->root) {
             throw std::runtime_error("File contains no valid mind map data");
         }
@@ -511,7 +512,7 @@ void MainWindow::on_help_guide() {
         std::filesystem::path exePath(path);
         // Go up from MacOS/executable to Contents/Resources/share/doc/e4maps/
         std::filesystem::path docPath = exePath.parent_path().parent_path() / "Resources" / "share" / "doc" / "e4maps" / filename;
-        
+
         if (std::filesystem::exists(docPath)) {
              path_str = docPath.string();
         } else {
@@ -573,5 +574,31 @@ void MainWindow::on_help_guide() {
     } else {
         Gtk::MessageDialog(*this, _("Help file not found."), false, Gtk::MESSAGE_ERROR).run();
     }
+}
+
+void MainWindow::on_create_connection() {
+    auto selectedNodes = m_Area.getSelectedNodes();
+
+    // Need at least 2 nodes selected to create a connection
+    if (selectedNodes.size() < 2) {
+        updateStatusBar(_("Please select at least 2 nodes to connect."));
+        return;
+    }
+
+    // Create connections between the first node and all other selected nodes
+    auto fromNode = selectedNodes[0];
+    for (size_t i = 1; i < selectedNodes.size(); i++) {
+        auto toNode = selectedNodes[i];
+
+        // Add the connection to the mind map
+        m_Map->addConnection(fromNode, toNode);
+    }
+
+    // Update the display
+    m_Area.invalidateLayout();
+    setModified(true);
+
+    std::string message = _("Created ") + std::to_string(selectedNodes.size() - 1) + _(" connection(s).");
+    updateStatusBar(message);
 }
 
