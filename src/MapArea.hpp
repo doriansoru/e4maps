@@ -25,12 +25,17 @@ class MapArea : public Gtk::DrawingArea {
 public:
     sigc::signal<void, std::shared_ptr<Node>> signal_edit_node;
     sigc::signal<void, GdkEventButton*, std::shared_ptr<Node>> signal_node_context_menu;
+    // New signal for connection context menu
+    sigc::signal<void, GdkEventButton*, void*> signal_connection_context_menu; // void* is Connection*
     sigc::signal<void> signal_map_modified;
 
     explicit MapArea(std::shared_ptr<MindMap> m);
     ~MapArea() override = default;
 
     std::shared_ptr<Node> getSelectedNode() const { return drawingContext.getSelectedNode(); }
+
+    // Returns currently selected connection (nullptr if none)
+    void* getSelectedConnection() const { return drawingContext.getSelectedConnection(); }
 
     const std::vector<std::shared_ptr<Node>>& getSelectedNodes() const { return drawingContext.getSelectedNodes(); }
 

@@ -30,6 +30,8 @@ private:
     std::shared_ptr<MindMap> map;
     std::shared_ptr<Node> selectedNode;  // Primary selected node
     std::vector<std::shared_ptr<Node>> selectedNodes;  // Multiple selected nodes
+    Connection* selectedConnection = nullptr; // Selected connection
+    Connection* hoveredConnection = nullptr;  // Connection under mouse
     MindMapDrawer drawer;
     
     // Threading
@@ -145,10 +147,27 @@ public:
     std::shared_ptr<Node> getSelectedNode() const { return selectedNode; }
 
     // Multi-selection methods
+    void setSelectedConnection(Connection* conn) {
+        selectedConnection = conn;
+        // If selecting a connection, we might want to clear node selection
+        if (conn) {
+            clearSelection();
+        }
+    }
+    
+    Connection* getSelectedConnection() const {
+        return selectedConnection;
+    }
+    
+    void clearConnectionSelection() {
+        selectedConnection = nullptr;
+    }
+
     void setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes) {
         selectedNodes = nodes;
         if (!nodes.empty()) {
             selectedNode = nodes[0]; // Set primary selection to first node
+            clearConnectionSelection(); // Clear connection selection when selecting nodes
         }
     }
 
@@ -160,6 +179,7 @@ public:
                 // Only set as primary if no selection existed before
                 if (selectedNodes.empty()) {
                     selectedNode = node; // Set as primary if it's the first selection
+                    clearConnectionSelection(); // Clear connection selection when selecting nodes
                 }
                 selectedNodes.push_back(node);
             }
@@ -184,6 +204,21 @@ public:
     void clearSelection() {
         selectedNodes.clear();
         selectedNode = nullptr;
+        // Do NOT clear connection selection here, as this is used when setting connection selection
+    }
+    
+    // Helper to clear everything
+    void clearAllSelection() {
+        clearSelection();
+        clearConnectionSelection();
+    }
+
+    void setHoveredConnection(Connection* conn) {
+        hoveredConnection = conn;
+    }
+    
+    Connection* getHoveredConnection() const {
+        return hoveredConnection;
     }
 
     bool isNodeSelected(std::shared_ptr<Node> node) const {
@@ -243,7 +278,7 @@ public:
         // Layout happens in background thread.
 
         // Draw the tree structure first (which includes both child connections and arbitrary connections)
-        drawer.drawNode(cr, map->root, 0, map->theme, selectedNode, selectedNodes, map->connections);
+        drawer.drawNode(cr, map->root, 0, map->theme, selectedNode, selectedNodes, map->connections, selectedConnection, hoveredConnection);
 
         // No need to draw arbitrary connections separately anymore since they're drawn with the tree
 
@@ -280,6 +315,11 @@ public:
     std::shared_ptr<Node> hitTest(double screenX, double screenY, int width, int height) {
         auto [worldX, worldY] = screenToWorld(screenX, screenY, width, height);
         return map->hitTest(worldX, worldY);
+    }
+    
+    Connection* hitTestConnection(double screenX, double screenY, int width, int height) {
+        auto [worldX, worldY] = screenToWorld(screenX, screenY, width, height);
+        return map->hitTestConnection(worldX, worldY);
     }
 };
 

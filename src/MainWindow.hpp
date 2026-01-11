@@ -42,6 +42,7 @@ class MainWindow : public Gtk::Window {
     
     // Context Menu
     Gtk::Menu m_NodeContextMenu;
+    Gtk::Menu m_ConnectionContextMenu; // Context menu for connections
 
     std::shared_ptr<MindMap> m_Map;
     MapArea m_Area;
@@ -101,6 +102,8 @@ private:
     void on_edit_theme();
     void on_help_guide();
     void on_create_connection();
+    void on_remove_connection();
+    void on_connection_context_menu(GdkEventButton* event, void* connection);
 
     // Inline editing methods
     void setupInlineEditor();

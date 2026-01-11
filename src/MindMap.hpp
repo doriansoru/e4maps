@@ -89,6 +89,11 @@ public:
 
     std::shared_ptr<Node> hitTest(double x, double y);
 
+    // Returns pointer to connection if found, nullptr otherwise.
+    // Since Connection is a struct in a vector, we return a pointer to the element in the vector.
+    // Warning: Pointer invalid if vector is resized (add/remove).
+    Connection* hitTestConnection(double x, double y, double tolerance = 5.0);
+
 
 
     // Methods for managing arbitrary connections

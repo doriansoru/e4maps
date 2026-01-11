@@ -270,7 +270,7 @@ void MindMapDrawer::drawArrow(const Cairo::RefPtr<Cairo::Context>& cr, double x,
     cr->restore();
 }
 
-void MindMapDrawer::drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode, const std::vector<std::shared_ptr<Node>>& selectedNodes, const std::vector<Connection>& connections) {
+void MindMapDrawer::drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode, const std::vector<std::shared_ptr<Node>>& selectedNodes, const std::vector<Connection>& connections, Connection* selectedConnection, Connection* hoveredConnection) {
     if (!node) return;
 
     NodeStyle style = theme.getStyle(depth);
@@ -311,7 +311,7 @@ void MindMapDrawer::drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::share
         // Skip drawing connection if nodes overlap (avoid division by zero and invalid matrix)
         if (dist < 0.1) {
             cr->restore();
-            drawNode(cr, child, depth + 1, theme, selectedNode, selectedNodes);
+            drawNode(cr, child, depth + 1, theme, selectedNode, selectedNodes, connections, selectedConnection, hoveredConnection);
             continue;
         }
 
@@ -510,11 +510,11 @@ void MindMapDrawer::drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::share
             cr->restore(); 
         }
         cr->restore();
-        drawNode(cr, child, depth + 1, theme, selectedNode, selectedNodes, connections);
+        drawNode(cr, child, depth + 1, theme, selectedNode, selectedNodes, connections, selectedConnection, hoveredConnection);
     }
 
     // Draw arbitrary connections from this node
-    drawArbitraryConnectionsForNode(cr, node, connections, theme, depth);
+    drawArbitraryConnectionsForNode(cr, node, connections, theme, depth, selectedConnection, hoveredConnection);
 
     // --- DRAW NODE ---
     cr->save();
@@ -622,7 +622,9 @@ void MindMapDrawer::drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::C
                                     std::shared_ptr<Node> node,
                                     const std::vector<Connection>& connections,
                                     const Theme& theme,
-                                    int depth) {
+                                    int depth,
+                                    Connection* selectedConnection,
+                                    Connection* hoveredConnection) {
     for (const auto& conn : connections) {
         if (!conn.from || !conn.to) continue;
         if (conn.from != node) continue;
@@ -638,6 +640,24 @@ void MindMapDrawer::drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::C
         }
 
         double connectionWidth = style.connectionWidth;
+        
+        // Highlight selected or hovered connection
+        if ((selectedConnection && selectedConnection == &conn) || (hoveredConnection && hoveredConnection == &conn)) {
+            cr->save();
+            if (selectedConnection == &conn) {
+                cr->set_source_rgba(0.2, 0.6, 1.0, 0.5); // Selection glow
+            } else {
+                cr->set_source_rgba(0.8, 0.8, 0.8, 0.4); // Hover glow (greyish)
+            }
+            
+            drawOrganicArrow(cr, conn.from->x, conn.from->y, conn.to->x, conn.to->y,
+                            conn.to->width, conn.to->height, connectionWidth * 3.0 + 4.0, 
+                            (selectedConnection == &conn) ? Cairo::SolidPattern::create_rgba(0.2, 0.6, 1.0, 0.5) : Cairo::SolidPattern::create_rgba(0.8, 0.8, 0.8, 0.4), 
+                            conn.color, depth);
+            cr->restore();
+            
+            if (selectedConnection == &conn) connectionWidth += 1.0; 
+        }
 
         drawOrganicArrow(cr, conn.from->x, conn.from->y, conn.to->x, conn.to->y,
                         conn.to->width, conn.to->height, connectionWidth, colorPattern, connColor, depth);

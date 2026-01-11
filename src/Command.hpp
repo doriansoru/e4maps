@@ -206,6 +206,22 @@ public:
     const std::vector<std::shared_ptr<Node>>& getPastedNodes() const;
 };
 
+// Command to remove a connection
+class RemoveConnectionCommand : public Command {
+private:
+    std::shared_ptr<MindMap> map;
+    std::shared_ptr<Node> from;
+    std::shared_ptr<Node> to;
+    Connection connectionCopy; // Store a copy of the connection to restore properties on undo
+    bool executed;
+
+public:
+    RemoveConnectionCommand(std::shared_ptr<MindMap> m, std::shared_ptr<Node> f, std::shared_ptr<Node> t);
+    void execute() override;
+    void undo() override;
+    std::string getName() const override;
+};
+
 // Command Manager to handle undo/redo
 class CommandManager {
 private:

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: e4maps 1.0.0\n"
 "Report-Msgid-Bugs-To: doriansoru@gmail.com\n"
 "POT-Creation-Date: 2026-01-10 16:04+0100\n"
-"PO-Revision-Date: 2026-01-10 16:05+0100\n"
+"PO-Revision-Date: 2026-01-11 09:18+0100\n"
 "Last-Translator: Dorian Soru <doriansoru@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Language: it\n"
@@ -38,7 +38,7 @@ msgstr "Rimuovi collegamento"
 
 #: src/MainWindow_UI.cpp:50 src/MainWindow.cpp:316
 msgid "Add Branch"
-msgstr "Aggiungi collegamento"
+msgstr "Aggiungi nodo figlio"
 
 #: src/MainWindow_UI.cpp:59
 msgid "Open Recent"

@@ -18,10 +18,10 @@ public:
     void calculateNodeDimensions(std::shared_ptr<Node> node, const Theme& theme, const Cairo::RefPtr<Cairo::Context>& cr, int depth);
 
     // Main draw function
-    void drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode = nullptr, const std::vector<std::shared_ptr<Node>>& selectedNodes = {}, const std::vector<Connection>& connections = {});
+    void drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode = nullptr, const std::vector<std::shared_ptr<Node>>& selectedNodes = {}, const std::vector<Connection>& connections = {}, Connection* selectedConnection = nullptr, Connection* hoveredConnection = nullptr);
 
     // Draw arbitrary connections
-    void drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, const std::vector<Connection>& connections, const Theme& theme, int depth);
+    void drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, const std::vector<Connection>& connections, const Theme& theme, int depth, Connection* selectedConnection = nullptr, Connection* hoveredConnection = nullptr);
 
     // Clear the image cache
     static void clearImageCache();

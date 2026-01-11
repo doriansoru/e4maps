@@ -35,6 +35,12 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
     // Handle node selection and dragging
     auto clickedNode = drawingContext.hitTest(event->x, event->y, width, height);
 
+    // If no node clicked, check for connections
+    Connection* clickedConnection = nullptr;
+    if (!clickedNode) {
+        clickedConnection = drawingContext.hitTestConnection(event->x, event->y, width, height);
+    }
+
     // Handle Right Click (Context Menu)
     if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
         if (clickedNode) {
@@ -45,11 +51,19 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
             // Emit signal for main window to show menu
             signal_node_context_menu.emit(event, clickedNode);
             return true; // Stop propagation
+        } else if (clickedConnection) {
+            // Select connection
+            drawingContext.setSelectedConnection(clickedConnection);
+            queue_draw();
+            
+            // Emit signal for main window to show connection context menu
+            signal_connection_context_menu.emit(event, clickedConnection);
+            return true;
         }
     }
 
     // Check if Ctrl is pressed for panning - BUT only if not clicking on a node
-    if ((event->state & GDK_CONTROL_MASK) && !clickedNode) {
+    if ((event->state & GDK_CONTROL_MASK) && !clickedNode && !clickedConnection) {
         return handlePanningStart(event);
     }
     
@@ -62,11 +76,22 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
     
     if (clickedNode) {
         return handleNodeSelection(event, clickedNode);
+    } else if (clickedConnection) {
+        // Handle connection selection
+        bool isCtrlPressed = (event->state & GDK_CONTROL_MASK) != 0;
+        if (!isCtrlPressed) {
+            drawingContext.setSelectedConnection(clickedConnection);
+        } else {
+             // Ctrl + click on connection currently acts as regular selection
+             // (Multi-selection of connections not yet supported)
+             drawingContext.setSelectedConnection(clickedConnection);
+        }
+        isDragging = false;
     } else {
         // Clicked on empty space - clear selection
         bool isCtrlPressed = (event->state & GDK_CONTROL_MASK) != 0;
         if (!isCtrlPressed) {
-            drawingContext.clearSelection();
+            drawingContext.clearAllSelection();
         }
         isDragging = false;
     }
@@ -157,21 +182,38 @@ bool MapArea::on_motion_notify_event(GdkEventMotion* event) {
     if (isPanning) {
         return handlePanningMove(event);
     } else if (isPreDragging && !isDragging) {
-        // Check if mouse has moved beyond drag threshold to start actual dragging
-        const double DRAG_THRESHOLD = 3.0; // Threshold in pixels to start dragging
+        // ... (existing drag logic) ...
+        const double DRAG_THRESHOLD = 3.0;
         double distance = sqrt(pow(event->x - dragStartX, 2) + pow(event->y - dragStartY, 2));
 
         if (distance >= DRAG_THRESHOLD) {
-            // Mouse has moved beyond threshold, start actual dragging
             isDragging = true;
-            isFirstDragMotion = true;  // Reset for this drag operation
-            // No need to re-select here as the node is already selected from button press
+            isFirstDragMotion = true;
         } else {
-            // Mouse hasn't moved enough, still in pre-drag state
             return true;
         }
     } else if (isDragging) {
         return handleNodeDragMove(event);
+    } else {
+        // Not dragging or panning: handle Hover effects
+        Gtk::Allocation allocation = get_allocation();
+        Connection* hovered = drawingContext.hitTestConnection(event->x, event->y, allocation.get_width(), allocation.get_height());
+        
+        Connection* currentHovered = drawingContext.getHoveredConnection();
+        if (hovered != currentHovered) {
+            drawingContext.setHoveredConnection(hovered);
+            
+            // Change cursor to hand if hovering over a connection
+            auto window = get_window();
+            if (window) {
+                if (hovered) {
+                    window->set_cursor(Gdk::Cursor::create(Gdk::HAND2));
+                } else {
+                    window->set_cursor(); // Reset to default
+                }
+            }
+            queue_draw();
+        }
     }
     return false;
 }

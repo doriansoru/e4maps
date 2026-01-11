@@ -98,7 +98,7 @@ void MainWindow::initHeaderBar() {
     menu->append(*itemCreateConnection);
 
     menu->append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
-    
+
     // --- Theme Section ---
     auto itemEditTheme = Gtk::manage(new Gtk::MenuItem(_("Edit Theme...")));
     itemEditTheme->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_edit_theme));

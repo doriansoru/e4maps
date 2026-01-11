@@ -26,6 +26,8 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
     m_Area.signal_edit_node.connect(sigc::mem_fun(*this, &MainWindow::open_edit_dialog));
     m_Area.signal_map_modified.connect(sigc::mem_fun(*this, &MainWindow::on_map_modified));
     m_Area.signal_node_context_menu.connect(sigc::mem_fun(*this, &MainWindow::on_node_context_menu));
+    // Connect connection context menu signal
+    m_Area.signal_connection_context_menu.connect(sigc::mem_fun(*this, &MainWindow::on_connection_context_menu));
     m_Area.set_hexpand(true); m_Area.set_vexpand(true);
     
     // Setup Overlay for inline editing
@@ -91,8 +93,16 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
     }
     // Check for Delete key
     if (event->keyval == GDK_KEY_Delete) {
-        on_remove_node();
-        return true; // Event handled
+        // If a node is selected, remove node
+        if (m_Area.getSelectedNode()) {
+            on_remove_node();
+            return true;
+        }
+        // If a connection is selected, remove connection
+        if (m_Area.getSelectedConnection()) {
+            on_remove_connection();
+            return true;
+        }
     }
     
     // Check for F2 to start inline editing
@@ -326,6 +336,39 @@ void MainWindow::on_node_context_menu(GdkEventButton* event, std::shared_ptr<Nod
 
     m_NodeContextMenu.show_all();
     m_NodeContextMenu.popup(event->button, event->time);
+}
+
+void MainWindow::on_connection_context_menu(GdkEventButton* event, void* connection) {
+    if (!connection) return;
+
+    // Clear existing items
+    auto children = m_ConnectionContextMenu.get_children();
+    for (auto* child : children) {
+        m_ConnectionContextMenu.remove(*child);
+    }
+
+    // 1. Remove Connection
+    auto itemRemove = Gtk::manage(new Gtk::MenuItem(_("Remove Connection")));
+    itemRemove->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_remove_connection));
+    m_ConnectionContextMenu.append(*itemRemove);
+
+    m_ConnectionContextMenu.show_all();
+    m_ConnectionContextMenu.popup(event->button, event->time);
+}
+
+void MainWindow::on_remove_connection() {
+    auto connPtr = static_cast<Connection*>(m_Area.getSelectedConnection());
+    if (!connPtr) return;
+
+    // Find the connection in the map to verify it exists and get its nodes
+    // Note: We need to find shared_ptrs for from/to nodes to use in command
+    
+    // Create and execute command
+    auto cmd = std::make_unique<RemoveConnectionCommand>(m_Map, connPtr->from, connPtr->to);
+    m_commandManager.executeCommand(std::move(cmd));
+    
+    m_Area.invalidateLayout();
+    setModified(true);
 }
 
 // Method to set modified status and update window title

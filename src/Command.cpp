@@ -607,6 +607,39 @@ void PasteMultipleNodesCommand::applyOffsetToSubtree(std::shared_ptr<Node> node,
     }
 }
 
+// RemoveConnectionCommand
+RemoveConnectionCommand::RemoveConnectionCommand(std::shared_ptr<MindMap> m, std::shared_ptr<Node> f, std::shared_ptr<Node> t)
+    : map(m), from(f), to(t), connectionCopy(f, t), executed(false) {
+    // Try to find existing connection to copy its properties for undo
+    if (map) {
+        for (const auto& conn : map->connections) {
+            if (conn.from == from && conn.to == to) {
+                connectionCopy = conn; // Store copy
+                break;
+            }
+        }
+    }
+}
+
+void RemoveConnectionCommand::execute() {
+    if (!executed && map) {
+        map->removeConnection(from, to);
+        executed = true;
+    }
+}
+
+void RemoveConnectionCommand::undo() {
+    if (executed && map) {
+        // Restore connection
+        map->connections.push_back(connectionCopy);
+        executed = false;
+    }
+}
+
+std::string RemoveConnectionCommand::getName() const {
+    return _("Remove Connection");
+}
+
 // CommandManager
 void CommandManager::executeCommand(std::unique_ptr<Command> cmd) {
     cmd->execute();
