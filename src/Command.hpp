@@ -53,8 +53,8 @@ private:
     std::shared_ptr<Node> node;
     std::string oldText, newText;
     std::string oldFontDesc, newFontDesc;
-    Color oldColor, newColor;
-    Color oldTextColor, newTextColor;
+    E4Color oldColor, newColor;
+    E4Color oldTextColor, newTextColor;
     std::string oldImagePath, newImagePath;
     int oldImgWidth, newImgWidth;
     int oldImgHeight, newImgHeight;
@@ -74,8 +74,8 @@ public:
     EditNodeCommand(std::shared_ptr<Node> nodeToEdit,
                     const std::string& oldTxt, const std::string& newTxt,
                     const std::string& oldFont, const std::string& newFont,
-                    Color oldCol, Color newCol,
-                    Color oldTxtCol, Color newTxtCol,
+                    E4Color oldCol, E4Color newCol,
+                    E4Color oldTxtCol, E4Color newTxtCol,
                     const std::string& oldImgPath, const std::string& newImgPath,
                     int oldW, int newW, int oldH, int newH,
                     const std::string& oldConnTxt, const std::string& newConnTxt,
@@ -217,6 +217,20 @@ private:
 
 public:
     RemoveConnectionCommand(std::shared_ptr<MindMap> m, std::shared_ptr<Node> f, std::shared_ptr<Node> t);
+    void execute() override;
+    void undo() override;
+    std::string getName() const override;
+};
+
+// Command to group multiple commands into a single atomic action (Batch)
+class MacroCommand : public Command {
+private:
+    std::vector<std::unique_ptr<Command>> commands;
+    std::string name;
+
+public:
+    MacroCommand(std::string cmdName);
+    void addCommand(std::unique_ptr<Command> cmd);
     void execute() override;
     void undo() override;
     std::string getName() const override;

@@ -84,29 +84,30 @@ void MapSerializer::save(std::shared_ptr<MindMap> map, const std::string& filena
     // Save Connections
     auto connectionsElement = doc.NewElement(TAG_CONNECTIONS);
     for (const auto& conn : map->connections) {
+        if (!conn) continue;
         auto connElement = doc.NewElement(TAG_CONNECTION);
 
         // Find indices of from and to nodes to store references
-        int fromIndex = findNodeIndex(map->root, conn.from);
-        int toIndex = findNodeIndex(map->root, conn.to);
+        int fromIndex = findNodeIndex(map->root, conn->from);
+        int toIndex = findNodeIndex(map->root, conn->to);
 
         if (fromIndex != -1 && toIndex != -1) {
             connElement->SetAttribute(ATTR_FROM, fromIndex);
             connElement->SetAttribute(ATTR_TO, toIndex);
 
             // Save connection properties
-            if (!conn.text.empty()) {
-                connElement->SetAttribute(ATTR_TEXT, conn.text.c_str());
+            if (!conn->text.empty()) {
+                connElement->SetAttribute(ATTR_TEXT, conn->text.c_str());
             }
-            if (!conn.imagePath.empty()) {
-                connElement->SetAttribute(ATTR_IMG, conn.imagePath.c_str());
+            if (!conn->imagePath.empty()) {
+                connElement->SetAttribute(ATTR_IMG, conn->imagePath.c_str());
             }
-            connElement->SetAttribute(ATTR_R, (int)(conn.color.r*255));
-            connElement->SetAttribute(ATTR_G, (int)(conn.color.g*255));
-            connElement->SetAttribute(ATTR_B, (int)(conn.color.b*255));
+            connElement->SetAttribute(ATTR_R, (int)(conn->color.r*255));
+            connElement->SetAttribute(ATTR_G, (int)(conn->color.g*255));
+            connElement->SetAttribute(ATTR_B, (int)(conn->color.b*255));
 
-            if (conn.overrideFont && !conn.fontDesc.empty()) {
-                connElement->SetAttribute(ATTR_FONT, conn.fontDesc.c_str());
+            if (conn->overrideFont && !conn->fontDesc.empty()) {
+                connElement->SetAttribute(ATTR_FONT, conn->fontDesc.c_str());
                 connElement->SetAttribute("override_font", 1);
             }
 
@@ -166,24 +167,24 @@ std::shared_ptr<MindMap> MapSerializer::load(const std::string& filename) {
                     auto toNode = findNodeById(map->root, toId);
 
                     if (fromNode && toNode) {
-                        Connection conn(fromNode, toNode);
+                        auto conn = std::make_shared<Connection>(fromNode, toNode);
 
                         // Load connection properties
                         const char* text = connElement->Attribute(ATTR_TEXT);
-                        if (text) conn.text = text;
+                        if (text) conn->text = text;
 
                         const char* image = connElement->Attribute(ATTR_IMG);
-                        if (image) conn.imagePath = image;
+                        if (image) conn->imagePath = image;
 
                         int r = connElement->IntAttribute(ATTR_R, 0);
                         int g = connElement->IntAttribute(ATTR_G, 0);
                         int b = connElement->IntAttribute(ATTR_B, 0);
-                        conn.color = {r/255.0, g/255.0, b/255.0};
+                        conn->color = {r/255.0, g/255.0, b/255.0};
 
                         const char* font = connElement->Attribute(ATTR_FONT);
                         if (font) {
-                            conn.fontDesc = font;
-                            conn.overrideFont = connElement->IntAttribute("override_font", 0) == 1;
+                            conn->fontDesc = font;
+                            conn->overrideFont = connElement->IntAttribute("override_font", 0) == 1;
                         }
 
                         map->connections.push_back(conn);
@@ -318,7 +319,7 @@ std::shared_ptr<Node> MapSerializer::xmlToNode(tinyxml2::XMLElement* element) {
     std::string connFontStr = conn_font ? conn_font : "";
     std::string cimgStr = cimg ? cimg : "";
 
-    auto node = std::make_shared<Node>(textStr, Color{r/255.0, g/255.0, b/255.0});
+    auto node = std::make_shared<Node>(textStr, E4Color{r/255.0, g/255.0, b/255.0});
     node->textColor = {tr/255.0, tg/255.0, tb/255.0};
     node->fontDesc = fontStr;
     node->imagePath = imgStr;

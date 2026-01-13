@@ -138,7 +138,7 @@ std::string MainWindow::generateCssForNode(std::shared_ptr<Node> node, double sc
     double tr = 0, tg = 0, tb = 0, ta = 1;
     double br = 1, bg = 1, bb = 1, ba = 1;
 
-    // Text Color
+    // Text E4Color
     if (node->overrideTextColor) {
         tr = node->textColor.r; tg = node->textColor.g; tb = node->textColor.b;
     } else {
@@ -146,7 +146,7 @@ std::string MainWindow::generateCssForNode(std::shared_ptr<Node> node, double sc
         if (solid) solid->get_rgba(tr, tg, tb, ta);
     }
 
-    // Background Color
+    // Background E4Color
     auto solidBg = Cairo::RefPtr<Cairo::SolidPattern>::cast_dynamic(style.backgroundColor);
     if (solidBg) solidBg->get_rgba(br, bg, bb, ba);
     
@@ -336,39 +336,6 @@ void MainWindow::on_node_context_menu(GdkEventButton* event, std::shared_ptr<Nod
 
     m_NodeContextMenu.show_all();
     m_NodeContextMenu.popup(event->button, event->time);
-}
-
-void MainWindow::on_connection_context_menu(GdkEventButton* event, void* connection) {
-    if (!connection) return;
-
-    // Clear existing items
-    auto children = m_ConnectionContextMenu.get_children();
-    for (auto* child : children) {
-        m_ConnectionContextMenu.remove(*child);
-    }
-
-    // 1. Remove Connection
-    auto itemRemove = Gtk::manage(new Gtk::MenuItem(_("Remove Connection")));
-    itemRemove->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_remove_connection));
-    m_ConnectionContextMenu.append(*itemRemove);
-
-    m_ConnectionContextMenu.show_all();
-    m_ConnectionContextMenu.popup(event->button, event->time);
-}
-
-void MainWindow::on_remove_connection() {
-    auto connPtr = static_cast<Connection*>(m_Area.getSelectedConnection());
-    if (!connPtr) return;
-
-    // Find the connection in the map to verify it exists and get its nodes
-    // Note: We need to find shared_ptrs for from/to nodes to use in command
-    
-    // Create and execute command
-    auto cmd = std::make_unique<RemoveConnectionCommand>(m_Map, connPtr->from, connPtr->to);
-    m_commandManager.executeCommand(std::move(cmd));
-    
-    m_Area.invalidateLayout();
-    setModified(true);
 }
 
 // Method to set modified status and update window title

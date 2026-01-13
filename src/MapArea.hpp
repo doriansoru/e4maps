@@ -26,7 +26,7 @@ public:
     sigc::signal<void, std::shared_ptr<Node>> signal_edit_node;
     sigc::signal<void, GdkEventButton*, std::shared_ptr<Node>> signal_node_context_menu;
     // New signal for connection context menu
-    sigc::signal<void, GdkEventButton*, void*> signal_connection_context_menu; // void* is Connection*
+    sigc::signal<void, GdkEventButton*, std::shared_ptr<Connection>> signal_connection_context_menu; 
     sigc::signal<void> signal_map_modified;
 
     explicit MapArea(std::shared_ptr<MindMap> m);
@@ -35,13 +35,16 @@ public:
     std::shared_ptr<Node> getSelectedNode() const { return drawingContext.getSelectedNode(); }
 
     // Returns currently selected connection (nullptr if none)
-    void* getSelectedConnection() const { return drawingContext.getSelectedConnection(); }
+    std::shared_ptr<Connection> getSelectedConnection() const { return drawingContext.getSelectedConnection(); }
 
     const std::vector<std::shared_ptr<Node>>& getSelectedNodes() const { return drawingContext.getSelectedNodes(); }
 
     void setMap(std::shared_ptr<MindMap> m);
 
     void setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes);
+    
+    // Wrapper for clearing connection selection
+    void clearConnectionSelection() { drawingContext.clearConnectionSelection(); }
     
     double getScale() const { return drawingContext.getViewport().scale; }
 

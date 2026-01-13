@@ -36,7 +36,7 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
     auto clickedNode = drawingContext.hitTest(event->x, event->y, width, height);
 
     // If no node clicked, check for connections
-    Connection* clickedConnection = nullptr;
+    std::shared_ptr<Connection> clickedConnection = nullptr;
     if (!clickedNode) {
         clickedConnection = drawingContext.hitTestConnection(event->x, event->y, width, height);
     }
@@ -119,39 +119,27 @@ bool MapArea::handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> c
         isDragging = false;
         isPreDragging = false;
     } else {
-        // Regular click - if the clicked node is already selected AND there are multiple selections,
-        // drag all selected nodes; otherwise, select only this node
+        // Regular click - if the clicked node is already selected, don't clear others
+        // to allow dragging the whole group.
         bool isAlreadySelected = drawingContext.isNodeSelected(clickedNode);
-        bool hasMultipleSelection = drawingContext.getSelectedNodesCount() > 1;
 
-        if (isAlreadySelected && hasMultipleSelection) {
-            // The clicked node is part of a multi-selection, prepare to drag all selected nodes
-            // Set it as the primary selected node to bring it to front if needed
-            drawingContext.setSelectedNode(clickedNode);  // This ensures clicked node becomes primary selection
-
-            // Prepare for potential dragging with threshold
-            isPreDragging = true;  // Indicate potential drag, will confirm on motion
-            isDragging = false;    // Actual dragging hasn't started yet
-            isFirstDragMotion = true;  // Reset for this potential drag operation
-            dragStartX = event->x;
-            dragStartY = event->y;
-            // Store original position of the clicked node to calculate movement
-            nodeStartX = clickedNode->x;
-            nodeStartY = clickedNode->y;
+        if (!isAlreadySelected) {
+            // Select only this node
+            drawingContext.setSelectedNodes({clickedNode});
         } else {
-            // Select only this node - this handles single clicks properly
-            drawingContext.setSelectedNode(clickedNode);
-
-            // Prepare for potential dragging with threshold
-            isPreDragging = true;  // Indicate potential drag, will confirm on motion
-            isDragging = false;    // Actual dragging hasn't started yet
-            isFirstDragMotion = true;  // Reset for this potential drag operation
-            dragStartX = event->x;
-            dragStartY = event->y;
-            // Store original node position in world coordinates
-            nodeStartX = clickedNode->x;
-            nodeStartY = clickedNode->y;
+            // If already selected, just make it the primary selected node WITHOUT clearing the list
+            drawingContext.setSelectedNodeWithoutClearing(clickedNode);
         }
+
+        // Prepare for potential dragging with threshold
+        isPreDragging = true;  // Indicate potential drag, will confirm on motion
+        isDragging = false;    // Actual dragging hasn't started yet
+        isFirstDragMotion = true;  // Reset for this potential drag operation
+        dragStartX = event->x;
+        dragStartY = event->y;
+        // Store original node position in world coordinates
+        nodeStartX = clickedNode->x;
+        nodeStartY = clickedNode->y;
     }
 
     // Queue redraw to update visual representation of selection immediately
@@ -197,9 +185,9 @@ bool MapArea::on_motion_notify_event(GdkEventMotion* event) {
     } else {
         // Not dragging or panning: handle Hover effects
         Gtk::Allocation allocation = get_allocation();
-        Connection* hovered = drawingContext.hitTestConnection(event->x, event->y, allocation.get_width(), allocation.get_height());
+        auto hovered = drawingContext.hitTestConnection(event->x, event->y, allocation.get_width(), allocation.get_height());
         
-        Connection* currentHovered = drawingContext.getHoveredConnection();
+        auto currentHovered = drawingContext.getHoveredConnection();
         if (hovered != currentHovered) {
             drawingContext.setHoveredConnection(hovered);
             
@@ -264,16 +252,24 @@ bool MapArea::handleNodeDragMove(GdkEventMotion* event) {
         prevMouseWorldY = worldCurrentY;
     }
 
-    // Move all selected nodes by the same delta
+    // Move all selected nodes by the same delta, BUT only if their parent isn't also selected
+    // to avoid moving subtrees multiple times.
     for (auto& node : selectedNodes) {
         if (node) {
-            // Apply the incremental offset to the current node position
-            node->x += deltaX;
-            node->y += deltaY;
-            node->manualPosition = true;
+            bool parentIsSelected = false;
+            if (auto p = node->parent.lock()) {
+                parentIsSelected = drawingContext.isNodeSelected(p);
+            }
 
-            // Move the entire subtree by the same incremental offset
-            moveSubtree(node, deltaX, deltaY);
+            if (!parentIsSelected) {
+                // Apply the incremental offset to the current node position
+                node->x += deltaX;
+                node->y += deltaY;
+                node->manualPosition = true;
+
+                // Move the entire subtree by the same incremental offset
+                moveSubtree(node, deltaX, deltaY);
+            }
         }
     }
 

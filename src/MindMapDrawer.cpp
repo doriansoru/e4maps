@@ -117,7 +117,7 @@ void MindMapDrawer::drawOrganicArrow(const Cairo::RefPtr<Cairo::Context>& cr,
                         double nodeWidth, double nodeHeight,
                         double width,
                         const Cairo::RefPtr<Cairo::Pattern>& color,
-                        Color arrowColor,
+                        E4Color arrowColor,
                         int depth) {
 
     cr->save();
@@ -249,7 +249,7 @@ void MindMapDrawer::drawOrganicArrow(const Cairo::RefPtr<Cairo::Context>& cr,
     cr->restore();
 }
 
-void MindMapDrawer::drawArrow(const Cairo::RefPtr<Cairo::Context>& cr, double x, double y, double angle, double size, Color color) {
+void MindMapDrawer::drawArrow(const Cairo::RefPtr<Cairo::Context>& cr, double x, double y, double angle, double size, E4Color color) {
     cr->save();
     cr->set_source_rgb(color.r, color.g, color.b);
     cr->set_line_width(2.0);
@@ -270,7 +270,7 @@ void MindMapDrawer::drawArrow(const Cairo::RefPtr<Cairo::Context>& cr, double x,
     cr->restore();
 }
 
-void MindMapDrawer::drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode, const std::vector<std::shared_ptr<Node>>& selectedNodes, const std::vector<Connection>& connections, Connection* selectedConnection, Connection* hoveredConnection) {
+void MindMapDrawer::drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode, const std::vector<std::shared_ptr<Node>>& selectedNodes, const std::vector<std::shared_ptr<Connection>>& connections, std::shared_ptr<Connection> selectedConnection, std::shared_ptr<Connection> hoveredConnection) {
     if (!node) return;
 
     NodeStyle style = theme.getStyle(depth);
@@ -356,7 +356,7 @@ void MindMapDrawer::drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::share
             double tipX = p3x + std::cos(exitAngle) * distToBoundary;
             double tipY = p3y + std::sin(exitAngle) * distToBoundary;
 
-            Color arrowColor = {0, 0, 0};
+            E4Color arrowColor = {0, 0, 0};
             auto solidPattern = Cairo::RefPtr<Cairo::SolidPattern>::cast_dynamic(connColor); // Use the effective connection color
             if (solidPattern) {
                 double r, g, b, a;
@@ -620,20 +620,21 @@ void MindMapDrawer::drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::share
 
 void MindMapDrawer::drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::Context>& cr,
                                     std::shared_ptr<Node> node,
-                                    const std::vector<Connection>& connections,
+                                    const std::vector<std::shared_ptr<Connection>>& connections,
                                     const Theme& theme,
                                     int depth,
-                                    Connection* selectedConnection,
-                                    Connection* hoveredConnection) {
+                                    std::shared_ptr<Connection> selectedConnection,
+                                    std::shared_ptr<Connection> hoveredConnection) {
     for (const auto& conn : connections) {
-        if (!conn.from || !conn.to) continue;
-        if (conn.from != node) continue;
+        if (!conn) continue;
+        if (!conn->from || !conn->to) continue;
+        if (conn->from != node) continue;
 
         NodeStyle style = theme.getStyle(depth);
-        Color connColor = conn.color;
+        E4Color connColor = conn->color;
         Cairo::RefPtr<Cairo::Pattern> colorPattern;
 
-        if (conn.overrideFont) {
+        if (conn->overrideFont) {
             colorPattern = Cairo::SolidPattern::create_rgb(connColor.r, connColor.g, connColor.b);
         } else {
             colorPattern = style.connectionColor;
@@ -642,65 +643,68 @@ void MindMapDrawer::drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::C
         double connectionWidth = style.connectionWidth;
         
         // Highlight selected or hovered connection
-        if ((selectedConnection && selectedConnection == &conn) || (hoveredConnection && hoveredConnection == &conn)) {
+        bool isSelected = (selectedConnection && selectedConnection == conn);
+        bool isHovered = (hoveredConnection && hoveredConnection == conn);
+
+        if (isSelected || isHovered) {
             cr->save();
-            if (selectedConnection == &conn) {
+            if (isSelected) {
                 cr->set_source_rgba(0.2, 0.6, 1.0, 0.5); // Selection glow
             } else {
                 cr->set_source_rgba(0.8, 0.8, 0.8, 0.4); // Hover glow (greyish)
             }
             
-            drawOrganicArrow(cr, conn.from->x, conn.from->y, conn.to->x, conn.to->y,
-                            conn.to->width, conn.to->height, connectionWidth * 3.0 + 4.0, 
-                            (selectedConnection == &conn) ? Cairo::SolidPattern::create_rgba(0.2, 0.6, 1.0, 0.5) : Cairo::SolidPattern::create_rgba(0.8, 0.8, 0.8, 0.4), 
-                            conn.color, depth);
+            drawOrganicArrow(cr, conn->from->x, conn->from->y, conn->to->x, conn->to->y,
+                            conn->to->width, conn->to->height, connectionWidth * 3.0 + 4.0, 
+                            (isSelected) ? Cairo::SolidPattern::create_rgba(0.2, 0.6, 1.0, 0.5) : Cairo::SolidPattern::create_rgba(0.8, 0.8, 0.8, 0.4), 
+                            conn->color, depth);
             cr->restore();
             
-            if (selectedConnection == &conn) connectionWidth += 1.0; 
+            if (isSelected) connectionWidth += 1.0; 
         }
 
-        drawOrganicArrow(cr, conn.from->x, conn.from->y, conn.to->x, conn.to->y,
-                        conn.to->width, conn.to->height, connectionWidth, colorPattern, connColor, depth);
+        drawOrganicArrow(cr, conn->from->x, conn->from->y, conn->to->x, conn->to->y,
+                        conn->to->width, conn->to->height, connectionWidth, colorPattern, connColor, depth);
 
-        if (!conn.text.empty() || !conn.imagePath.empty()) {
-            double dx = conn.to->x - conn.from->x;
-            double dy = conn.to->y - conn.from->y;
+        if (!conn->text.empty() || !conn->imagePath.empty()) {
+            double dx = conn->to->x - conn->from->x;
+            double dy = conn->to->y - conn->from->y;
             double distance = std::sqrt(dx * dx + dy * dy);
 
             double perpX = -dy / distance;
             double perpY = dx / distance;
 
             double curveOffset = (distance / 4.0) * (1.0 - (depth * 0.1));
-            unsigned int seed = (unsigned int)((conn.from->x + conn.from->y + conn.to->x + conn.to->y) * 1000);
+            unsigned int seed = (unsigned int)((conn->from->x + conn->from->y + conn->to->x + conn->to->y) * 1000);
             double rand_offset = ((seed % 1000) / 1000.0 - 0.5) * 0.3;
             curveOffset *= (1.0 + rand_offset);
 
-            double midX = (conn.from->x + conn.to->x) / 2.0;
-            double midY = (conn.from->y + conn.to->y) / 2.0;
+            double midX = (conn->from->x + conn->to->x) / 2.0;
+            double midY = (conn->from->y + conn->to->y) / 2.0;
             double ctrlX = midX + perpX * curveOffset;
             double ctrlY = midY + perpY * curveOffset;
 
             double t = 0.5;
 
             Pango::FontDescription conn_font;
-            if (conn.overrideFont && !conn.fontDesc.empty()) {
-                conn_font = Pango::FontDescription(conn.fontDesc);
+            if (conn->overrideFont && !conn->fontDesc.empty()) {
+                conn_font = Pango::FontDescription(conn->fontDesc);
             } else {
                 conn_font = theme.getStyle(depth).connectionFontDescription;
             }
 
             auto layout = Pango::Layout::create(cr);
-            Utils::setPangoLayoutText(layout, conn.text);
+            Utils::setPangoLayoutText(layout, conn->text);
             layout->set_font_description(conn_font);
 
             int textW, textH;
             layout->get_pixel_size(textW, textH);
 
-            double mx = (1-t)*(1-t)*conn.from->x + 2*(1-t)*t*ctrlX + t*t*conn.to->x;
-            double my = (1-t)*(1-t)*conn.from->y + 2*(1-t)*t*ctrlY + t*t*conn.to->y;
+            double mx = (1-t)*(1-t)*conn->from->x + 2*(1-t)*t*ctrlX + t*t*conn->to->x;
+            double my = (1-t)*(1-t)*conn->from->y + 2*(1-t)*t*ctrlY + t*t*conn->to->y;
 
-            double tangentX = 2*(1-t)*(ctrlX - conn.from->x) + 2*t*(conn.to->x - ctrlX);
-            double tangentY = 2*(1-t)*(ctrlY - conn.from->y) + 2*t*(conn.to->y - ctrlY);
+            double tangentX = 2*(1-t)*(ctrlX - conn->from->x) + 2*t*(conn->to->x - ctrlX);
+            double tangentY = 2*(1-t)*(ctrlY - conn->from->y) + 2*t*(conn->to->y - ctrlY);
             double tangent_angle = std::atan2(tangentY, tangentX);
 
             cr->save();
@@ -714,21 +718,21 @@ void MindMapDrawer::drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::C
             double totalContentWidth = 0;
             int tw = 0, th = 0;
 
-            if (!conn.imagePath.empty()) {
-                auto pb = getCachedImage(conn.imagePath, 24, 24);
+            if (!conn->imagePath.empty()) {
+                auto pb = getCachedImage(conn->imagePath, 24, 24);
                 if(pb) totalContentWidth += pb->get_width();
             }
 
-            if (!conn.text.empty()) {
+            if (!conn->text.empty()) {
                 Pango::FontDescription conn_font_local;
-                if (conn.overrideFont && !conn.fontDesc.empty()) {
-                    conn_font_local = Pango::FontDescription(conn.fontDesc);
+                if (conn->overrideFont && !conn->fontDesc.empty()) {
+                    conn_font_local = Pango::FontDescription(conn->fontDesc);
                 } else {
                     conn_font_local = theme.getStyle(depth).connectionFontDescription;
                 }
 
                 auto layout_local = Pango::Layout::create(cr);
-                Utils::setPangoLayoutText(layout_local, conn.text);
+                Utils::setPangoLayoutText(layout_local, conn->text);
                 layout_local->set_font_description(conn_font_local);
                 layout_local->get_pixel_size(tw, th);
                 totalContentWidth += tw;
@@ -737,8 +741,8 @@ void MindMapDrawer::drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::C
             double currentX = -totalContentWidth / 2.0;
             double padding = 2.0;
 
-            if (!conn.imagePath.empty()) {
-                auto pb = getCachedImage(conn.imagePath, 24, 24);
+            if (!conn->imagePath.empty()) {
+                auto pb = getCachedImage(conn->imagePath, 24, 24);
                 if (pb) {
                     Gdk::Cairo::set_source_pixbuf(cr, pb, currentX, -pb->get_height() - padding);
                     cr->paint();
@@ -746,10 +750,10 @@ void MindMapDrawer::drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::C
                 }
             }
 
-            if (!conn.text.empty()) {
+            if (!conn->text.empty()) {
                 Pango::FontDescription conn_font_local;
-                if (conn.overrideFont && !conn.fontDesc.empty()) {
-                    conn_font_local = Pango::FontDescription(conn.fontDesc);
+                if (conn->overrideFont && !conn->fontDesc.empty()) {
+                    conn_font_local = Pango::FontDescription(conn->fontDesc);
                 } else {
                     conn_font_local = theme.getStyle(depth).connectionFontDescription;
                 }
@@ -760,7 +764,7 @@ void MindMapDrawer::drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::C
 
                 cr->set_source_rgb(0.3, 0.3, 0.3);
                 auto layout_local = Pango::Layout::create(cr);
-                Utils::setPangoLayoutText(layout_local, conn.text);
+                Utils::setPangoLayoutText(layout_local, conn->text);
                 layout_local->set_font_description(conn_font_local);
                 cr->move_to(currentX, -th - padding);
                 layout_local->show_in_cairo_context(cr);

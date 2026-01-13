@@ -103,7 +103,7 @@ private:
     void on_help_guide();
     void on_create_connection();
     void on_remove_connection();
-    void on_connection_context_menu(GdkEventButton* event, void* connection);
+    void on_connection_context_menu(GdkEventButton* event, std::shared_ptr<Connection> connection);
 
     // Inline editing methods
     void setupInlineEditor();

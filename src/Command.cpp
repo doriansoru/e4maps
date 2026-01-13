@@ -103,8 +103,8 @@ std::string RemoveNodeCommand::getName() const {
 EditNodeCommand::EditNodeCommand(std::shared_ptr<Node> nodeToEdit,
                 const std::string& oldTxt, const std::string& newTxt,
                 const std::string& oldFont, const std::string& newFont,
-                Color oldCol, Color newCol,
-                Color oldTxtCol, Color newTxtCol,
+                E4Color oldCol, E4Color newCol,
+                E4Color oldTxtCol, E4Color newTxtCol,
                 const std::string& oldImgPath, const std::string& newImgPath,
                 int oldW, int newW, int oldH, int newH,
                 const std::string& oldConnTxt, const std::string& newConnTxt,
@@ -613,8 +613,8 @@ RemoveConnectionCommand::RemoveConnectionCommand(std::shared_ptr<MindMap> m, std
     // Try to find existing connection to copy its properties for undo
     if (map) {
         for (const auto& conn : map->connections) {
-            if (conn.from == from && conn.to == to) {
-                connectionCopy = conn; // Store copy
+            if (conn->from == from && conn->to == to) {
+                connectionCopy = *conn; // Store copy of data
                 break;
             }
         }
@@ -631,13 +631,38 @@ void RemoveConnectionCommand::execute() {
 void RemoveConnectionCommand::undo() {
     if (executed && map) {
         // Restore connection
-        map->connections.push_back(connectionCopy);
+        auto newConn = std::make_shared<Connection>(connectionCopy);
+        map->connections.push_back(newConn);
         executed = false;
     }
 }
 
 std::string RemoveConnectionCommand::getName() const {
     return _("Remove Connection");
+}
+
+// MacroCommand
+MacroCommand::MacroCommand(std::string cmdName) : name(cmdName) {}
+
+void MacroCommand::addCommand(std::unique_ptr<Command> cmd) {
+    commands.push_back(std::move(cmd));
+}
+
+void MacroCommand::execute() {
+    for (auto& cmd : commands) {
+        cmd->execute();
+    }
+}
+
+void MacroCommand::undo() {
+    // Undo in reverse order
+    for (auto it = commands.rbegin(); it != commands.rend(); ++it) {
+        (*it)->undo();
+    }
+}
+
+std::string MacroCommand::getName() const {
+    return name;
 }
 
 // CommandManager

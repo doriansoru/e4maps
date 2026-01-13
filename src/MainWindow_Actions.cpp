@@ -290,7 +290,7 @@ void MainWindow::on_add_node() {
     auto selected = m_Area.getSelectedNode();
     if (!selected) return;
 
-    auto newNode = std::make_shared<Node>(_("New"), Color::random());
+    auto newNode = std::make_shared<Node>(_("New"), E4Color::random());
     
     // Give the new node a slight offset from the parent so it's not perfectly overlapping
     // The layout algorithm will refine this immediately, but a larger initial offset is better.
@@ -344,25 +344,31 @@ void MainWindow::on_remove_node() {
 
         if (nonRootNodes.empty()) return; // Only root was selected
 
+        auto macroCmd = std::make_unique<MacroCommand>(_("Remove Multiple Nodes"));
         // Process each non-root node for removal
         for (auto& node : nonRootNodes) {
             if (auto p = node->parent.lock()) {
                 auto removeCmd = std::make_unique<RemoveNodeCommand>(p, node);
-                m_commandManager.executeCommand(std::move(removeCmd));
+                macroCmd->addCommand(std::move(removeCmd));
             }
         }
+        
+        m_commandManager.executeCommand(std::move(macroCmd));
 
         m_Area.invalidateLayout();
         setModified(true);
     } else {
         // All selected nodes are non-root, remove them all
+        auto macroCmd = std::make_unique<MacroCommand>(_("Remove Multiple Nodes"));
         // Process each node for removal
         for (auto& node : selectedNodes) {
             if (auto p = node->parent.lock()) {
                 auto removeCmd = std::make_unique<RemoveNodeCommand>(p, node);
-                m_commandManager.executeCommand(std::move(removeCmd));
+                macroCmd->addCommand(std::move(removeCmd));
             }
         }
+        
+        m_commandManager.executeCommand(std::move(macroCmd));
 
         m_Area.invalidateLayout();
         setModified(true);
@@ -600,5 +606,35 @@ void MainWindow::on_create_connection() {
 
     std::string message = _("Created ") + std::to_string(selectedNodes.size() - 1) + _(" connection(s).");
     updateStatusBar(message);
+}
+
+void MainWindow::on_remove_connection() {
+    auto selectedConn = m_Area.getSelectedConnection();
+    if (selectedConn) {
+        // Use command to remove
+        auto cmd = std::make_unique<RemoveConnectionCommand>(m_Map, selectedConn->from, selectedConn->to);
+        m_commandManager.executeCommand(std::move(cmd));
+        m_Area.clearConnectionSelection(); // Deselect
+        m_Area.invalidateLayout();
+        setModified(true);
+    }
+}
+
+void MainWindow::on_connection_context_menu(GdkEventButton* event, std::shared_ptr<Connection> connection) {
+    if (!connection) return;
+
+    // Clear existing items
+    auto children = m_ConnectionContextMenu.get_children();
+    for (auto* child : children) {
+        m_ConnectionContextMenu.remove(*child);
+    }
+
+    // 1. Remove Connection
+    auto itemRemove = Gtk::manage(new Gtk::MenuItem(_("Remove Connection")));
+    itemRemove->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_remove_connection));
+    m_ConnectionContextMenu.append(*itemRemove);
+
+    m_ConnectionContextMenu.show_all();
+    m_ConnectionContextMenu.popup(event->button, event->time);
 }
 

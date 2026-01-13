@@ -95,7 +95,7 @@ NodeEditDialog::NodeEditDialog(Gtk::Window& parent, std::shared_ptr<Node> node)
     // Connect key press event for Shift+Enter handling
     m_entryText.signal_key_press_event().connect(sigc::mem_fun(*this, &NodeEditDialog::on_text_key_press), false);
 
-    // 2. Font and Text Color
+    // 2. Font and Text E4Color
     Gtk::Label* lblFont = Gtk::manage(new Gtk::Label(_("Font:")));
     m_btnFont.set_font_name(node->fontDesc);
     grid->attach(*lblFont, 0, 1, 1, 1); 
@@ -238,12 +238,12 @@ std::string NodeEditDialog::getNewFont() const {
     return m_btnFont.get_font_name();
 }
 
-Color NodeEditDialog::getNewTextColor() const {
+E4Color NodeEditDialog::getNewTextColor() const {
     auto rgba = m_btnTextColor.get_rgba();
     return {rgba.get_red(), rgba.get_green(), rgba.get_blue()};
 }
 
-Color NodeEditDialog::getNewColor() const {
+E4Color NodeEditDialog::getNewColor() const {
     if (m_node->isRoot()) return m_node->color;
     auto rgba = m_colorBtnConn.get_rgba();
     return {rgba.get_red(), rgba.get_green(), rgba.get_blue()};
@@ -303,7 +303,7 @@ std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
         newOvrF = true;
     }
 
-    Color newTxtColor = m_origTextColor;
+    E4Color newTxtColor = m_origTextColor;
     bool newOvrT = m_checkOvrTextColor.get_active();
     
     // Always update color if override is active, or if it was changed
@@ -313,7 +313,7 @@ std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
     // If newOvrT is false, the color value effectively becomes irrelevant (theme used),
     // but we preserve the last selected color in case they re-enable it later.
 
-    Color newCol = m_origColor;
+    E4Color newCol = m_origColor;
     bool newOvrC = m_origOvrC;
     if (m_connColorChanged && !m_node->isRoot()) {
         newCol = getNewColor();

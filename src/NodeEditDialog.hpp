@@ -14,8 +14,8 @@ public:
 
     std::string getNewText() const;
     std::string getNewFont() const;
-    Color getNewTextColor() const;
-    Color getNewColor() const; // For connection color, returns original if root
+    E4Color getNewTextColor() const;
+    E4Color getNewColor() const; // For connection color, returns original if root
     std::string getNewConnText() const;
     
     // Returns validated path. Shows warning dialog if invalid.
@@ -36,8 +36,8 @@ private:
     // Original state for undo
     std::string m_origText;
     std::string m_origFont;
-    Color m_origColor;
-    Color m_origTextColor;
+    E4Color m_origColor;
+    E4Color m_origTextColor;
     std::string m_origImagePath;
     int m_origImgWidth;
     int m_origImgHeight;

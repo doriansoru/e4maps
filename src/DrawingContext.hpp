@@ -30,8 +30,8 @@ private:
     std::shared_ptr<MindMap> map;
     std::shared_ptr<Node> selectedNode;  // Primary selected node
     std::vector<std::shared_ptr<Node>> selectedNodes;  // Multiple selected nodes
-    Connection* selectedConnection = nullptr; // Selected connection
-    Connection* hoveredConnection = nullptr;  // Connection under mouse
+    std::shared_ptr<Connection> selectedConnection = nullptr; // Selected connection
+    std::shared_ptr<Connection> hoveredConnection = nullptr;  // Connection under mouse
     MindMapDrawer drawer;
     
     // Threading
@@ -144,10 +144,19 @@ public:
         }
     }
 
+    // New method to set primary selection without clearing the list
+    void setSelectedNodeWithoutClearing(std::shared_ptr<Node> node) {
+        selectedNode = node;
+        // Ensure it's in the list if not already
+        if (node && std::find(selectedNodes.begin(), selectedNodes.end(), node) == selectedNodes.end()) {
+            selectedNodes.push_back(node);
+        }
+    }
+
     std::shared_ptr<Node> getSelectedNode() const { return selectedNode; }
 
     // Multi-selection methods
-    void setSelectedConnection(Connection* conn) {
+    void setSelectedConnection(std::shared_ptr<Connection> conn) {
         selectedConnection = conn;
         // If selecting a connection, we might want to clear node selection
         if (conn) {
@@ -155,7 +164,7 @@ public:
         }
     }
     
-    Connection* getSelectedConnection() const {
+    std::shared_ptr<Connection> getSelectedConnection() const {
         return selectedConnection;
     }
     
@@ -213,11 +222,11 @@ public:
         clearConnectionSelection();
     }
 
-    void setHoveredConnection(Connection* conn) {
+    void setHoveredConnection(std::shared_ptr<Connection> conn) {
         hoveredConnection = conn;
     }
     
-    Connection* getHoveredConnection() const {
+    std::shared_ptr<Connection> getHoveredConnection() const {
         return hoveredConnection;
     }
 
@@ -317,7 +326,7 @@ public:
         return map->hitTest(worldX, worldY);
     }
     
-    Connection* hitTestConnection(double screenX, double screenY, int width, int height) {
+    std::shared_ptr<Connection> hitTestConnection(double screenX, double screenY, int width, int height) {
         auto [worldX, worldY] = screenToWorld(screenX, screenY, width, height);
         return map->hitTestConnection(worldX, worldY);
     }

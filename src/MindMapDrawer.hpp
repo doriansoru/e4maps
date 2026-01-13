@@ -18,10 +18,10 @@ public:
     void calculateNodeDimensions(std::shared_ptr<Node> node, const Theme& theme, const Cairo::RefPtr<Cairo::Context>& cr, int depth);
 
     // Main draw function
-    void drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode = nullptr, const std::vector<std::shared_ptr<Node>>& selectedNodes = {}, const std::vector<Connection>& connections = {}, Connection* selectedConnection = nullptr, Connection* hoveredConnection = nullptr);
+    void drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode = nullptr, const std::vector<std::shared_ptr<Node>>& selectedNodes = {}, const std::vector<std::shared_ptr<Connection>>& connections = {}, std::shared_ptr<Connection> selectedConnection = nullptr, std::shared_ptr<Connection> hoveredConnection = nullptr);
 
     // Draw arbitrary connections
-    void drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, const std::vector<Connection>& connections, const Theme& theme, int depth, Connection* selectedConnection = nullptr, Connection* hoveredConnection = nullptr);
+    void drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, const std::vector<std::shared_ptr<Connection>>& connections, const Theme& theme, int depth, std::shared_ptr<Connection> selectedConnection, std::shared_ptr<Connection> hoveredConnection);
 
     // Clear the image cache
     static void clearImageCache();
@@ -43,10 +43,10 @@ private:
                          double nodeWidth, double nodeHeight,
                          double width,
                          const Cairo::RefPtr<Cairo::Pattern>& color,
-                         Color arrowColor,
+                         E4Color arrowColor,
                          int depth);
 
-    void drawArrow(const Cairo::RefPtr<Cairo::Context>& cr, double x, double y, double angle, double size, Color color);
+    void drawArrow(const Cairo::RefPtr<Cairo::Context>& cr, double x, double y, double angle, double size, E4Color color);
 };
 
 #endif // MINDMAP_DRAWER_HPP
