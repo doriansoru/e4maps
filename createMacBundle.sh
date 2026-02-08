@@ -9,8 +9,17 @@
 set -e
 
 APP_NAME="e4maps"
-# Il percorso completo del tuo eseguibile compilato (CORREGGI SE DIVERSO)
-SOURCE_EXEC="./buildMac/e4maps"
+# Detect build directory
+if [ -d "./build" ] && [ -f "./build/e4maps" ]; then
+    BUILD_DIR="./build"
+elif [ -d "./buildMac" ] && [ -f "./buildMac/e4maps" ]; then
+    BUILD_DIR="./buildMac"
+else
+    echo "❌ Errore: Directory di build non trovata. Assicurati di aver compilato il progetto in ./build o ./buildMac."
+    exit 1
+fi
+
+SOURCE_EXEC="$BUILD_DIR/e4maps"
 OUTPUT_DIR="./distMac"
 # Nome interno del binario (per evitare conflitti con lo script launcher)
 REAL_EXEC_NAME="${APP_NAME}_bin"
@@ -138,10 +147,10 @@ if [ -d "./docs" ]; then
 fi
 
 # Traduzioni (.mo)
-if [ -d "./buildMac/po" ]; then
+if [ -d "$BUILD_DIR/po" ]; then
     echo "   -> Copia traduzioni..."
     mkdir -p "$RESOURCES/share/locale"
-    for lang_path in ./buildMac/po/*.mo;
+    for lang_path in "$BUILD_DIR"/po/*.mo;
     do
         if [ -f "$lang_path" ]; then
             lang_code=$(basename "$lang_path" .mo)
