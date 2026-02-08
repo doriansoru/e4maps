@@ -43,15 +43,24 @@ jobs:
     - name: Build
       run: cmake --build build --config Release --parallel 4
 
+    # --- SCREENSHOT (macOS ONLY) ---
+    - name: Run and Screenshot (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        echo "Starting app for screenshot..."
+        ./build/e4maps &
+        APP_PID=$!
+        sleep 15
+        screencapture -x screenshot-macos.png
+        kill $APP_PID || true
+        mkdir -p distMac/screenshots
+        mv screenshot-macos.png distMac/screenshots/
+
     # --- PACKAGING (macOS) ---
     - name: Package macOS App & DMG
       if: matrix.os == 'macos-latest'
       run: |
-        # Ensure the script is executable
         chmod +x createMacBundle.sh
-        # Run the bundling script
-        # Note: The script expects build executable at ./build/e4maps (CMake default on Mac/Linux)
-        # We might need to adjust paths if CMake puts it in Release subdirectory, but standard Unix build usually doesn't.
         ./createMacBundle.sh
 
     # --- PACKAGING (Linux) ---
@@ -68,9 +77,12 @@ jobs:
       if: matrix.os == 'macos-latest'
       uses: actions/upload-artifact@v4
       with:
-        name: e4maps-macOS-DMG
-        path: distMac/*.dmg
+        name: e4maps-macOS-Package
+        path: |
+          distMac/*.dmg
+          distMac/screenshots/*.png
 
+    # --- UPLOAD ARTIFACTS (Linux) ---
     - name: Upload Artifact (Linux)
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v4
