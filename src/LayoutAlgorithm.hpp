@@ -10,6 +10,9 @@ namespace LayoutAlgorithms {
     void calculateImprovedRadialLayout(std::shared_ptr<Node> node, double cx, double cy,
                                        double startAngle, double endAngle, int depth);
 
+    // Standard Tree/Hierarchical layout (Mind Map style)
+    void calculateTreeLayout(std::shared_ptr<Node> root);
+
     // Force-directed layout algorithm for better readability
     void calculateForceDirectedLayout(std::shared_ptr<Node> root, int width, int height);
 

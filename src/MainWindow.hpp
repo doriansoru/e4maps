@@ -21,6 +21,9 @@
 #include "Utils.hpp"  // Include for utility functions
 #include "ConfigManager.hpp"  // Include for configuration management
 #include "MapArea.hpp"  // Include for MapArea class definition
+#include "MapController.hpp" // Include MapController
+#include "SearchManager.hpp" // Include SearchManager
+#include "ExportManager.hpp" // Include ExportManager
 
 // Forward declarations to reduce dependencies
 class Node;
@@ -44,16 +47,28 @@ class MainWindow : public Gtk::Window {
     Gtk::Menu m_NodeContextMenu;
     Gtk::Menu m_ConnectionContextMenu; // Context menu for connections
 
-    std::shared_ptr<MindMap> m_Map;
+    // Search components
+    Gtk::SearchBar m_SearchBar;
+    Gtk::SearchEntry m_SearchEntry;
+    Gtk::Button m_ButtonFindNext;
+    Gtk::Button m_ButtonFindPrev;
+    
+    // Logic extracted to Managers
+    std::unique_ptr<SearchManager> m_searchManager;
+    std::unique_ptr<ExportManager> m_exportManager;
+
+    // Controller
+    std::unique_ptr<MapController> m_controller;
+    
     MapArea m_Area;
-    std::string m_currentFilename;
-    bool m_modified = false;  // Track if the document has been modified
-
-    // Command Manager for undo/redo functionality
-    CommandManager m_commandManager;
-
-    // Clipboard for cut/copy/paste functionality
-    std::vector<std::shared_ptr<Node>> m_clipboard;
+    // Removed direct state management (moved to Controller)
+    // std::shared_ptr<MindMap> m_Map;
+    // std::string m_currentFilename;
+    // bool m_modified = false;
+    // CommandManager m_commandManager;
+    // Clipboard
+    // std::vector<std::shared_ptr<Node>> m_clipboard;
+    // std::vector<std::shared_ptr<Connection>> m_clipboardConnections;
 
     // (1) Acceleratori
     Glib::RefPtr<Gtk::AccelGroup> m_refAccelGroup;
@@ -79,7 +94,7 @@ public:
     void openFile(const std::string& path) { open_file_internal(path); }
 
 private:
-    void save_internal(const std::string& path);
+    bool save_internal(const std::string& path);
     void open_file_internal(const std::string& path);
     void on_save();
     void on_save_as();
@@ -101,9 +116,24 @@ private:
     void on_paste();
     void on_edit_theme();
     void on_help_guide();
+    void on_auto_layout();
     void on_create_connection();
     void on_remove_connection();
+    void on_nodes_moved(const std::vector<std::shared_ptr<Node>>& nodes, const std::vector<std::pair<double, double>>& oldPos, const std::vector<std::pair<double, double>>& newPos);
     void on_connection_context_menu(GdkEventButton* event, std::shared_ptr<Connection> connection);
+    
+    // Auto-save logic
+    bool on_autosave_timeout();
+    void startAutoSaveTimer();
+    
+    // Keyboard shortcuts handlers from MapArea
+    void on_add_sibling_node();
+    
+    // Search methods
+    void on_search_toggled();
+    void on_search_text_changed();
+    void on_find_next();
+    void on_find_prev();
 
     // Inline editing methods
     void setupInlineEditor();
@@ -123,9 +153,7 @@ private:
     // Method to confirm save before exit
     bool confirmSaveChangesBeforeExit();
     bool on_save_as_dialog();
-    void handleExport(const std::string& format, const std::string& default_filename,
-                      std::function<void(Exporter&, std::shared_ptr<MindMap>, const std::string&, double)> render_func,
-                      double dpi);
+    // handleExport moved to ExportManager
 
     // Helper method for status bar
     void updateStatusBar(const std::string& message);

@@ -4,11 +4,19 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <pangomm.h>
 #include "Theme.hpp"
 
 // Forward declaration for Connection
-
 class Node;
+
+struct CachedLayoutData {
+    Glib::RefPtr<Pango::Layout> layout;
+    std::string text;
+    std::string fontDesc;
+    double width;
+    double height;
+};
 
 struct E4Color {
     double r, g, b;

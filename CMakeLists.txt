@@ -38,11 +38,6 @@ endif()
 include_directories(${GTKMM_INCLUDE_DIRS} ${CAIROMM_INCLUDE_DIRS})
 link_directories(${GTKMM_LIBRARY_DIRS} ${CAIROMM_LIBRARY_DIRS})
 
-# Define the locale directory for translations
-add_definitions(-DLOCALEDIR="${CMAKE_INSTALL_PREFIX}/share/locale")
-add_definitions(-DDOCDIR="${CMAKE_INSTALL_PREFIX}/share/doc/${PROJECT_NAME}")
-add_definitions(-DGETTEXT_PACKAGE="e4maps")
-
 # Add source files
 # Check if we're on Windows
 if(WIN32)
@@ -57,18 +52,26 @@ if(WIN32)
         src/MainWindow_Actions.cpp
         src/NodeEditDialog.cpp
         src/LayoutAlgorithm.cpp
+        src/SearchManager.cpp
+        src/ExportManager.cpp
+        src/NodeRenderer.cpp
         src/MindMap.cpp
         src/MapSerializer.cpp
+        src/MapController.cpp
         src/Theme.cpp
         src/ThemeEditor.cpp
         src/Utils.cpp
         src/ImageCache.cpp
         src/MindMapDrawer.cpp
+        src/Exporter.cpp
         src/Command.cpp
+        src/Command_Node.cpp
+        src/Command_Connection.cpp
+        src/Command_Clipboard.cpp
+        src/Command_Macro.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
         resources/e4maps.rc
     )
-    add_definitions(-DAPP_NAME_STR="\"${PROJECT_NAME}\"" )
 else()
     add_executable(e4maps
         src/main.cpp
@@ -79,21 +82,40 @@ else()
         src/MainWindow_Actions.cpp
         src/NodeEditDialog.cpp
         src/LayoutAlgorithm.cpp
+        src/SearchManager.cpp
+        src/ExportManager.cpp
+        src/NodeRenderer.cpp
         src/MindMap.cpp
         src/MapSerializer.cpp
+        src/MapController.cpp
         src/Theme.cpp
         src/ThemeEditor.cpp
         src/Utils.cpp
         src/ImageCache.cpp
         src/MindMapDrawer.cpp
+        src/Exporter.cpp
         src/Command.cpp
+        src/Command_Node.cpp
+        src/Command_Connection.cpp
+        src/Command_Clipboard.cpp
+        src/Command_Macro.cpp
         ${TINYXML2_SOURCE_DIR}/tinyxml2.cpp
     )
 endif()
 
+# Define compile-time macros
+target_compile_definitions(e4maps PRIVATE
+    LOCALEDIR="${CMAKE_INSTALL_PREFIX}/share/locale"
+    DOCDIR="${CMAKE_INSTALL_PREFIX}/share/doc/${PROJECT_NAME}"
+    APP_NAME_STR="${PROJECT_NAME}"
+)
+
 # Add header files to the executable target to ensure they are included in IDEs
 set(HEADER_FILES
     src/MainWindow.hpp
+    src/SearchManager.hpp
+    src/ExportManager.hpp
+    src/NodeRenderer.hpp
     src/NodeEditDialog.hpp
     src/Utils.hpp
     src/Exporter.hpp
@@ -229,3 +251,22 @@ add_custom_target(compile-translations ALL DEPENDS ${MO_FILES})
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/po/
         DESTINATION share/locale/
         FILES_MATCHING PATTERN "*.mo")
+
+# Trova la directory di completamento di bash usando pkg-config (metodo robusto)
+find_package(PkgConfig)
+if(PKG_CONFIG_FOUND)
+    pkg_check_modules(BASH_COMPLETION bash-completion)
+    if(BASH_COMPLETION_FOUND)
+        pkg_get_variable(BASH_COMPLETION_DIR bash-completion completionsdir)
+    else()
+        # Fallback se non trova pkg-config per bash-completion
+        set(BASH_COMPLETION_DIR "${CMAKE_INSTALL_PREFIX}/share/bash-completion/completions")
+    endif()
+else()
+    set(BASH_COMPLETION_DIR "${CMAKE_INSTALL_PREFIX}/share/bash-completion/completions")
+endif()
+
+# Installa lo script di completamento
+install(FILES e4maps-completion.bash
+        DESTINATION ${BASH_COMPLETION_DIR}
+        RENAME e4maps)

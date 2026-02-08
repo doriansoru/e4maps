@@ -261,7 +261,16 @@ tinyxml2::XMLElement* MapSerializer::nodeToXml(const Node* node, tinyxml2::XMLDo
 }
 
 std::shared_ptr<Node> MapSerializer::xmlToNode(tinyxml2::XMLElement* element) {
+    return xmlToNodeRecursive(element, 0);
+}
+
+std::shared_ptr<Node> MapSerializer::xmlToNodeRecursive(tinyxml2::XMLElement* element, int depth) {
     if (!element) return nullptr;
+    
+    const int MAX_RECURSION_DEPTH = 2000;
+    if (depth > MAX_RECURSION_DEPTH) {
+        throw std::runtime_error("Map too deep (recursion limit exceeded)");
+    }
 
     // Get attributes from the XML element
     const char* text = element->Attribute(ATTR_TEXT);
@@ -341,7 +350,7 @@ std::shared_ptr<Node> MapSerializer::xmlToNode(tinyxml2::XMLElement* element) {
     for (tinyxml2::XMLElement* childElement = element->FirstChildElement(TAG_NODE);
          childElement;
          childElement = childElement->NextSiblingElement(TAG_NODE)) {
-        auto childNode = xmlToNode(childElement);
+        auto childNode = xmlToNodeRecursive(childElement, depth + 1);
         if (childNode) {
             node->addChild(childNode);
         }

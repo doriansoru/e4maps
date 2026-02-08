@@ -55,6 +55,11 @@ Glib::RefPtr<Gdk::Pixbuf> ImageCache::getCachedImage(const std::string& path, in
             scaled_pixbuf = raw->scale_simple(targetW, targetH, Gdk::INTERP_BILINEAR);
         }
 
+        // Simple cache eviction policy: prevent infinite growth
+        if (cache.size() > 100) {
+            cache.clear();
+        }
+
         cache[key] = scaled_pixbuf;
         return scaled_pixbuf;
     } catch(const Glib::Exception& e) {

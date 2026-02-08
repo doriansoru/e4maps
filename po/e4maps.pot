@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e4maps 1.0.0\n"
 "Report-Msgid-Bugs-To: doriansoru@gmail.com\n"
-"POT-Creation-Date: 2026-01-12 09:28+0100\n"
+"POT-Creation-Date: 2026-02-08 09:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,344 +17,303 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16 src/MainWindow.cpp:349
+#: src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16 src/MainWindow.cpp:431
 msgid "New Map"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:22 src/MainWindow_Actions.cpp:115
+#: src/MainWindow_UI.cpp:22 src/MainWindow_Actions.cpp:99
 msgid "Open Map"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:28 src/MainWindow_Actions.cpp:92
-#: src/MainWindow.cpp:398
+#: src/MainWindow_UI.cpp:28 src/MainWindow_Actions.cpp:78
+#: src/MainWindow.cpp:481
 msgid "Save Map"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:44 src/MainWindow.cpp:332
+#: src/MainWindow_UI.cpp:44 src/MainWindow.cpp:411
 msgid "Remove Branch"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:50 src/MainWindow.cpp:326
+#: src/MainWindow_UI.cpp:50 src/MainWindow.cpp:405
 msgid "Add Branch"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:59
+#: src/MainWindow_UI.cpp:56
+msgid "Find..."
+msgstr ""
+
+#: src/MainWindow_UI.cpp:65
 msgid "Open Recent"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:68
+#: src/MainWindow_UI.cpp:74
 msgid "Undo"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:73
+#: src/MainWindow_UI.cpp:79
 msgid "Redo"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:80
+#: src/MainWindow_UI.cpp:86
 msgid "Cut"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:85
+#: src/MainWindow_UI.cpp:91
 msgid "Copy"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:90
+#: src/MainWindow_UI.cpp:96
 msgid "Paste"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:95
+#: src/MainWindow_UI.cpp:101
 msgid "Create Connection"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:103
+#: src/MainWindow_UI.cpp:109
 msgid "Edit Theme..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:110
+#: src/MainWindow_UI.cpp:116
 msgid "View"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:114
+#: src/MainWindow_UI.cpp:120
 msgid "Zoom In"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:119
+#: src/MainWindow_UI.cpp:125
 msgid "Zoom Out"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:124
+#: src/MainWindow_UI.cpp:130
 msgid "Reset View"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:132 src/MainWindow_Actions.cpp:138
-#: src/MainWindow_Actions.cpp:245
+#: src/MainWindow_UI.cpp:135
+msgid "Auto Layout"
+msgstr ""
+
+#: src/MainWindow_UI.cpp:143 src/ExportManager.cpp:17 src/ExportManager.cpp:115
 msgid "Export"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:136
+#: src/MainWindow_UI.cpp:147
 msgid "To PNG..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:140
+#: src/MainWindow_UI.cpp:151
 msgid "To PDF..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:144
+#: src/MainWindow_UI.cpp:155
 msgid "To Freeplane..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:150
+#: src/MainWindow_UI.cpp:161
 msgid "Save As..."
 msgstr ""
 
-#: src/MainWindow_UI.cpp:157
+#: src/MainWindow_UI.cpp:168
 msgid "User Guide"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:162
+#: src/MainWindow_UI.cpp:173
 msgid "About"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:166
+#: src/MainWindow_UI.cpp:177
 msgid "Quit"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:199
+#: src/MainWindow_UI.cpp:210
 msgid "E4Maps"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:200
+#: src/MainWindow_UI.cpp:211
 msgid "1.0.0"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:201
+#: src/MainWindow_UI.cpp:212
 msgid "Copyright (c) 2025 Dorian Soru <doriansoru@gmail.com>"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:202
+#: src/MainWindow_UI.cpp:213
 msgid "A simple mind mapping application"
 msgstr ""
 
-#: src/MainWindow_UI.cpp:205
+#: src/MainWindow_UI.cpp:216
 msgid "GitHub Repository"
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:48 src/MainWindow.cpp:345
-msgid "E4maps - "
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:52
+#: src/MainWindow_Actions.cpp:51
 msgid "Map saved successfully."
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:55
+#: src/MainWindow_Actions.cpp:54
 msgid "Error saving file: "
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:60
-msgid "Unknown error occurred while saving file: "
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:80
+#: src/MainWindow_Actions.cpp:65
 msgid "Error loading file: "
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:84
-msgid "Unknown error occurred while loading file: "
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:93 src/MainWindow_Actions.cpp:116
-#: src/MainWindow_Actions.cpp:137 src/MainWindow_Actions.cpp:244
-#: src/MainWindow.cpp:371 src/MainWindow.cpp:399 src/ThemeEditor.cpp:95
-#: src/NodeEditDialog.cpp:228
+#: src/MainWindow_Actions.cpp:79 src/MainWindow_Actions.cpp:100
+#: src/MainWindow.cpp:453 src/MainWindow.cpp:482 src/ThemeEditor.cpp:95
+#: src/NodeEditDialog.cpp:228 src/ExportManager.cpp:16
+#: src/ExportManager.cpp:114
 msgid "Cancel"
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:93 src/MainWindow.cpp:372 src/MainWindow.cpp:399
+#: src/MainWindow_Actions.cpp:79 src/MainWindow.cpp:454 src/MainWindow.cpp:482
 #: src/NodeEditDialog.cpp:229
 msgid "Save"
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:94
+#: src/MainWindow_Actions.cpp:80
 msgid "map.e4m"
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:116
+#: src/MainWindow_Actions.cpp:100
 msgid "Open"
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:117
+#: src/MainWindow_Actions.cpp:101
 msgid "e4maps files"
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:136 src/MainWindow_Actions.cpp:202
-msgid "Export to PNG"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:148
-msgid "Select resolution for PNG export:"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:152
-msgid "72 DPI (Screen)"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:153
-msgid "300 DPI (High Quality)"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:154
-msgid "600 DPI (Maximum Quality)"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:203
-msgid "PNG export completed successfully!"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:204
-msgid "Error during PNG export: "
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:206
-msgid "Export to PDF"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:207
-msgid "PDF export completed successfully!"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:208
-msgid "Error during PDF export: "
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:210
-msgid "Export to Freeplane"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:211
-msgid "Freeplane export completed successfully!"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:212
-msgid "Error during Freeplane export: "
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:257
-msgid "Freeplane files"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:262
-msgid "PNG images"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:267
-msgid "PDF documents"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:284
-msgid "Unknown error occurred."
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:293
+#: src/MainWindow_Actions.cpp:133 src/MainWindow_Actions.cpp:473
 msgid "New"
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:315 src/MainWindow.cpp:4
-msgid "MAIN IDEA"
+#: src/MainWindow_Actions.cpp:176 src/MainWindow_Actions.cpp:187
+msgid "Remove Multiple Nodes"
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:320 src/MainWindow.cpp:8
-msgid "E4maps - New Map"
-msgstr ""
-
-#: src/MainWindow_Actions.cpp:575
+#: src/MainWindow_Actions.cpp:327
 msgid "Help file not found."
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:584
+#: src/MainWindow_Actions.cpp:334
 msgid "Please select at least 2 nodes to connect."
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:601
+#: src/MainWindow_Actions.cpp:339
+msgid "Add Multiple Connections"
+msgstr ""
+
+#: src/MainWindow_Actions.cpp:351
 msgid "Created "
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:601
+#: src/MainWindow_Actions.cpp:351
 msgid " connection(s)."
 msgstr ""
 
-#: src/MainWindow_Actions.cpp:627 src/Command.cpp:641
+#: src/MainWindow_Actions.cpp:371
+msgid "Auto-layout (Tree) applied."
+msgstr ""
+
+#: src/MainWindow_Actions.cpp:398 src/Command_Connection.cpp:57
 msgid "Remove Connection"
 msgstr ""
 
-#: src/MainWindow.cpp:309
+#: src/MainWindow.cpp:13
+msgid "E4maps - New Map"
+msgstr ""
+
+#: src/MainWindow.cpp:31
+msgid "Previous Match"
+msgstr ""
+
+#: src/MainWindow.cpp:33
+msgid "Next Match"
+msgstr ""
+
+#: src/MainWindow.cpp:388
 msgid "Edit Text"
 msgstr ""
 
-#: src/MainWindow.cpp:316
+#: src/MainWindow.cpp:395
 msgid "Properties..."
 msgstr ""
 
-#: src/MainWindow.cpp:364
+#: src/MainWindow.cpp:425
+msgid "E4maps - "
+msgstr ""
+
+#: src/MainWindow.cpp:446
 msgid "The document contains unsaved changes."
 msgstr ""
 
-#: src/MainWindow.cpp:369
+#: src/MainWindow.cpp:451
 msgid "Do you want to save the changes?"
 msgstr ""
 
-#: src/MainWindow.cpp:370
+#: src/MainWindow.cpp:452
 msgid "Close without saving"
 msgstr ""
 
-#: src/main.cpp:24
+#: src/main.cpp:14
 msgid "Usage: "
 msgstr ""
 
-#: src/main.cpp:25
+#: src/main.cpp:15
+msgid "Options:\n"
+msgstr ""
+
+#: src/main.cpp:16
+msgid "  -h, --help               Show this help message\n"
+msgstr ""
+
+#: src/main.cpp:17
+msgid "  --convert-to FORMAT      Convert FILE to FORMAT (pdf, png, mm)\n"
+msgstr ""
+
+#: src/main.cpp:18
 msgid ""
-"  FILE       Optional path to a .e4m file to open on startup.\n"
+"  --auto-layout            Automatically space all elements in FILE\n"
 "\n"
 msgstr ""
 
-#: src/Command.cpp:64
-msgid "Add Node"
+#: src/main.cpp:19
+msgid "  FILE                     Path to a .e4m file to open or convert.\n"
 msgstr ""
 
-#: src/Command.cpp:99
-msgid "Remove Node"
+#: src/main.cpp:45
+msgid "Error: --convert-to requires a format (pdf, png, mm)\n"
 msgstr ""
 
-#: src/Command.cpp:180 src/NodeEditDialog.cpp:7
-msgid "Edit Node"
+#: src/main.cpp:63
+msgid "Error: No input file specified.\n"
 msgstr ""
 
-#: src/Command.cpp:205
-msgid "Move Node"
+#: src/main.cpp:72
+msgid "Error: Could not load map file: "
 msgstr ""
 
-#: src/Command.cpp:228
-msgid "Copy Node"
+#: src/main.cpp:77
+msgid "Applying auto-layout..."
 msgstr ""
 
-#: src/Command.cpp:265
-msgid "Cut Node"
+#: src/main.cpp:93
+msgid "Auto-layout applied and saved to "
 msgstr ""
 
-#: src/Command.cpp:302
-msgid "Paste Node"
+#: src/main.cpp:113
+msgid "Error: Unknown format: "
 msgstr ""
 
-#: src/Command.cpp:406
-msgid "Copy Multiple Nodes"
+#: src/main.cpp:113
+msgid ". Supported: pdf, png, mm\n"
 msgstr ""
 
-#: src/Command.cpp:470
-msgid "Cut Multiple Nodes"
+#: src/main.cpp:117
+msgid "Successfully converted "
 msgstr ""
 
-#: src/Command.cpp:521
-msgid "Paste Multiple Nodes"
+#: src/main.cpp:117
+msgid " to "
 msgstr ""
 
 #: src/MapSerializer.cpp:130
@@ -516,6 +475,10 @@ msgstr ""
 msgid "Connection Type:"
 msgstr ""
 
+#: src/NodeEditDialog.cpp:7 src/Command_Node.cpp:194
+msgid "Edit Node"
+msgstr ""
+
 #: src/NodeEditDialog.cpp:40
 msgid "Node Text:"
 msgstr ""
@@ -590,4 +553,132 @@ msgstr ""
 
 #: src/NodeEditDialog.cpp:288
 msgid "Connection Image"
+msgstr ""
+
+#: src/Command_Node.cpp:26
+msgid "Add Node"
+msgstr ""
+
+#: src/Command_Node.cpp:113
+msgid "Remove Node"
+msgstr ""
+
+#: src/Command_Node.cpp:219
+msgid "Move Node"
+msgstr ""
+
+#: src/Command_Node.cpp:258
+msgid "Move Multiple Nodes"
+msgstr ""
+
+#: src/Command_Connection.cpp:23
+msgid "Add Connection"
+msgstr ""
+
+#: src/Command_Clipboard.cpp:28
+msgid "Copy Node"
+msgstr ""
+
+#: src/Command_Clipboard.cpp:65
+msgid "Cut Node"
+msgstr ""
+
+#: src/Command_Clipboard.cpp:102
+msgid "Paste Node"
+msgstr ""
+
+#: src/Command_Clipboard.cpp:243
+msgid "Copy Multiple Nodes"
+msgstr ""
+
+#: src/Command_Clipboard.cpp:391
+msgid "Cut Multiple Nodes"
+msgstr ""
+
+#: src/Command_Clipboard.cpp:505
+msgid "Paste Multiple Nodes"
+msgstr ""
+
+#: src/MapController.cpp:12
+msgid "MAIN IDEA"
+msgstr ""
+
+#: src/SearchManager.cpp:33
+msgid "No matches found."
+msgstr ""
+
+#: src/SearchManager.cpp:36
+msgid " matches found."
+msgstr ""
+
+#: src/SearchManager.cpp:87
+msgid "Match "
+msgstr ""
+
+#: src/ExportManager.cpp:15 src/ExportManager.cpp:84
+msgid "Export to PNG"
+msgstr ""
+
+#: src/ExportManager.cpp:27
+msgid "Select resolution for PNG export:"
+msgstr ""
+
+#: src/ExportManager.cpp:31
+msgid "72 DPI (Screen)"
+msgstr ""
+
+#: src/ExportManager.cpp:32
+msgid "300 DPI (High Quality)"
+msgstr ""
+
+#: src/ExportManager.cpp:33
+msgid "600 DPI (Maximum Quality)"
+msgstr ""
+
+#: src/ExportManager.cpp:85
+msgid "PNG export completed successfully!"
+msgstr ""
+
+#: src/ExportManager.cpp:86
+msgid "Error during PNG export: "
+msgstr ""
+
+#: src/ExportManager.cpp:88
+msgid "Export to PDF"
+msgstr ""
+
+#: src/ExportManager.cpp:89
+msgid "PDF export completed successfully!"
+msgstr ""
+
+#: src/ExportManager.cpp:90
+msgid "Error during PDF export: "
+msgstr ""
+
+#: src/ExportManager.cpp:92
+msgid "Export to Freeplane"
+msgstr ""
+
+#: src/ExportManager.cpp:93
+msgid "Freeplane export completed successfully!"
+msgstr ""
+
+#: src/ExportManager.cpp:94
+msgid "Error during Freeplane export: "
+msgstr ""
+
+#: src/ExportManager.cpp:126
+msgid "Freeplane files"
+msgstr ""
+
+#: src/ExportManager.cpp:131
+msgid "PNG images"
+msgstr ""
+
+#: src/ExportManager.cpp:136
+msgid "PDF documents"
+msgstr ""
+
+#: src/ExportManager.cpp:152
+msgid "Unknown error occurred."
 msgstr ""

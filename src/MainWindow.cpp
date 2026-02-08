@@ -1,10 +1,15 @@
 #include "MainWindow.hpp"
 
 MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
-                   m_Map(std::make_shared<MindMap>(_("MAIN IDEA"))),
-                   m_Area(m_Map),
+                   m_controller(std::make_unique<MapController>()),
+                   m_Area(m_controller->getMap()),
                    m_StatusContextId(0)
 {
+    // Initialize Managers
+    m_searchManager = std::make_unique<SearchManager>(*m_controller, m_Area);
+    m_exportManager = std::make_unique<ExportManager>(*this);
+    m_exportManager->setStatusCallback([this](const std::string& msg){ updateStatusBar(msg); });
+    
     set_title(_("E4maps - New Map"));
     set_default_size(1024, 768);
 
@@ -15,6 +20,42 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
     // Setup HeaderBar
     initHeaderBar(); // Call initHeaderBar once, now that accelGroup is ready
     set_titlebar(m_HeaderBar);
+
+    // --- Search Bar Setup ---
+    m_SearchBar.connect_entry(m_SearchEntry);
+    
+    auto searchBox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+    searchBox->pack_start(m_SearchEntry, Gtk::PACK_EXPAND_WIDGET);
+    
+    m_ButtonFindPrev.set_image_from_icon_name("go-up-symbolic", Gtk::ICON_SIZE_BUTTON);
+    m_ButtonFindPrev.set_tooltip_text(_("Previous Match"));
+    m_ButtonFindNext.set_image_from_icon_name("go-down-symbolic", Gtk::ICON_SIZE_BUTTON);
+    m_ButtonFindNext.set_tooltip_text(_("Next Match"));
+    
+    auto navBox = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+    navBox->get_style_context()->add_class("linked");
+    navBox->pack_start(m_ButtonFindPrev, Gtk::PACK_SHRINK);
+    navBox->pack_start(m_ButtonFindNext, Gtk::PACK_SHRINK);
+    
+    searchBox->pack_start(*navBox, Gtk::PACK_SHRINK);
+    m_SearchBar.add(*searchBox);
+    
+    m_VBox.pack_start(m_SearchBar, Gtk::PACK_SHRINK);
+
+    // Connect search signals
+    m_SearchEntry.signal_search_changed().connect(sigc::mem_fun(*this, &MainWindow::on_search_text_changed));
+    m_ButtonFindNext.signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_find_next));
+    m_ButtonFindPrev.signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_find_prev));
+
+    // Setup Search Manager Callback
+    m_searchManager->setStatusCallback([this](const std::string& msg, bool isError) {
+        updateStatusBar(msg);
+        if (isError) {
+            m_SearchEntry.get_style_context()->add_class("error");
+        } else {
+            m_SearchEntry.get_style_context()->remove_class("error");
+        }
+    });
 
     // Add status bar
     m_StatusBar.set_margin_top(2);
@@ -28,8 +69,30 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
     m_Area.signal_node_context_menu.connect(sigc::mem_fun(*this, &MainWindow::on_node_context_menu));
     // Connect connection context menu signal
     m_Area.signal_connection_context_menu.connect(sigc::mem_fun(*this, &MainWindow::on_connection_context_menu));
+    // Connect the move signal for Undo support
+    m_Area.signal_nodes_moved.connect(sigc::mem_fun(*this, &MainWindow::on_nodes_moved));
+    // Connect keyboard shortcut signals
+    m_Area.signal_add_child_node.connect(sigc::mem_fun(*this, &MainWindow::on_add_node));
+    m_Area.signal_add_sibling_node.connect(sigc::mem_fun(*this, &MainWindow::on_add_sibling_node));
+
     m_Area.set_hexpand(true); m_Area.set_vexpand(true);
     
+    // Connect Controller Signals
+    m_controller->signal_map_changed.connect([this]() {
+        // Update View with new map
+        m_Area.setMap(m_controller->getMap());
+        // Update Title
+        setModified(m_controller->isModified());
+    });
+    
+    m_controller->signal_modified_changed.connect([this](bool mod) {
+        setModified(mod);
+    });
+    
+    m_controller->signal_layout_invalidated.connect([this]() {
+        m_Area.invalidateLayout();
+    });
+
     // Setup Overlay for inline editing
     m_Overlay.add(m_Area);
     
@@ -41,6 +104,8 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
     m_VBox.pack_start(m_StatusBar, Gtk::PACK_SHRINK);  // Add status bar at the bottom
 
     setModified(false);  // Initialize as not modified
+    startAutoSaveTimer(); // Start the auto-save mechanism
+    
     show_all();
     m_EditorScroll.hide(); // Ensure hidden after show_all
 }
@@ -119,6 +184,22 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
         on_create_connection();
         return true;
     }
+    
+    // Ctrl+F for Search
+    if (event->keyval == GDK_KEY_f && (event->state & GDK_CONTROL_MASK)) {
+        on_search_toggled();
+        return true;
+    }
+
+    // F3 for Find Next, Shift+F3 for Find Prev
+    if (event->keyval == GDK_KEY_F3) {
+        if (event->state & GDK_SHIFT_MASK) {
+            on_find_prev();
+        } else {
+            on_find_next();
+        }
+        return true;
+    }
 
     // Call base class's handler for other keys
     return Gtk::Window::on_key_press_event(event);
@@ -132,7 +213,7 @@ std::string MainWindow::generateCssForNode(std::shared_ptr<Node> node, double sc
     auto p = node->parent.lock();
     while(p) { depth++; p = p->parent.lock(); }
     
-    NodeStyle style = m_Map->theme.getStyle(depth);
+    NodeStyle style = m_controller->getMap()->theme.getStyle(depth);
     
     // Resolve Colors
     double tr = 0, tg = 0, tb = 0, ta = 1;
@@ -248,7 +329,6 @@ void MainWindow::finish_inline_edit(bool save) {
         std::string newText = m_InlineEditor.get_buffer()->get_text();
         if (newText != m_editingNode->text) {
             // Create command
-            // We pass current values as both old and new for non-text properties
             auto cmd = std::make_unique<EditNodeCommand>(
                 m_editingNode,
                 m_editingNode->text, newText,
@@ -267,9 +347,8 @@ void MainWindow::finish_inline_edit(bool save) {
                 m_editingNode->overrideConnFont, m_editingNode->overrideConnFont
             );
             
-            m_commandManager.executeCommand(std::move(cmd));
-            m_Area.invalidateLayout();
-            on_map_modified();
+            m_controller->executeCommand(std::move(cmd));
+            // m_Area layout is updated via signal connection
         }
     }
     
@@ -340,16 +419,19 @@ void MainWindow::on_node_context_menu(GdkEventButton* event, std::shared_ptr<Nod
 
 // Method to set modified status and update window title
 void MainWindow::setModified(bool modified) {
-    m_modified = modified;
-
+    // Note: MainWindow doesn't own m_modified anymore, but we still use this to update title
+    // Controller manages state, this just updates the view (title)
+    
     std::string baseTitle = _("E4maps - ");
-    if (!m_currentFilename.empty()) {
-        baseTitle += Glib::path_get_basename(m_currentFilename);
+    std::string filename = m_controller->getFilename();
+    
+    if (!filename.empty()) {
+        baseTitle += Glib::path_get_basename(filename);
     } else {
         baseTitle += _("New Map");
     }
 
-    if (m_modified) {
+    if (modified) {
         baseTitle += " *";  // Add asterisk to indicate unsaved changes
     }
 
@@ -358,7 +440,7 @@ void MainWindow::setModified(bool modified) {
 
 // Method to confirm save before exit
 bool MainWindow::confirmSaveChangesBeforeExit() {
-    if (!m_modified) return true;  // No changes to save, safe to exit
+    if (!m_controller->isModified()) return true;  // No changes to save, safe to exit
 
     Gtk::MessageDialog dialog(*this,
         _("The document contains unsaved changes."),
@@ -376,11 +458,12 @@ bool MainWindow::confirmSaveChangesBeforeExit() {
     switch(result) {
         case Gtk::RESPONSE_YES:
             // Try to save the file
-            if (!m_currentFilename.empty()) {
-                save_internal(m_currentFilename);
-                // If still modified after save (meaning error occurred), don't exit
-                if (m_modified) return false;  // Don't exit if save failed
-                return true;  // Exit if save was successful
+            if (!m_controller->getFilename().empty()) {
+                if (save_internal(m_controller->getFilename())) {
+                     return true; // Exit if save successful
+                } else {
+                     return false; // Don't exit if save failed
+                }
             } else {
                 // No filename, need to use save as dialog
                 return on_save_as_dialog();
@@ -408,8 +491,9 @@ bool MainWindow::on_save_as_dialog() {
     if (dialog.run() == Gtk::RESPONSE_OK) {
         std::string filename = dialog.get_filename();
         updateLastUsedDirectory(filename); // Update last directory after successful selection
-        save_internal(filename);
-        return true;  // Allow exit if save was successful
+        if (save_internal(filename)) {
+            return true;  // Allow exit if save was successful
+        }
     }
     return false;  // Cancel exit if save was cancelled
 }
@@ -431,8 +515,9 @@ std::string MainWindow::getLastUsedDirectoryForDialog() {
     }
 
     // If no last directory or it doesn't exist, use the directory of the current file
-    if (!m_currentFilename.empty()) {
-        std::filesystem::path currentPath(m_currentFilename);
+    std::string filename = m_controller->getFilename();
+    if (!filename.empty()) {
+        std::filesystem::path currentPath(filename);
         std::string currentDir = currentPath.parent_path().string();
         if (!currentDir.empty() && std::filesystem::exists(currentDir)) {
             return currentDir;

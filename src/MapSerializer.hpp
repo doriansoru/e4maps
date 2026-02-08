@@ -33,6 +33,9 @@ private:
 
     // Helper to create a Node from XML
     static std::shared_ptr<Node> xmlToNode(tinyxml2::XMLElement* element);
+
+    // Helper for recursive XML parsing with depth limit
+    static std::shared_ptr<Node> xmlToNodeRecursive(tinyxml2::XMLElement* element, int depth);
 };
 
 #endif // MAPSERIALIZER_HPP

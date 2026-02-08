@@ -34,14 +34,16 @@ public:
 // Command to remove a node
 class RemoveNodeCommand : public Command {
 private:
+    std::shared_ptr<MindMap> map; // Reference to map for connection handling
     std::shared_ptr<Node> parent;
     std::shared_ptr<Node> node;
     std::weak_ptr<Node> nodeRef;
     std::size_t position;
+    std::vector<Connection> removedConnections; // Backup of connections involving this node
     bool executed;
 
 public:
-    RemoveNodeCommand(std::shared_ptr<Node> parentNode, std::shared_ptr<Node> nodeToRemove);
+    RemoveNodeCommand(std::shared_ptr<MindMap> m, std::shared_ptr<Node> parentNode, std::shared_ptr<Node> nodeToRemove);
     void execute() override;
     void undo() override;
     std::string getName() const override;
@@ -106,6 +108,39 @@ public:
     std::string getName() const override;
 };
 
+// Command to move multiple nodes
+class MoveMultipleNodesCommand : public Command {
+private:
+    struct NodeMove {
+        std::shared_ptr<Node> node;
+        double oldX, oldY;
+        double newX, newY;
+    };
+    std::vector<NodeMove> moves;
+    bool executed;
+
+public:
+    MoveMultipleNodesCommand(const std::vector<std::shared_ptr<Node>>& nodes, const std::vector<std::pair<double, double>>& oldPositions, const std::vector<std::pair<double, double>>& newPositions);
+    void execute() override;
+    void undo() override;
+    std::string getName() const override;
+};
+
+// Command to add a connection
+class AddConnectionCommand : public Command {
+private:
+    std::shared_ptr<MindMap> map;
+    std::shared_ptr<Node> from;
+    std::shared_ptr<Node> to;
+    bool executed;
+
+public:
+    AddConnectionCommand(std::shared_ptr<MindMap> m, std::shared_ptr<Node> f, std::shared_ptr<Node> t);
+    void execute() override;
+    void undo() override;
+    std::string getName() const override;
+};
+
 // Command to copy a node (doesn't modify the map, just stores a copy)
 class CopyNodeCommand : public Command {
 private:
@@ -159,47 +194,59 @@ public:
 // Command to copy multiple nodes
 class CopyMultipleNodesCommand : public Command {
 private:
+    std::shared_ptr<MindMap> map;
     std::vector<std::shared_ptr<Node>> nodesToCopy;
     std::vector<std::shared_ptr<Node>> nodesCopy;
+    std::vector<std::shared_ptr<Connection>> connectionsCopy; // Copies of connections between copied nodes
     bool executed;
 
 public:
-    CopyMultipleNodesCommand(const std::vector<std::shared_ptr<Node>>& nodes);
+    CopyMultipleNodesCommand(std::shared_ptr<MindMap> m, const std::vector<std::shared_ptr<Node>>& nodes);
     void execute() override;
     void undo() override;
     std::string getName() const override;
     const std::vector<std::shared_ptr<Node>>& getNodesCopy() const;
+    const std::vector<std::shared_ptr<Connection>>& getConnectionsCopy() const;
 };
 
 // Command to cut multiple nodes
 class CutMultipleNodesCommand : public Command {
 private:
+    std::shared_ptr<MindMap> map;
     std::vector<std::pair<std::shared_ptr<Node>, std::shared_ptr<Node>>> parentChildPairs; // parent, child
     std::vector<std::shared_ptr<Node>> nodesCopy;
+    std::vector<std::shared_ptr<Connection>> connectionsCopy; // Copies of connections for clipboard
+    std::vector<std::shared_ptr<Connection>> removedConnections; // Original connections removed from map (for undo)
     std::vector<std::size_t> positions; // positions of nodes in their respective parents' children
     bool executed;
 
 public:
-    CutMultipleNodesCommand(const std::vector<std::shared_ptr<Node>>& nodes);
+    CutMultipleNodesCommand(std::shared_ptr<MindMap> m, const std::vector<std::shared_ptr<Node>>& nodes);
     void execute() override;
     void undo() override;
     std::string getName() const override;
     const std::vector<std::shared_ptr<Node>>& getNodesCopy() const;
+    const std::vector<std::shared_ptr<Connection>>& getConnectionsCopy() const;
 };
 
 // Command to paste multiple nodes to a parent
 class PasteMultipleNodesCommand : public Command {
 private:
+    std::shared_ptr<MindMap> map;
     std::shared_ptr<Node> parent;
     std::vector<std::shared_ptr<Node>> nodesToPaste;
+    std::vector<std::shared_ptr<Connection>> connectionsToPaste;
     std::vector<std::shared_ptr<Node>> actualPastedNodes; // Copied instances that get added to the map
+    std::vector<std::shared_ptr<Connection>> actualPastedConnections; // Connections added to map
     bool executed;
 
     std::pair<double, double> findNonOverlappingPosition(std::shared_ptr<Node> targetParent, std::shared_ptr<Node> nodeToPaste, const std::vector<std::shared_ptr<Node>>& otherPastedNodes);
     void applyOffsetToSubtree(std::shared_ptr<Node> node, double offsetX, double offsetY);
 
 public:
-    PasteMultipleNodesCommand(std::shared_ptr<Node> parentNode, const std::vector<std::shared_ptr<Node>>& nodes);
+    PasteMultipleNodesCommand(std::shared_ptr<MindMap> m, std::shared_ptr<Node> parentNode, 
+                             const std::vector<std::shared_ptr<Node>>& nodes,
+                             const std::vector<std::shared_ptr<Connection>>& conns = {});
     void execute() override;
     void undo() override;
     std::string getName() const override;
@@ -231,6 +278,20 @@ private:
 public:
     MacroCommand(std::string cmdName);
     void addCommand(std::unique_ptr<Command> cmd);
+    void execute() override;
+    void undo() override;
+    std::string getName() const override;
+};
+
+// Command to change theme
+class ChangeThemeCommand : public Command {
+private:
+    std::shared_ptr<MindMap> map;
+    Theme oldTheme, newTheme;
+    bool executed;
+
+public:
+    ChangeThemeCommand(std::shared_ptr<MindMap> m, const Theme& oldT, const Theme& newT);
     void execute() override;
     void undo() override;
     std::string getName() const override;

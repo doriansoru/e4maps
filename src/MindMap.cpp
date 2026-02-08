@@ -1,4 +1,5 @@
 #include "MindMap.hpp"
+#include "MindMapUtils.hpp"
 #include "Translation.hpp"
 #include "Utils.hpp"
 #include "Constants.hpp"
@@ -276,47 +277,25 @@ std::shared_ptr<Connection> MindMap::hitTestConnection(double x, double y, doubl
 
         auto p = conn->from->parent.lock();
 
-        while(p) { 
+                while(p) { 
 
-            depth++; 
+                    depth++; 
 
-            p = p->parent.lock(); 
+                    p = p->parent.lock(); 
 
-        }
-
-
-
-        double midX = (startX + endX) / 2.0;
-
-        double midY = (startY + endY) / 2.0;
-
-        double perpX = -dy / distance;
-
-        double perpY = dx / distance;
-
-
-
-        // MATCH MindMapDrawer::drawOrganicArrow logic exactly
-
-        double curveOffset = (distance / 4.0) * (1.0 - (depth * 0.1));
-
-        unsigned int seed = (unsigned int)((startX + startY + endX + endY) * 1000);
-
-        double rand_offset = ((seed % 1000) / 1000.0 - 0.5) * 0.3;
-
-        curveOffset *= (1.0 + rand_offset);
-
-
-
-        double ctrlX = midX + perpX * curveOffset;
-
-        double ctrlY = midY + perpY * curveOffset;
+                }
 
         
 
-        // Increase sampling steps from 20 to 50 for pixel-perfect precision
+                double ctrlX, ctrlY;
 
-        const int STEPS = 50;
+                MindMapUtils::calculateOrganicBezierControlPoint(startX, startY, endX, endY, depth, ctrlX, ctrlY);
+
+                
+
+                // Increase sampling steps from 20 to 50 for pixel-perfect precision
+
+                const int STEPS = 50;
 
         double minDstSq = std::numeric_limits<double>::max();
 

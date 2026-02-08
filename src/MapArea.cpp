@@ -9,8 +9,9 @@
 
 MapArea::MapArea(std::shared_ptr<MindMap> m) : drawingContext(m) {
     add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK |
-               Gdk::POINTER_MOTION_MASK | Gdk::SCROLL_MASK);
+               Gdk::POINTER_MOTION_MASK | Gdk::SCROLL_MASK | Gdk::KEY_PRESS_MASK);
     drawingContext.setRedrawCallback([this](){ this->queue_draw(); });
+    set_can_focus(true); // Enable focus for keyboard events
 }
 
 void MapArea::setMap(std::shared_ptr<MindMap> m) {
@@ -27,7 +28,114 @@ void MapArea::setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes) 
     queue_draw();
 }
 
+bool MapArea::on_key_press_event(GdkEventKey* event) {
+    // Handle Navigation
+    if (event->keyval == GDK_KEY_Left) {
+        navigateSelection(-1, 0);
+        return true;
+    } else if (event->keyval == GDK_KEY_Right) {
+        navigateSelection(1, 0);
+        return true;
+    } else if (event->keyval == GDK_KEY_Up) {
+        navigateSelection(0, -1);
+        return true;
+    } else if (event->keyval == GDK_KEY_Down) {
+        navigateSelection(0, 1);
+        return true;
+    } 
+    
+    // Handle shortcuts for adding nodes
+    if (event->keyval == GDK_KEY_Insert || event->keyval == GDK_KEY_Tab) {
+        signal_add_child_node.emit();
+        return true;
+    } else if (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter) {
+        // Shift+Enter could mean "add parent" or something else, but standard Enter is sibling
+        signal_add_sibling_node.emit();
+        return true;
+    }
+
+    return Gtk::DrawingArea::on_key_press_event(event);
+}
+
+void MapArea::navigateSelection(int directionX, int directionY) {
+    auto selectedNode = getSelectedNode();
+    if (!selectedNode) {
+        // If nothing selected, select root
+        auto map = drawingContext.getMap();
+        if (map && map->root) {
+            std::vector<std::shared_ptr<Node>> nodes = {map->root};
+            setSelectedNodes(nodes);
+            centerViewOnNode(map->root);
+        }
+        return;
+    }
+
+    // Find the best candidate node in the requested direction
+    // Algorithm:
+    // 1. Filter nodes that are in the correct general direction relative to current node
+    // 2. Score them based on distance and angle
+    
+    std::shared_ptr<Node> bestCandidate = nullptr;
+    double bestScore = std::numeric_limits<double>::max();
+
+    auto map = drawingContext.getMap();
+    if (!map || !map->root) return;
+
+    // Collect all nodes
+    std::vector<std::shared_ptr<Node>> allNodes;
+    std::function<void(std::shared_ptr<Node>)> collect = [&](std::shared_ptr<Node> n) {
+        allNodes.push_back(n);
+        for(auto& c : n->children) collect(c);
+    };
+    collect(map->root);
+
+    for (const auto& node : allNodes) {
+        if (node == selectedNode) continue;
+
+        double dx = node->x - selectedNode->x;
+        double dy = node->y - selectedNode->y;
+
+        // Check direction
+        bool correctDir = false;
+        if (directionX > 0) correctDir = (dx > 0);       // Right
+        else if (directionX < 0) correctDir = (dx < 0);  // Left
+        else if (directionY > 0) correctDir = (dy > 0);  // Down
+        else if (directionY < 0) correctDir = (dy < 0);  // Up
+        
+        if (!correctDir) continue;
+        
+        // Refinement: Ideally we want something primarily in that direction.
+        // E.g. for Right, we prefer small dy. 
+        
+        // Score calculation:
+        // Dist^2 + Penalty for perpendicular distance
+        double distSq = dx*dx + dy*dy;
+        
+        // Perpendicular component importance
+        double perpDistSq = 0;
+        if (directionX != 0) perpDistSq = dy*dy;
+        else perpDistSq = dx*dx;
+
+        // We weight perpendicular distance heavily to avoid jumping to a far-away node 
+        // that is technically "to the right" but visually unrelated.
+        double score = distSq + 5.0 * perpDistSq;
+
+        if (score < bestScore) {
+            bestScore = score;
+            bestCandidate = node;
+        }
+    }
+
+    if (bestCandidate) {
+        setSelectedNodes({bestCandidate});
+        centerViewOnNode(bestCandidate);
+    }
+}
+
 bool MapArea::on_button_press_event(GdkEventButton* event) {
+    // Ensure we grab focus on click so keyboard events work
+    if (!has_focus()) grab_focus();
+    
     Gtk::Allocation allocation = get_allocation();
     const int width = allocation.get_width();
     const int height = allocation.get_height();
@@ -69,6 +177,16 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
     
     if (event->type == GDK_2BUTTON_PRESS && clickedNode) {
         drawingContext.setSelectedNode(clickedNode);
+
+        // Reset all drag-related state since the modal dialog will consume
+        // the button release event.
+        isDragging = false;
+        isPreDragging = false;
+        isPanning = false;
+        isFirstDragMotion = true;
+        initialDragNodes.clear();
+        initialDragPositions.clear();
+
         signal_edit_node.emit(clickedNode);
         queue_draw();
         return true;
@@ -140,6 +258,13 @@ bool MapArea::handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> c
         // Store original node position in world coordinates
         nodeStartX = clickedNode->x;
         nodeStartY = clickedNode->y;
+
+        // Store initial positions of all selected nodes for Undo support
+        initialDragNodes = drawingContext.getSelectedNodes();
+        initialDragPositions.clear();
+        for (const auto& node : initialDragNodes) {
+            initialDragPositions.push_back({node->x, node->y});
+        }
     }
 
     // Queue redraw to update visual representation of selection immediately
@@ -157,12 +282,36 @@ bool MapArea::handlePanningStart(GdkEventButton* event) {
 }
 
 bool MapArea::on_button_release_event(GdkEventButton* event) {
+    if (isDragging) {
+        // Dragging finished, collect final positions and emit signal
+        std::vector<std::pair<double, double>> finalPositions;
+        for (const auto& node : initialDragNodes) {
+            finalPositions.push_back({node->x, node->y});
+        }
+        
+        // Only emit if there was an actual movement
+        bool moved = false;
+        for (size_t i = 0; i < finalPositions.size(); ++i) {
+            if (std::abs(finalPositions[i].first - initialDragPositions[i].first) > 0.1 ||
+                std::abs(finalPositions[i].second - initialDragPositions[i].second) > 0.1) {
+                moved = true;
+                break;
+            }
+        }
+        
+        if (moved) {
+            signal_nodes_moved.emit(initialDragNodes, initialDragPositions, finalPositions);
+        }
+    }
+
     // If we were in pre-drag state but didn't exceed threshold, node is selected but not dragged
     // If we were in actual dragging state, dragging stops
     isDragging = false;
     isPanning = false;
     isPreDragging = false;
     isFirstDragMotion = true;  // Reset for next drag operation
+    initialDragNodes.clear();
+    initialDragPositions.clear();
     return true;
 }
 
@@ -386,6 +535,21 @@ bool MapArea::getNodeScreenRect(std::shared_ptr<Node> node, Gdk::Rectangle& rect
     rect.set_height((int)std::ceil(screenH));
     
     return true;
+}
+
+void MapArea::centerViewOnNode(std::shared_ptr<Node> node) {
+    if (!node) return;
+
+    Viewport vp = drawingContext.getViewport();
+    
+    // Calculate offsets to center the node
+    // Formula derived from: screenX = width/2 + vp.offsetX + worldX * vp.scale
+    // We want screenX = width/2, so 0 = vp.offsetX + worldX * vp.scale
+    vp.offsetX = -node->x * vp.scale;
+    vp.offsetY = -node->y * vp.scale;
+
+    drawingContext.setViewport(vp);
+    queue_draw();
 }
 
 void MapArea::invalidateLayout() {

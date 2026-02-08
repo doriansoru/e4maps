@@ -51,6 +51,12 @@ void MainWindow::initHeaderBar() {
     btnAdd->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_add_node));
     m_HeaderBar.pack_end(*btnAdd);
 
+    auto btnSearch = Gtk::manage(new Gtk::Button());
+    btnSearch->set_image_from_icon_name("system-search-symbolic", Gtk::ICON_SIZE_BUTTON);
+    btnSearch->set_tooltip_text(_("Find..."));
+    btnSearch->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_search_toggled));
+    m_HeaderBar.pack_end(*btnSearch);
+
     // Create the menu model
     auto menu = Gtk::manage(new Gtk::Menu());
     btnMenu->set_popup(*menu);
@@ -125,6 +131,11 @@ void MainWindow::initHeaderBar() {
     itemReset->add_accelerator("activate", m_refAccelGroup, GDK_KEY_0, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
     itemReset->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_reset_view));
     viewSubMenu->append(*itemReset);
+
+    auto itemAutoLayout = Gtk::manage(new Gtk::MenuItem(_("Auto Layout")));
+    itemAutoLayout->add_accelerator("activate", m_refAccelGroup, GDK_KEY_l, (Gdk::ModifierType)(Gdk::CONTROL_MASK | Gdk::SHIFT_MASK), Gtk::ACCEL_VISIBLE);
+    itemAutoLayout->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_auto_layout));
+    viewSubMenu->append(*itemAutoLayout);
     
     menu->append(*itemView);
 

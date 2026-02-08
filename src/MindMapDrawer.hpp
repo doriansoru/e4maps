@@ -17,11 +17,18 @@ public:
     // Calculate node dimensions without drawing
     void calculateNodeDimensions(std::shared_ptr<Node> node, const Theme& theme, const Cairo::RefPtr<Cairo::Context>& cr, int depth);
 
-    // Main draw function
-    void drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode = nullptr, const std::vector<std::shared_ptr<Node>>& selectedNodes = {}, const std::vector<std::shared_ptr<Connection>>& connections = {}, std::shared_ptr<Connection> selectedConnection = nullptr, std::shared_ptr<Connection> hoveredConnection = nullptr);
+    // Main draw entry point
+    void drawMap(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> root, const Theme& theme, std::shared_ptr<Node> selectedNode = nullptr, const std::vector<std::shared_ptr<Node>>& selectedNodes = {}, const std::vector<std::shared_ptr<Connection>>& connections = {}, std::shared_ptr<Connection> selectedConnection = nullptr, std::shared_ptr<Connection> hoveredConnection = nullptr);
+
+    // Recursive helpers for two-pass rendering
+    void drawConnectionsRecursive(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, const std::vector<std::shared_ptr<Connection>>& connections, std::shared_ptr<Connection> selectedConnection, std::shared_ptr<Connection> hoveredConnection);
+    void drawNodesRecursive(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode, const std::vector<std::shared_ptr<Node>>& selectedNodes);
 
     // Draw arbitrary connections
     void drawArbitraryConnectionsForNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, const std::vector<std::shared_ptr<Connection>>& connections, const Theme& theme, int depth, std::shared_ptr<Connection> selectedConnection, std::shared_ptr<Connection> hoveredConnection);
+
+    // Main draw function (kept for backward compatibility if needed, but renamed/deprecated internally)
+    void drawNode(const Cairo::RefPtr<Cairo::Context>& cr, std::shared_ptr<Node> node, int depth, const Theme& theme, std::shared_ptr<Node> selectedNode = nullptr, const std::vector<std::shared_ptr<Node>>& selectedNodes = {}, const std::vector<std::shared_ptr<Connection>>& connections = {}, std::shared_ptr<Connection> selectedConnection = nullptr, std::shared_ptr<Connection> hoveredConnection = nullptr);
 
     // Clear the image cache
     static void clearImageCache();

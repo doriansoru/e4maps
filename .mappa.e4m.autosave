@@ -1,0 +1,93 @@
+<mindmap>
+    <theme name="StudyMode">
+        <level_styles>
+            <style bg="#E6E6FA" bg_hover="#CCCCCC" border="#000080" border_w="2" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans Bold 20" conn_font="Sans Italic 12" text_color="#000000" text_color_hover="#000000" corner_r="10" pad_h="25" pad_v="15" conn_color="#7F7F7F" conn_w="1" conn_dash="false" conn_type="1" level="0"/>
+            <style bg="#FFFFE0" bg_hover="#CCCCCC" border="#DAA520" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans Bold 14" conn_font="Sans Italic 12" text_color="#000000" text_color_hover="#000000" corner_r="5" pad_h="20" pad_v="10" conn_color="#7F7F7F" conn_w="1" conn_dash="false" conn_type="1" level="1"/>
+            <style bg="#FFFFFF" bg_hover="#CCCCCC" border="#A9A9A9" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans 12" conn_font="Sans Italic 12" text_color="#333333" text_color_hover="#000000" corner_r="5" pad_h="15" pad_v="8" conn_color="#7F7F7F" conn_w="1" conn_dash="false" conn_type="1" level="2"/>
+            <style bg="#F5F5F5" bg_hover="#CCCCCC" border="#D3D3D3" border_w="1" shadow="#0000007F" shadow_off_x="2" shadow_off_y="2" shadow_blur="5" font="Sans Italic 11" conn_font="Sans Italic 12" text_color="#555555" text_color_hover="#000000" corner_r="0" pad_h="10" pad_v="5" conn_color="#7F7F7F" conn_w="1" conn_dash="false" conn_type="1" level="3"/>
+        </level_styles>
+    </theme>
+    <connections/>
+    <node text="Le procedure" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="0" y="0" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+        <node text="Definizione" ctext="Cos&apos;è" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="251,5" y="-550" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+            <node text="Procedura: Sequenza formale di passaggi per espletare una transazione." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="558,5" y="-666" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Processo: Attività interna, preparatoria (non sempre documentata)." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="544,5" y="-592" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Rapporto: La procedura governa il Record, il processo governa il Manuscript." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="558" y="-518" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Il Sistema della Diplomatica" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="508,5" y="-439" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+                <node text="Elementi: Ordinamento (contesto), Atto (causa), Persone (agenti), Procedure (guida), Forma (scopo)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="853" y="-439" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            </node>
+        </node>
+        <node text="Fasi della procedura integrata" ctext="Sequenza" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-331,5" y="-605" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+            <node text="Distinzione momenti: fasi 1-3 producono documenti interlocutori (istruttori); fasi 4-6 producono il documento definitivo." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-715" y="-798,5" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="1. Iniziativa: Domande, lettere di richiesta." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-717" y="-724,5" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="2. Istruttoria: Pareri tecnici, preventivi." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-701,5" y="-669,5" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="3. Consultazione: Verbali di riunione, promemoria." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-700" y="-605" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="4. Deliberazione: Bozze del provvedimento, minute." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-667,5" y="-531" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="5. Controllo: Visti, timbri di approvazione." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-714" y="-466,5" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="6. Esecuzione: Originale finale, notifica, registrazione." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-709,5" y="-402" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+        </node>
+        <node text="Categorizzazione procedure" ctext="Tipi" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="323,5" y="-106" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+            <node text="Esempio diplomatica speciale (legislativa)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="703" y="-316" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+                <node text="Nuove leggi: iniziativa governo/commissioni." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="1092,5" y="-373" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Emendamenti: minori (tecnici) vs principali." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="1088,5" y="-325" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Leggi finanziarie: spese (autorizzatorie) vs entrate (concessione)." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="1086,5" y="-268" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            </node>
+            <node text="Costitutive: Creano, estinguono o modificano potere." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="671,5" y="-136" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+                <node text="Concessione: Creano nuovi poteri/situazioni per il destinatario." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="1029,5" y="-202" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Prescrittive: Tolgono poteri o impongono sanzioni/obblighi." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="1018" y="-136" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Autorizzatorie: Permettono l&apos;esercizio di poteri già detenuti ma limitati." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="1035,5" y="-70" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            </node>
+            <node text="Esecutive: Svolgimento regolare affari secondo norme già stabilite." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="688" y="0" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Strumentali: Espressione di pareri/opinioni necessari per altre procedure." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="689,5" y="74" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Organizzative: Relative alla struttura e al funzionamento interno dell&apos;ente." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="696,5" y="148" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+        </node>
+        <node text="Casi di studio (esempi pratici)" ctext="Applicazione" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-332" y="-74" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+            <node text="1. Nomina professore universitario (procedura complessa)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-692" y="-194" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+                <node text="Iniziativa: bando (pubblicazione)." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1017,5" y="-341" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Istruttoria: domande, CV, referenze, interviste." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1060,5" y="-293" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Discussione: comitato discute e raccomanda." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1057" y="-245" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Decisione: offerta e accettazione. Compilazione modulo (minuta)." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1019,5" y="-188" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Controllo: preside (sostanza), presidente (completezza)." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1043" y="-122" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Esecuzione: lettera di nomina (originale) e avviso." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1047,5" y="-56" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            </node>
+            <node text="2. Pubblicazione del bando (sotto-procedura)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-691,5" y="97" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+                <node text="Iniziativa: richiesta del capo dipartimento." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1043" y="1" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Istruttoria: dati finanziari." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-990,5" y="49" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Decisione: composizione bozza." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1014,5" y="97" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Controllo: verifica contenuti e requisiti legali." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1052" y="145" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="Esecuzione: stampa e diffusione." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1017,5" y="193" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            </node>
+        </node>
+        <node text="Concetti archivistici (Naud)" ctext="Teoria" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="320" y="333" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+            <node text="Dossier (transazione): l&apos;intera operazione logica." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="692" y="222" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Article (fascicolo): l&apos;unità fisica/descrittiva." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="693" y="286,5" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Relazione: un fascicolo può contenere una transazione, parte di essa, o più transazioni." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="682,5" y="360,5" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Selezione: deve basarsi sull&apos;azione/procedura, non solo sull&apos;oggetto." ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="674" y="444" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+        </node>
+        <node text="1. Genesi dei documenti (Modello Medievale)" ctext="" r="79" g="71" b="86" tr="0" tg="0" tb="0" x="-548,98197596213549" y="410,07597798576779" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+            <node text="Momento dell&apos;azione (Actio)" ctext="" r="81" g="170" b="125" tr="0" tg="0" tb="0" x="-901,98197596213549" y="266,07597798576779" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+                <node text="1. Petitio (istanza)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1157,9819759621359" y="194,07597798576779" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="2. Intercessio (intercessione)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1191,9819759621359" y="242,07597798576779" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="3. Interventio (intervento)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1180,4819759621359" y="290,07597798576779" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="4. Iussio (comando) / Rogatio" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1194,4819759621359" y="338,07597798576779" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            </node>
+            <node text="Momento della documentazione (Conscriptio)" ctext="" r="140" g="224" b="184" tr="0" tg="0" tb="0" x="-916,98197596213549" y="506,07597798576757" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+                <node text="1. Minuta (necessaria)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1201,4819759621359" y="386,07597798576779" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="2. Bella copia (necessaria)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1214,9819759621359" y="434,07597798576779" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="3. Registrazione (possibile)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1216,9819759621359" y="482,07597798576762" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="4. Convalida (roboratio - necessaria)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1246,9819759621355" y="530,07597798576762" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="5. Tassazione (possibile)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1208,9819759621359" y="578,07597798576762" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+                <node text="6. Trasmissione (traditio - necessaria)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-1249,9819759621355" y="626,07597798576762" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            </node>
+        </node>
+        <node text="Documenti Elettronici e Sistemi" ctext="Evoluzione" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="339,5" y="592" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+            <node text="Necessità di capire le procedure per capire i sistemi informativi (McDonald)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="720,5" y="518" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Ciclo di vita delle applicazioni vs Documento singolo" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="701,5" y="592" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="Analisi parte dai &apos;prodotti predefiniti&apos; per capire la procedura" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="725" y="666" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+        </node>
+        <node text="Principi dell&apos;analisi diplomatica" ctext="Conclusione" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-337,5" y="771" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0">
+            <node text="1. Ogni procedura ha la stessa struttura ideale" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-720" y="734" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+            <node text="2. Procedure categorizzabili in base alla finalità (scopo)" ctext="" r="0" g="0" b="0" tr="0" tg="0" tb="0" x="-723,5" y="808" manual="1" ovr_c="0" ovr_t="0" ovr_f="0" ovr_cf="0"/>
+        </node>
+    </node>
+</mindmap>

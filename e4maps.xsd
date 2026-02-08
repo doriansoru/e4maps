@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <!-- Definition of style attributes shared by nodes/theme styles -->
+    <xs:complexType name="NodeStyleType">
+        <xs:attribute name="level" type="xs:integer" use="optional">
+            <xs:annotation>
+                <xs:documentation>Hierarchical level this style applies to (0=root, 1=children, etc.)</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        
+        <!-- Color Attributes (Hex strings e.g., #RRGGBB or #RRGGBBAA) -->
+        <xs:attribute name="bg" type="xs:string"/>
+        <xs:attribute name="bg_hover" type="xs:string"/>
+        <xs:attribute name="border" type="xs:string"/>
+        <xs:attribute name="shadow" type="xs:string"/>
+        <xs:attribute name="text_color" type="xs:string"/>
+        <xs:attribute name="text_color_hover" type="xs:string"/>
+        <xs:attribute name="conn_color" type="xs:string"/>
+
+        <!-- Numeric Layout/Style Attributes -->
+        <xs:attribute name="border_w" type="xs:double"/>
+        <xs:attribute name="shadow_off_x" type="xs:double"/>
+        <xs:attribute name="shadow_off_y" type="xs:double"/>
+        <xs:attribute name="shadow_blur" type="xs:double"/>
+        <xs:attribute name="corner_r" type="xs:double"/>
+        <xs:attribute name="pad_h" type="xs:double"/>
+        <xs:attribute name="pad_v" type="xs:double"/>
+        <xs:attribute name="conn_w" type="xs:double"/>
+        <xs:attribute name="conn_type" type="xs:integer">
+             <xs:annotation>
+                <xs:documentation>1=Organic/Bezier, other values might be straight/angular</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+
+        <!-- Typography & Boolean -->
+        <xs:attribute name="conn_dash" type="xs:boolean"/>
+        <xs:attribute name="font" type="xs:string"/>
+        <xs:attribute name="conn_font" type="xs:string"/>
+    </xs:complexType>
+
+    <!-- Theme Definition -->
+    <xs:complexType name="ThemeType">
+        <xs:sequence>
+            <xs:element name="level_styles" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="style" type="NodeStyleType" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+
+    <!-- Arbitrary Connections (Cross-links between branches) -->
+    <xs:complexType name="ConnectionType">
+        <xs:attribute name="from" type="xs:integer" use="required">
+            <xs:annotation>
+                 <xs:documentation>Index of the source node in traversal order</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="to" type="xs:integer" use="required">
+             <xs:annotation>
+                 <xs:documentation>Index of the target node in traversal order</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="text" type="xs:string"/>
+        <xs:attribute name="img" type="xs:string"/>
+        <xs:attribute name="r" type="xs:integer"/>
+        <xs:attribute name="g" type="xs:integer"/>
+        <xs:attribute name="b" type="xs:integer"/>
+        <xs:attribute name="font" type="xs:string"/>
+        <xs:attribute name="override_font" type="xs:integer"/> <!-- 0 or 1 -->
+    </xs:complexType>
+
+    <!-- Recursive Node Definition -->
+    <xs:complexType name="NodeType">
+        <xs:sequence>
+            <xs:element name="node" type="NodeType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+        <!-- Content -->
+        <xs:attribute name="text" type="xs:string"/>
+        <xs:attribute name="font" type="xs:string"/>
+        
+        <!-- Image Content -->
+        <xs:attribute name="img" type="xs:string"/>
+        <xs:attribute name="iw" type="xs:integer"/>
+        <xs:attribute name="ih" type="xs:integer"/>
+
+        <!-- Connection to Parent Style -->
+        <xs:attribute name="ctext" type="xs:string"/>
+        <xs:attribute name="conn_font" type="xs:string"/>
+        <xs:attribute name="cimg" type="xs:string"/>
+
+        <!-- Colors (RGB 0-255) -->
+        <xs:attribute name="r" type="xs:integer"/>
+        <xs:attribute name="g" type="xs:integer"/>
+        <xs:attribute name="b" type="xs:integer"/>
+        <xs:attribute name="tr" type="xs:integer"/>
+        <xs:attribute name="tg" type="xs:integer"/>
+        <xs:attribute name="tb" type="xs:integer"/>
+
+        <!-- Position -->
+        <xs:attribute name="x" type="xs:double"/>
+        <xs:attribute name="y" type="xs:double"/>
+        <xs:attribute name="manual" type="xs:integer"/> <!-- 0=Auto, 1=Manual -->
+
+        <!-- Override Flags (0 or 1) -->
+        <xs:attribute name="ovr_c" type="xs:integer"/>  <!-- Override Color -->
+        <xs:attribute name="ovr_t" type="xs:integer"/>  <!-- Override Text Color -->
+        <xs:attribute name="ovr_f" type="xs:integer"/>  <!-- Override Font -->
+        <xs:attribute name="ovr_cf" type="xs:integer"/> <!-- Override Connection Font -->
+    </xs:complexType>
+
+    <!-- Root Element -->
+    <xs:element name="mindmap">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="theme" type="ThemeType" minOccurs="0"/>
+                <xs:element name="connections" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="connection" type="ConnectionType" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="node" type="NodeType" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

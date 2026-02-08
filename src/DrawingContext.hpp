@@ -60,6 +60,8 @@ public:
         m_redrawCallback = cb;
     }
 
+    std::shared_ptr<MindMap> getMap() const { return map; }
+
     void setMap(std::shared_ptr<MindMap> m) {
         map = m;
         selectedNode = m->root;
@@ -74,6 +76,11 @@ public:
     void invalidateLayout() {
         if (!map || !map->root) return;
         m_dimensions_dirty = true;
+
+        // Ensure dimensions are known before layout by using a temporary context
+        auto surface = Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, 1, 1);
+        auto cr = Cairo::Context::create(surface);
+        drawer.preCalculateNodeDimensions(map->root, map->theme, cr);
 
         // Apply radial layout immediately for a fast, good starting point
         // This avoids nodes overlapping while the background calculation runs
