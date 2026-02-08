@@ -26,6 +26,7 @@
     <li><a href="#per-iniziare">Per Iniziare</a></li>
     <li><a href="#operazioni-base">Operazioni Base</a></li>
     <li><a href="#lavorare-con-i-nodi">Lavorare con i Nodi</a></li>
+    <li><a href="#layout-automatico">Layout Automatico</a></li>
     <li><a href="#personalizzare-aspetto">Personalizzare l'Aspetto</a></li>
     <li><a href="#esportazione">Esportazione</a></li>
     <li><a href="#scorciatoie-da-tastiera">Scorciatoie da Tastiera</a></li>
@@ -46,11 +47,13 @@
     <li><strong>Nuova Mappa</strong>: Clicca l'icona "Nuovo Documento" (pagina con un più) per iniziare una nuova mappa mentale.</li>
     <li><strong>Apri Mappa</strong>: Clicca l'icona "Apri" (cartella) per caricare un file <code>.e4m</code> esistente.</li>
     <li><strong>Salva Mappa</strong>: Clicca l'icona "Salva" (floppy disk) per salvare il lavoro corrente. Usa il menu per "Salva con nome...".</li>
+    <li><strong>Salvataggio Automatico</strong>: e4maps salva automaticamente il tuo lavoro ogni 2 minuti in un file nascosto <code>.autosave</code> nella stessa cartella della tua mappa, per prevenire perdite di dati in caso di chiusura imprevista.</li>
     <li><strong>Navigazione</strong>:
         <ul>
-            <li><strong>Zoom Avanti/Indietro</strong>: Usa <code>Ctrl + +</code> / <code>Ctrl + -</code> o le opzioni nel menu Visualizza.</li>
+            <li><strong>Zoom Avanti/Indietro</strong>: Usa <code>Ctrl + +</code> / <code>Ctrl + -</code> o la rotellina del mouse.</li>
             <li><strong>Reimposta Vista</strong>: Usa <code>Ctrl + 0</code> per centrare la mappa e reimpostare lo zoom.</li>
             <li><strong>Spostarsi (Pan)</strong>: Clicca e trascina sullo sfondo vuoto per muovere la mappa.</li>
+            <li><strong>Navigazione da Tastiera</strong>: Usa le <strong>Frecce Direzionali</strong> per spostare la selezione tra i nodi in base alla loro posizione visiva.</li>
         </ul>
     </li>
 </ul>
@@ -60,7 +63,8 @@
 
 <h3>Aggiungere e Rimuovere</h3>
 <ul>
-    <li><strong>Aggiungi Ramo</strong>: Seleziona un nodo e premi <code>Tab</code> o clicca il pulsante "+" nella barra superiore per aggiungere un nodo figlio.</li>
+    <li><strong>Aggiungi Nodo Figlio</strong>: Seleziona un nodo e premi <code>Tab</code>, <code>Ins</code> o clicca il pulsante "+" nella barra superiore.</li>
+    <li><strong>Aggiungi Nodo Fratello</strong>: Seleziona un nodo e premi <code>Invio</code> per aggiungere rapidamente un nuovo nodo allo stesso livello.</li>
     <li><strong>Rimuovi Ramo</strong>: Seleziona un nodo (o più) e premi <code>Canc</code> (Delete) o clicca il pulsante "-" nella barra superiore per rimuoverli. <em>Nota: Il nodo radice non può essere rimosso.</em></li>
 </ul>
 
@@ -68,7 +72,7 @@
 <p>Puoi modificare i nodi in due modi:</p>
 
 <h4>Modifica Rapida</h4>
-<p>Seleziona un nodo e premi <strong>F2</strong> per modificare il testo direttamente sulla mappa.</p>
+<p>Seleziona un nodo e premi <strong>F2</strong> per modificare il testo direttamente sulla mappa. <em>Nota: Nell'editor avanzato (finestra), Maiusc+Invio va a capo, mentre Invio salva.</em></p>
 <ul>
     <li><strong>Invio</strong>: Salva le modifiche.</li>
     <li><strong>Maiusc + Invio</strong>: Va a capo.</li>
@@ -94,7 +98,12 @@
 <h3>Organizzare</h3>
 <ul>
     <li><strong>Taglia/Copia/Incolla</strong>: Usa le scorciatoie standard (<code>Ctrl+X</code>, <code>Ctrl+C</code>, <code>Ctrl+V</code>) o il menu per spostare o duplicare rami. Puoi selezionare più nodi per copiarli/incollarli insieme.</li>
+    <li><strong>Trascina e Rilascia</strong>: Puoi riposizionare manualmente i nodi trascinandoli. I rami figli seguiranno il genitore.</li>
 </ul>
+
+<h2 id="layout-automatico">Layout Automatico</h2>
+<p>Se la tua mappa diventa disordinata, puoi usare il <strong>Layout ad Albero</strong> per organizzarla automaticamente in una struttura gerarchica bilanciata. Accedivi tramite il menu <strong>Visualizza -&gt; Layout automatico</strong> o premi <code>Ctrl + Maiusc + L</code>.</p>
+<p>Questa operazione può essere annullata con <code>Ctrl + Z</code>.</p>
 
 <h2 id="personalizzare-aspetto">Personalizzare l'Aspetto</h2>
 <p>Puoi cambiare l'aspetto dell'intera mappa usando l'<strong>Editor Tema</strong>.</p>
@@ -131,16 +140,19 @@
 <h2 id="scorciatoie-da-tastiera">Scorciatoie da Tastiera</h2>
 <table>
     <tr><th>Azione</th><th>Scorciatoia</th></tr>
-    <tr><td><strong>Aggiungi Nodo</strong></td><td><code>Tab</code></td></tr>
+    <tr><td><strong>Sposta Selezione</strong></td><td><code>Frecce Direzionali</code></td></tr>
+    <tr><td><strong>Aggiungi Nodo Figlio</strong></td><td><code>Tab</code> o <code>Ins</code></td></tr>
+    <tr><td><strong>Aggiungi Nodo Fratello</strong></td><td><code>Invio</code></td></tr>
     <tr><td><strong>Rimuovi Nodo</strong></td><td><code>Canc</code></td></tr>
     <tr><td><strong>Modifica Testo</strong></td><td><code>F2</code></td></tr>
     <tr><td><strong>Annulla (Undo)</strong></td><td><code>Ctrl + Z</code></td></tr>
     <tr><td><strong>Ripeti (Redo)</strong></td><td><code>Ctrl + Shift + Z</code></td></tr>
+    <tr><td><strong>Layout Automatico</strong></td><td><code>Ctrl + Shift + L</code></td></tr>
     <tr><td><strong>Taglia</strong></td><td><code>Ctrl + X</code></td></tr>
     <tr><td><strong>Copia</strong></td><td><code>Ctrl + C</code></td></tr>
     <tr><td><strong>Incolla</strong></td><td><code>Ctrl + V</code></td></tr>
-    <tr><td><strong>Zoom Avanti</strong></td><td><code>Ctrl + +</code></td></tr>
-    <tr><td><strong>Zoom Indietro</strong></td><td><code>Ctrl + -</code></td></tr>
+    <tr><td><strong>Zoom Avanti</strong></td><td><code>Ctrl + +</code> o <code>Rotellina Su</code></td></tr>
+    <tr><td><strong>Zoom Indietro</strong></td><td><code>Ctrl + -</code> o <code>Rotellina Giù</code></td></tr>
     <tr><td><strong>Reimposta Vista</strong></td><td><code>Ctrl + 0</code></td></tr>
     <tr><td><strong>Salva con nome</strong></td><td><code>Ctrl + Shift + S</code></td></tr>
     <tr><td><strong>Esci</strong></td><td><code>Ctrl + Q</code></td></tr>

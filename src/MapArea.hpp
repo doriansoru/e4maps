@@ -34,6 +34,7 @@ public:
     sigc::signal<void> signal_map_modified;
     // New signal for drag completion
     sigc::signal<void, const std::vector<std::shared_ptr<Node>>&, const std::vector<std::pair<double, double>>&, const std::vector<std::pair<double, double>>&> signal_nodes_moved;
+    sigc::signal<void> signal_selection_changed;
 
     explicit MapArea(std::shared_ptr<MindMap> m);
     ~MapArea() override = default;

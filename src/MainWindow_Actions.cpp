@@ -128,7 +128,10 @@ void MainWindow::on_export(std::string format) {
 
 void MainWindow::on_add_node() {
     auto selected = m_Area.getSelectedNode();
-    if (!selected) return;
+    if (!selected) {
+        updateStatusBar(_("Please select a parent node to add a child."));
+        return;
+    }
 
     auto newNode = std::make_shared<Node>(_("New"), E4Color::random());
     newNode->x = selected->x + 100.0;
@@ -151,7 +154,10 @@ void MainWindow::on_new() {
 
 void MainWindow::on_remove_node() {
     auto selectedNodes = m_Area.getSelectedNodes();
-    if (selectedNodes.empty()) return;
+    if (selectedNodes.empty()) {
+        updateStatusBar(_("Please select a node to remove."));
+        return;
+    }
 
     bool hasRootNode = false;
     for (auto& node : selectedNodes) {
@@ -243,7 +249,10 @@ void MainWindow::on_cut() {
 
 void MainWindow::on_paste() {
     auto selected = m_Area.getSelectedNode();
-    if (!selected) return;
+    if (!selected) {
+        updateStatusBar(_("Please select a target node to paste."));
+        return;
+    }
     
     m_controller->paste(selected);
     // Layout invalidated via signal
@@ -334,7 +343,7 @@ void MainWindow::on_help_guide() {
 void MainWindow::on_create_connection() {
     auto selectedNodes = m_Area.getSelectedNodes();
     if (selectedNodes.size() < 2) {
-        updateStatusBar(_("Please select at least 2 nodes to connect."));
+        updateStatusBar(_("Please select at least 2 nodes to connect (use Ctrl+Click to select multiple nodes)."));
         return;
     }
 
@@ -429,7 +438,7 @@ void MainWindow::on_connection_context_menu(GdkEventButton* event, std::shared_p
         m_ConnectionContextMenu.remove(*child);
     }
 
-    auto itemRemove = Gtk::manage(new Gtk::MenuItem(_("Remove Connection")));
+    auto itemRemove = Gtk::manage(new Gtk::MenuItem(_("Remove Connection (Del)")));
     itemRemove->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_remove_connection));
     m_ConnectionContextMenu.append(*itemRemove);
 

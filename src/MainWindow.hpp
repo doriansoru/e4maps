@@ -120,6 +120,7 @@ private:
     void on_create_connection();
     void on_remove_connection();
     void on_nodes_moved(const std::vector<std::shared_ptr<Node>>& nodes, const std::vector<std::pair<double, double>>& oldPos, const std::vector<std::pair<double, double>>& newPos);
+    void on_selection_changed();
     void on_connection_context_menu(GdkEventButton* event, std::shared_ptr<Connection> connection);
     
     // Auto-save logic

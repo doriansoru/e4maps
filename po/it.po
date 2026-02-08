@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e4maps 1.0.0\n"
 "Report-Msgid-Bugs-To: doriansoru@gmail.com\n"
-"POT-Creation-Date: 2026-02-08 09:11+0100\n"
+"POT-Creation-Date: 2026-02-08 21:15+0100\n"
 "PO-Revision-Date: 2026-02-08 09:13+0100\n"
 "Last-Translator: Dorian Soru <doriansoru@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -19,30 +19,33 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 48.0\n"
 
-#: src/MainWindow_UI.cpp:8 src/MainWindow_UI.cpp:16 src/MainWindow.cpp:431
+#: src/MainWindow_UI.cpp:8 src/MainWindow.cpp:434
 msgid "New Map"
 msgstr "Nuova mappa"
 
-#: src/MainWindow_UI.cpp:22 src/MainWindow_Actions.cpp:99
-msgid "Open Map"
-msgstr "Apri mappa"
+#: src/MainWindow_UI.cpp:16
+msgid "New Map (Ctrl+N)"
+msgstr "Nuova mappa (Ctrl+N)"
 
-#: src/MainWindow_UI.cpp:28 src/MainWindow_Actions.cpp:78
-#: src/MainWindow.cpp:481
-msgid "Save Map"
-msgstr "Salva mappa"
+#: src/MainWindow_UI.cpp:22
+msgid "Open Map (Ctrl+O)"
+msgstr "Apri mappa (Ctrl+O)"
 
-#: src/MainWindow_UI.cpp:44 src/MainWindow.cpp:411
-msgid "Remove Branch"
-msgstr "Rimuovi collegamento"
+#: src/MainWindow_UI.cpp:28
+msgid "Save Map (Ctrl+S)"
+msgstr "Salva mappa (Ctrl+S)"
 
-#: src/MainWindow_UI.cpp:50 src/MainWindow.cpp:405
-msgid "Add Branch"
-msgstr "Aggiungi nodo figlio"
+#: src/MainWindow_UI.cpp:44 src/MainWindow.cpp:414
+msgid "Remove Branch (Del)"
+msgstr "Rimuovi ramo (Canc)"
+
+#: src/MainWindow_UI.cpp:50 src/MainWindow.cpp:408
+msgid "Add Child Branch (Tab)"
+msgstr "Aggiungi ramo figlio (Tab)"
 
 #: src/MainWindow_UI.cpp:56
-msgid "Find..."
-msgstr "Cerca..."
+msgid "Find... (Ctrl+F)"
+msgstr "Trova... (Ctrl+F)"
 
 #: src/MainWindow_UI.cpp:65
 msgid "Open Recent"
@@ -160,14 +163,18 @@ msgstr "Errore nel salvataggio del file: "
 msgid "Error loading file: "
 msgstr "Errore nel caricamento del file: "
 
+#: src/MainWindow_Actions.cpp:78 src/MainWindow.cpp:484
+msgid "Save Map"
+msgstr "Salva mappa"
+
 #: src/MainWindow_Actions.cpp:79 src/MainWindow_Actions.cpp:100
-#: src/MainWindow.cpp:453 src/MainWindow.cpp:482 src/ThemeEditor.cpp:95
+#: src/MainWindow.cpp:456 src/MainWindow.cpp:485 src/ThemeEditor.cpp:95
 #: src/NodeEditDialog.cpp:228 src/ExportManager.cpp:16
 #: src/ExportManager.cpp:114
 msgid "Cancel"
 msgstr "Annulla"
 
-#: src/MainWindow_Actions.cpp:79 src/MainWindow.cpp:454 src/MainWindow.cpp:482
+#: src/MainWindow_Actions.cpp:79 src/MainWindow.cpp:457 src/MainWindow.cpp:485
 #: src/NodeEditDialog.cpp:229
 msgid "Save"
 msgstr "Salva"
@@ -175,6 +182,10 @@ msgstr "Salva"
 #: src/MainWindow_Actions.cpp:80
 msgid "map.e4m"
 msgstr "mappa.e4m"
+
+#: src/MainWindow_Actions.cpp:99
+msgid "Open Map"
+msgstr "Apri mappa"
 
 #: src/MainWindow_Actions.cpp:100
 msgid "Open"
@@ -184,41 +195,57 @@ msgstr "Apri"
 msgid "e4maps files"
 msgstr "file e4maps"
 
-#: src/MainWindow_Actions.cpp:133 src/MainWindow_Actions.cpp:473
+#: src/MainWindow_Actions.cpp:132
+msgid "Please select a parent node to add a child."
+msgstr "Per favore seleziona un nodo genitore per aggiungere un figlio."
+
+#: src/MainWindow_Actions.cpp:136 src/MainWindow_Actions.cpp:516
 msgid "New"
 msgstr "Nuovo"
 
-#: src/MainWindow_Actions.cpp:176 src/MainWindow_Actions.cpp:187
-msgid "Remove Multiple Nodes"
-msgstr "Copia più nodi"
+#: src/MainWindow_Actions.cpp:158
+msgid "Please select a node to remove."
+msgstr "Per favore seleziona un nodo da rimuovere."
 
-#: src/MainWindow_Actions.cpp:327
+#: src/MainWindow_Actions.cpp:182 src/MainWindow_Actions.cpp:193
+msgid "Remove Multiple Nodes"
+msgstr "Rimuovi più nodi"
+
+#: src/MainWindow_Actions.cpp:253
+msgid "Please select a target node to paste."
+msgstr "Per favore seleziona un nodo di destinazione per incollare."
+
+#: src/MainWindow_Actions.cpp:339
 msgid "Help file not found."
 msgstr "File della guida non trovato."
 
-#: src/MainWindow_Actions.cpp:334
-msgid "Please select at least 2 nodes to connect."
-msgstr "Per favore seleziona almeno due nodi da collegare"
+#: src/MainWindow_Actions.cpp:346
+msgid ""
+"Please select at least 2 nodes to connect (use Ctrl+Click to select multiple "
+"nodes)."
+msgstr ""
+"Per favore seleziona almeno 2 nodi da collegare (usa Ctrl+Click per la "
+"selezione multipla)."
 
-#: src/MainWindow_Actions.cpp:339
+#: src/MainWindow_Actions.cpp:351
 msgid "Add Multiple Connections"
 msgstr "Aggiungi collegamenti multipli"
 
-#: src/MainWindow_Actions.cpp:351
+#: src/MainWindow_Actions.cpp:363
 msgid "Created "
-msgstr "Creato"
+msgstr "Creato "
 
-#: src/MainWindow_Actions.cpp:351
+#: src/MainWindow_Actions.cpp:363
 msgid " connection(s)."
-msgstr "collegamento(i)"
+msgstr " collegamento(i)."
 
-#: src/MainWindow_Actions.cpp:371
+#: src/MainWindow_Actions.cpp:414
 msgid "Auto-layout (Tree) applied."
 msgstr "Layout automatico (ad albero) applicato."
 
-#: src/MainWindow_Actions.cpp:398 src/Command_Connection.cpp:57
-msgid "Remove Connection"
-msgstr "Rimuovi collegamento"
+#: src/MainWindow_Actions.cpp:441
+msgid "Remove Connection (Del)"
+msgstr "Rimuovi collegamento (Canc)"
 
 #: src/MainWindow.cpp:13
 msgid "E4maps - New Map"
@@ -232,29 +259,55 @@ msgstr "Trova precedente"
 msgid "Next Match"
 msgstr "Trova successivo"
 
-#: src/MainWindow.cpp:388
-msgid "Edit Text"
-msgstr "Modifica testo"
+#: src/MainWindow.cpp:107
+msgid "Welcome to E4Maps. Select a node to start."
+msgstr "Benvenuto in E4Maps. Seleziona un nodo per iniziare."
 
-#: src/MainWindow.cpp:395
-msgid "Properties..."
-msgstr "Proprietà..."
+#: src/MainWindow.cpp:391
+msgid "Edit Text (F2)"
+msgstr "Modifica testo (F2)"
 
-#: src/MainWindow.cpp:425
+#: src/MainWindow.cpp:398
+msgid "Properties... (Double Click)"
+msgstr "Proprietà... (Doppio clic)"
+
+#: src/MainWindow.cpp:428
 msgid "E4maps - "
 msgstr "E4maps - "
 
-#: src/MainWindow.cpp:446
+#: src/MainWindow.cpp:449
 msgid "The document contains unsaved changes."
 msgstr "Il documento contiene modifiche non salvate."
 
-#: src/MainWindow.cpp:451
+#: src/MainWindow.cpp:454
 msgid "Do you want to save the changes?"
 msgstr "Vuoi salvare le modifiche?"
 
-#: src/MainWindow.cpp:452
+#: src/MainWindow.cpp:455
 msgid "Close without saving"
 msgstr "Chiudi senza salvare"
+
+#: src/MainWindow.cpp:539
+msgid "Select a node to start. Drag background to pan. Mouse wheel to zoom."
+msgstr ""
+"Seleziona un nodo per iniziare. Trascina lo sfondo per spostarti. Rotellina "
+"per lo zoom."
+
+#: src/MainWindow.cpp:541
+msgid ""
+"Tab: Child | Enter: Sibling | F2: Edit | Del: Remove | Ctrl+Click: Select "
+"more"
+msgstr ""
+"Tab: Figlio | Invio: Fratello | F2: Modifica | Canc: Rimuovi | Ctrl+Click: "
+"Selezione multipla"
+
+#: src/MainWindow.cpp:543
+msgid "Ctrl+L: Create connection between nodes | Del: Remove selected branches"
+msgstr "Ctrl+L: Crea collegamento tra i nodi | Canc: Rimuovi rami selezionati"
+
+#: src/MainWindow.cpp:545
+msgid "Del: Remove connection | Click and drag nodes to reposition branches"
+msgstr "Canc: Rimuovi collegamento | Trascina i nodi per riposizionare i rami"
 
 #: src/main.cpp:14
 msgid "Usage: "
@@ -322,6 +375,10 @@ msgstr "Convertito con successo "
 #: src/main.cpp:117
 msgid " to "
 msgstr " in "
+
+#: src/Command.cpp:103
+msgid "Change Theme"
+msgstr "Cambia tema"
 
 #: src/MapSerializer.cpp:130
 msgid "Cannot open file"
@@ -583,6 +640,10 @@ msgstr "Sposta più nodi"
 #: src/Command_Connection.cpp:23
 msgid "Add Connection"
 msgstr "Crea collegamento"
+
+#: src/Command_Connection.cpp:57
+msgid "Remove Connection"
+msgstr "Rimuovi collegamento"
 
 #: src/Command_Clipboard.cpp:28
 msgid "Copy Node"

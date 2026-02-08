@@ -25,6 +25,7 @@ void MapArea::setMap(std::shared_ptr<MindMap> m) {
 
 void MapArea::setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes) {
     drawingContext.setSelectedNodes(nodes);
+    signal_selection_changed.emit();
     queue_draw();
 }
 
@@ -154,6 +155,7 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
         if (clickedNode) {
             // Select the node user clicked on (good UX)
             drawingContext.setSelectedNode(clickedNode);
+            signal_selection_changed.emit();
             queue_draw();
             
             // Emit signal for main window to show menu
@@ -162,6 +164,7 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
         } else if (clickedConnection) {
             // Select connection
             drawingContext.setSelectedConnection(clickedConnection);
+            signal_selection_changed.emit();
             queue_draw();
             
             // Emit signal for main window to show connection context menu
@@ -177,6 +180,7 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
     
     if (event->type == GDK_2BUTTON_PRESS && clickedNode) {
         drawingContext.setSelectedNode(clickedNode);
+        signal_selection_changed.emit();
 
         // Reset all drag-related state since the modal dialog will consume
         // the button release event.
@@ -204,12 +208,14 @@ bool MapArea::on_button_press_event(GdkEventButton* event) {
              // (Multi-selection of connections not yet supported)
              drawingContext.setSelectedConnection(clickedConnection);
         }
+        signal_selection_changed.emit();
         isDragging = false;
     } else {
         // Clicked on empty space - clear selection
         bool isCtrlPressed = (event->state & GDK_CONTROL_MASK) != 0;
         if (!isCtrlPressed) {
             drawingContext.clearAllSelection();
+            signal_selection_changed.emit();
         }
         isDragging = false;
     }
@@ -232,6 +238,7 @@ bool MapArea::handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> c
         } else {
             drawingContext.addNodeToSelection(clickedNode);
         }
+        signal_selection_changed.emit();
 
         // We're not dragging in this case, just selecting/deselecting
         isDragging = false;
@@ -244,9 +251,11 @@ bool MapArea::handleNodeSelection(GdkEventButton* event, std::shared_ptr<Node> c
         if (!isAlreadySelected) {
             // Select only this node
             drawingContext.setSelectedNodes({clickedNode});
+            signal_selection_changed.emit();
         } else {
             // If already selected, just make it the primary selected node WITHOUT clearing the list
             drawingContext.setSelectedNodeWithoutClearing(clickedNode);
+            signal_selection_changed.emit();
         }
 
         // Prepare for potential dragging with threshold

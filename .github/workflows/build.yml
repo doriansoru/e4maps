@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
     - name: Checkout code
@@ -33,14 +33,42 @@ jobs:
       if: matrix.os == 'macos-latest'
       run: |
         brew install cmake pkg-config gtkmm3 gettext create-dmg
-        # We need to set the prefix path for gettext as it's keg-only
         echo "CMAKE_PREFIX_PATH=$(brew --prefix gettext)" >> $GITHUB_ENV
 
-    # --- BUILD ---
+    # --- SETUP WINDOWS (MSYS2) ---
+    - name: Install dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        install: >
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-pkg-config
+          mingw-w64-x86_64-make
+          mingw-w64-x86_64-gtkmm3
+          mingw-w64-x86_64-cairomm
+          mingw-w64-x86_64-gettext
+          base-devel
+
+    # --- BUILD (Common) ---
     - name: Configure CMake
+      if: runner.os != 'Windows'
       run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
+    - name: Configure CMake (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
+      run: cmake -G "MinGW Makefiles" -B build -DCMAKE_BUILD_TYPE=Release
+
     - name: Build
+      if: runner.os != 'Windows'
+      run: cmake --build build --config Release --parallel 4
+
+    - name: Build (Windows)
+      if: runner.os == 'Windows'
+      shell: msys2 {0}
       run: cmake --build build --config Release --parallel 4
 
     # --- SCREENSHOT (macOS ONLY) ---
@@ -63,6 +91,14 @@ jobs:
         chmod +x createMacBundle.sh
         ./createMacBundle.sh
 
+    # --- PACKAGING (Windows) ---
+    - name: Package Windows App
+      if: matrix.os == 'windows-latest'
+      shell: msys2 {0}
+      run: |
+        chmod +x package_app_for_windows.sh
+        ./package_app_for_windows.sh
+
     # --- PACKAGING (Linux) ---
     - name: Prepare Artifacts (Linux)
       if: matrix.os == 'ubuntu-latest'
@@ -82,7 +118,13 @@ jobs:
           distMac/*.dmg
           distMac/screenshots/*.png
 
-    # --- UPLOAD ARTIFACTS (Linux) ---
+    - name: Upload Artifact (Windows)
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: e4maps-Windows-Portable
+        path: distWin/
+
     - name: Upload Artifact (Linux)
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v4

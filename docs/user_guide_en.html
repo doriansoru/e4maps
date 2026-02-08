@@ -26,6 +26,7 @@
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#basic-operations">Basic Operations</a></li>
     <li><a href="#working-with-nodes">Working with Nodes</a></li>
+    <li><a href="#auto-layout">Auto Layout</a></li>
     <li><a href="#customizing-appearance">Customizing Appearance</a></li>
     <li><a href="#exporting">Exporting</a></li>
     <li><a href="#keyboard-shortcuts">Keyboard Shortcuts</a></li>
@@ -46,11 +47,13 @@
     <li><strong>New Map</strong>: Click the "New Document" icon (page with a plus) to start a fresh mind map.</li>
     <li><strong>Open Map</strong>: Click the "Open" icon (folder) to load an existing <code>.e4m</code> file.</li>
     <li><strong>Save Map</strong>: Click the "Save" icon (floppy disk) to save your current work. Use the menu for "Save As...".</li>
+    <li><strong>Auto-Save</strong>: e4maps automatically saves your progress every 2 minutes to a hidden <code>.autosave</code> file in the same directory as your map, ensuring you don't lose work in case of a crash.</li>
     <li><strong>Navigation</strong>:
         <ul>
-            <li><strong>Zoom In/Out</strong>: Use <code>Ctrl + +</code> / <code>Ctrl + -</code> or the View menu options.</li>
+            <li><strong>Zoom In/Out</strong>: Use <code>Ctrl + +</code> / <code>Ctrl + -</code> or the mouse scroll wheel.</li>
             <li><strong>Reset View</strong>: Use <code>Ctrl + 0</code> to center the map and reset zoom.</li>
             <li><strong>Pan</strong>: Click and drag on the empty background to move the map around.</li>
+            <li><strong>Keyboard Navigation</strong>: Use the <strong>Arrow Keys</strong> to move the selection between nodes based on their visual position.</li>
         </ul>
     </li>
 </ul>
@@ -60,7 +63,8 @@
 
 <h3>Adding and Removing</h3>
 <ul>
-    <li><strong>Add Branch</strong>: Select a node and press <code>Tab</code> or click the "+" button in the header bar to add a child node.</li>
+    <li><strong>Add Child Branch</strong>: Select a node and press <code>Tab</code>, <code>Insert</code>, or click the "+" button in the header bar.</li>
+    <li><strong>Add Sibling Branch</strong>: Select a node and press <code>Enter</code> to quickly add a new node at the same level.</li>
     <li><strong>Remove Branch</strong>: Select a node (or multiple) and press <code>Delete</code> or click the "-" button in the header bar to remove them. <em>Note: The root node cannot be removed.</em></li>
 </ul>
 
@@ -68,7 +72,7 @@
 <p>You can edit nodes in two ways:</p>
 
 <h4>Quick Edit (In-Place)</h4>
-<p>Select a node and press <strong>F2</strong> to edit the text directly on the map.</p>
+<p>Select a node and press <strong>F2</strong> to edit the text directly on the map. <em>Note: When using the Advanced Editor (dialog), Shift+Enter inserts a new line, while Enter saves.</em></p>
 <ul>
     <li><strong>Enter</strong>: Save changes.</li>
     <li><strong>Shift + Enter</strong>: Insert a new line.</li>
@@ -94,7 +98,12 @@
 <h3>Organizing</h3>
 <ul>
     <li><strong>Cut/Copy/Paste</strong>: Use standard shortcuts (<code>Ctrl+X</code>, <code>Ctrl+C</code>, <code>Ctrl+V</code>) or the menu to move or duplicate subtrees. You can select multiple nodes to copy/paste them together.</li>
+    <li><strong>Drag and Drop</strong>: You can manually reposition nodes by dragging them. Subtrees will move along with their parent.</li>
 </ul>
+
+<h2 id="auto-layout">Auto Layout</h2>
+<p>If your map becomes messy, you can use the <strong>Tree Layout</strong> to automatically organize it into a balanced hierarchical structure. Access it via the menu <strong>View -&gt; Auto Layout</strong> or press <code>Ctrl + Shift + L</code>.</p>
+<p>This operation is fully undoable using <code>Ctrl + Z</code>.</p>
 
 <h2 id="customizing-appearance">Customizing Appearance</h2>
 <p>You can change the look and feel of your entire map using the <strong>Theme Editor</strong>.</p>
@@ -131,16 +140,19 @@
 <h2 id="keyboard-shortcuts">Keyboard Shortcuts</h2>
 <table>
     <tr><th>Action</th><th>Shortcut</th></tr>
-    <tr><td><strong>Add Node</strong></td><td><code>Tab</code></td></tr>
+    <tr><td><strong>Move Selection</strong></td><td><code>Arrow Keys</code></td></tr>
+    <tr><td><strong>Add Child Node</strong></td><td><code>Tab</code> or <code>Insert</code></td></tr>
+    <tr><td><strong>Add Sibling Node</strong></td><td><code>Enter</code></td></tr>
     <tr><td><strong>Remove Node</strong></td><td><code>Delete</code></td></tr>
     <tr><td><strong>Edit Text</strong></td><td><code>F2</code></td></tr>
     <tr><td><strong>Undo</strong></td><td><code>Ctrl + Z</code></td></tr>
     <tr><td><strong>Redo</strong></td><td><code>Ctrl + Shift + Z</code></td></tr>
+    <tr><td><strong>Auto Layout</strong></td><td><code>Ctrl + Shift + L</code></td></tr>
     <tr><td><strong>Cut</strong></td><td><code>Ctrl + X</code></td></tr>
     <tr><td><strong>Copy</strong></td><td><code>Ctrl + C</code></td></tr>
     <tr><td><strong>Paste</strong></td><td><code>Ctrl + V</code></td></tr>
-    <tr><td><strong>Zoom In</strong></td><td><code>Ctrl + +</code></td></tr>
-    <tr><td><strong>Zoom Out</strong></td><td><code>Ctrl + -</code></td></tr>
+    <tr><td><strong>Zoom In</strong></td><td><code>Ctrl + +</code> or <code>Scroll Up</code></td></tr>
+    <tr><td><strong>Zoom Out</strong></td><td><code>Ctrl + -</code> or <code>Scroll Down</code></td></tr>
     <tr><td><strong>Reset View</strong></td><td><code>Ctrl + 0</code></td></tr>
     <tr><td><strong>Save As</strong></td><td><code>Ctrl + Shift + S</code></td></tr>
     <tr><td><strong>Quit</strong></td><td><code>Ctrl + Q</code></td></tr>

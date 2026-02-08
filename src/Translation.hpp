@@ -5,6 +5,7 @@
 #include <locale.h>
 #include <string>
 #include <cstdlib>
+#include <filesystem>
 
 #ifdef __APPLE__
 #include <CoreFoundation/CoreFoundation.h>
@@ -71,10 +72,21 @@ inline void init_translation(const std::string& domain, const std::string& direc
         std::string exePath(path.data());
         std::string::size_type pos = exePath.find_last_of("\\/");
         if (pos != std::string::npos) {
-            // Assume standard Linux-like layout on Windows:
-            // bin/executable.exe
-            // share/locale
-            localeDir = exePath.substr(0, pos) + "\\..\\share\\locale";
+            std::string baseDir = exePath.substr(0, pos);
+            
+            // Check ./share/locale (for flat portable layout)
+            std::string localShare = baseDir + "\\share\\locale";
+            // Check ../share/locale (for standard bin/ layout)
+            std::string parentShare = baseDir + "\\..\\share\\locale";
+            
+            if (std::filesystem::exists(localShare)) {
+                localeDir = localShare;
+            } else if (std::filesystem::exists(parentShare)) {
+                localeDir = parentShare;
+            } else {
+                // Fallback to local if none found, to at least have a valid path
+                localeDir = localShare;
+            }
         }
     }
 #endif

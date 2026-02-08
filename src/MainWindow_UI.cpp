@@ -13,19 +13,19 @@ void MainWindow::initHeaderBar() {
 
     auto btnNew = Gtk::manage(new Gtk::Button());
     btnNew->set_image_from_icon_name("document-new", Gtk::ICON_SIZE_BUTTON);
-    btnNew->set_tooltip_text(_("New Map"));
+    btnNew->set_tooltip_text(_("New Map (Ctrl+N)"));
     btnNew->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_new));
     boxLeft->pack_start(*btnNew, Gtk::PACK_SHRINK);
 
     auto btnOpen = Gtk::manage(new Gtk::Button());
     btnOpen->set_image_from_icon_name("document-open", Gtk::ICON_SIZE_BUTTON);
-    btnOpen->set_tooltip_text(_("Open Map"));
+    btnOpen->set_tooltip_text(_("Open Map (Ctrl+O)"));
     btnOpen->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_open));
     boxLeft->pack_start(*btnOpen, Gtk::PACK_SHRINK);
 
     auto btnSave = Gtk::manage(new Gtk::Button());
     btnSave->set_image_from_icon_name("document-save", Gtk::ICON_SIZE_BUTTON);
-    btnSave->set_tooltip_text(_("Save Map"));
+    btnSave->set_tooltip_text(_("Save Map (Ctrl+S)"));
     btnSave->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_save));
     boxLeft->pack_start(*btnSave, Gtk::PACK_SHRINK);
 
@@ -41,19 +41,19 @@ void MainWindow::initHeaderBar() {
     // Add/Remove Node (Direct Access)
     auto btnRemove = Gtk::manage(new Gtk::Button());
     btnRemove->set_image_from_icon_name("list-remove", Gtk::ICON_SIZE_BUTTON);
-    btnRemove->set_tooltip_text(_("Remove Branch"));
+    btnRemove->set_tooltip_text(_("Remove Branch (Del)"));
     btnRemove->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_remove_node));
     m_HeaderBar.pack_end(*btnRemove);
 
     auto btnAdd = Gtk::manage(new Gtk::Button());
     btnAdd->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
-    btnAdd->set_tooltip_text(_("Add Branch"));
+    btnAdd->set_tooltip_text(_("Add Child Branch (Tab)"));
     btnAdd->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_add_node));
     m_HeaderBar.pack_end(*btnAdd);
 
     auto btnSearch = Gtk::manage(new Gtk::Button());
     btnSearch->set_image_from_icon_name("system-search-symbolic", Gtk::ICON_SIZE_BUTTON);
-    btnSearch->set_tooltip_text(_("Find..."));
+    btnSearch->set_tooltip_text(_("Find... (Ctrl+F)"));
     btnSearch->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_search_toggled));
     m_HeaderBar.pack_end(*btnSearch);
 

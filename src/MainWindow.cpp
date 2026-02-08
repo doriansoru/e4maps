@@ -74,6 +74,7 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
     // Connect keyboard shortcut signals
     m_Area.signal_add_child_node.connect(sigc::mem_fun(*this, &MainWindow::on_add_node));
     m_Area.signal_add_sibling_node.connect(sigc::mem_fun(*this, &MainWindow::on_add_sibling_node));
+    m_Area.signal_selection_changed.connect(sigc::mem_fun(*this, &MainWindow::on_selection_changed));
 
     m_Area.set_hexpand(true); m_Area.set_vexpand(true);
     
@@ -102,6 +103,8 @@ MainWindow::MainWindow() : m_VBox(Gtk::ORIENTATION_VERTICAL),
     m_VBox.pack_start(m_Overlay);
 
     m_VBox.pack_start(m_StatusBar, Gtk::PACK_SHRINK);  // Add status bar at the bottom
+
+    updateStatusBar(_("Welcome to E4Maps. Select a node to start."));
 
     setModified(false);  // Initialize as not modified
     startAutoSaveTimer(); // Start the auto-save mechanism
@@ -385,14 +388,14 @@ void MainWindow::on_node_context_menu(GdkEventButton* event, std::shared_ptr<Nod
     }
 
     // 1. Edit Text (Inline)
-    auto itemEdit = Gtk::manage(new Gtk::MenuItem(_("Edit Text")));
+    auto itemEdit = Gtk::manage(new Gtk::MenuItem(_("Edit Text (F2)")));
     itemEdit->signal_activate().connect([this, node]() {
         start_inline_edit(node);
     });
     m_NodeContextMenu.append(*itemEdit);
 
     // 2. Properties (Dialog)
-    auto itemProps = Gtk::manage(new Gtk::MenuItem(_("Properties...")));
+    auto itemProps = Gtk::manage(new Gtk::MenuItem(_("Properties... (Double Click)")));
     itemProps->signal_activate().connect([this, node]() {
         open_edit_dialog(node);
     });
@@ -402,13 +405,13 @@ void MainWindow::on_node_context_menu(GdkEventButton* event, std::shared_ptr<Nod
     m_NodeContextMenu.append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
     
     // 3. Add Child
-    auto itemAdd = Gtk::manage(new Gtk::MenuItem(_("Add Branch")));
+    auto itemAdd = Gtk::manage(new Gtk::MenuItem(_("Add Child Branch (Tab)")));
     itemAdd->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_add_node));
     m_NodeContextMenu.append(*itemAdd);
 
     // 4. Remove
     if (!node->isRoot()) {
-        auto itemRemove = Gtk::manage(new Gtk::MenuItem(_("Remove Branch")));
+        auto itemRemove = Gtk::manage(new Gtk::MenuItem(_("Remove Branch (Del)")));
         itemRemove->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_remove_node));
         m_NodeContextMenu.append(*itemRemove);
     }
@@ -526,4 +529,19 @@ std::string MainWindow::getLastUsedDirectoryForDialog() {
 
     // If no current file, return empty string to let GTK default behavior
     return "";
+}
+
+void MainWindow::on_selection_changed() {
+    auto selectedNodes = m_Area.getSelectedNodes();
+    auto selectedConnection = m_Area.getSelectedConnection();
+
+    if (selectedNodes.empty() && !selectedConnection) {
+        updateStatusBar(_("Select a node to start. Drag background to pan. Mouse wheel to zoom."));
+    } else if (selectedNodes.size() == 1) {
+        updateStatusBar(_("Tab: Child | Enter: Sibling | F2: Edit | Del: Remove | Ctrl+Click: Select more"));
+    } else if (selectedNodes.size() >= 2) {
+        updateStatusBar(_("Ctrl+L: Create connection between nodes | Del: Remove selected branches"));
+    } else if (selectedConnection) {
+        updateStatusBar(_("Del: Remove connection | Click and drag nodes to reposition branches"));
+    }
 }
