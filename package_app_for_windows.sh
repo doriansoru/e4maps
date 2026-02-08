@@ -1,123 +1,110 @@
 #!/bin/bash
 
-# Script per creare una directory di distribuzione completa per e4maps
-# con tutte le DLL dipendenze necessarie per Windows
+# Script DEFINITIVO per la distribuzione di e4maps su Windows
+# Risolve i problemi di caricamento SVG e dipendenze ricorsive module-loading
 
-set -e  # Esce se un comando fallisce
+set -e
 
 APP_NAME="e4maps"
 
-# Rilevamento automatico directory di build
+# 1. Rilevamento directory di build
 if [ -d "./build" ] && [ -f "./build/$APP_NAME.exe" ]; then
     BUILD_DIR="./build"
-    echo "Rilevata build in ./build (CI/GitHub Actions)"
 elif [ -d "./buildWin" ] && [ -f "./buildWin/$APP_NAME.exe" ]; then
     BUILD_DIR="./buildWin"
-    echo "Rilevata build in ./buildWin (Locale)"
 else
-    echo "ERRORE: Directory di build o eseguibile non trovato."
-    echo "Assicurati di aver compilato il progetto."
+    echo "ERRORE: Eseguibile non trovato."
     exit 1
 fi
 
 INSTALL_DIR="./distWin"
-DEPS_DIR="$INSTALL_DIR" # Metto le DLL nella root per semplicità di Windows
-
-echo "Creazione della directory di distribuzione per $APP_NAME in $INSTALL_DIR..."
-
-# Pulisci e ricrea
 rm -rf "$INSTALL_DIR"
 mkdir -p "$INSTALL_DIR"
 
-# Copiare l'eseguibile principale
+echo "📦 Confezionamento professionale per Windows..."
+
+# 2. Copia eseguibile
 cp "$BUILD_DIR/$APP_NAME.exe" "$INSTALL_DIR/"
-echo "Eseguibile copiato."
 
-# Ottieni tutte le dipendenze DLL usando ldd
-# Nota: Questo funziona bene dentro la shell MSYS2/MinGW64
-echo "Raccolta delle dipendenze DLL..."
-ldd "$BUILD_DIR/$APP_NAME.exe" | grep -o '/mingw64/bin/[^ ]*\.dll' | sort | uniq | while read -r dll_path; do
-    if [ -f "$dll_path" ]; then
-        cp "$dll_path" "$INSTALL_DIR/"
-        # echo "Copiata DLL: $(basename "$dll_path")"
-    fi
-done
+# 3. Risorse GTK e Loader (Copia subito per scansionarne le dipendenze dopo)
+echo "🎨 Preparazione risorse e moduli..."
 
-echo "DLL copiate."
+# Loader GdkPixbuf (essenziali per SVG, PNG, etc.)
+LOADERS_DIR="lib/gdk-pixbuf-2.0/2.10.0/loaders"
+mkdir -p "$INSTALL_DIR/$LOADERS_DIR"
+cp /mingw64/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.dll "$INSTALL_DIR/$LOADERS_DIR/"
 
-# --- Gestione Risorse GTK ---
-echo "Copia risorse GTK (Schemi, Icone, Temi)..."
-
-# Schemi GSettings (essenziali per evitare crash all'avvio)
+# Schemi GSettings
 mkdir -p "$INSTALL_DIR/share/glib-2.0/schemas"
-if [ -d "/mingw64/share/glib-2.0/schemas" ]; then
-    cp /mingw64/share/glib-2.0/schemas/gschemas.compiled "$INSTALL_DIR/share/glib-2.0/schemas/" 2>/dev/null || \
-    cp /mingw64/share/glib-2.0/schemas/*.xml "$INSTALL_DIR/share/glib-2.0/schemas/"
-    # Se abbiamo copiato gli XML, proviamo a compilarli se glib-compile-schemas esiste
-    if [ -f "$INSTALL_DIR/share/glib-2.0/schemas/gschemas.compiled" ]; then
-        : # Già compilato
-    elif command -v glib-compile-schemas >/dev/null; then
-        glib-compile-schemas "$INSTALL_DIR/share/glib-2.0/schemas/"
-    fi
-fi
+cp /mingw64/share/glib-2.0/schemas/*.xml "$INSTALL_DIR/share/glib-2.0/schemas/"
+glib-compile-schemas "$INSTALL_DIR/share/glib-2.0/schemas/"
 
-# Icone (Adwaita/Hicolor) - Ridotto per risparmiare spazio, ma necessario per UI
+# Icone Adwaita (copiamo tutto il necessario per evitare 'image-missing')
 mkdir -p "$INSTALL_DIR/share/icons"
-for theme in Adwaita hicolor; do
-    if [ -d "/mingw64/share/icons/$theme" ]; then
-        # Copia solo index.theme e cartelle scalabili/piccole per risparmiare tempo/spazio se vuoi
-        # Qui copiamo tutto per sicurezza
-        cp -r "/mingw64/share/icons/$theme" "$INSTALL_DIR/share/icons/"
-    fi
-done
+cp -r /mingw64/share/icons/Adwaita "$INSTALL_DIR/share/icons/"
+cp -r /mingw64/share/icons/hicolor "$INSTALL_DIR/share/icons/"
 
-# Loader Pixbuf (per immagini)
-mkdir -p "$INSTALL_DIR/lib/gdk-pixbuf-2.0/2.10.0/loaders"
-if [ -d "/mingw64/lib/gdk-pixbuf-2.0/2.10.0/loaders" ]; then
-    cp /mingw64/lib/gdk-pixbuf-2.0/2.10.0/loaders/*.dll "$INSTALL_DIR/lib/gdk-pixbuf-2.0/2.10.0/loaders/"
-fi
-# Genera cache loaders se possibile, altrimenti copia se esiste
-if command -v gdk-pixbuf-query-loaders >/dev/null; then
-    gdk-pixbuf-query-loaders > "$INSTALL_DIR/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"
-elif [ -f "/mingw64/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" ]; then
-    cp "/mingw64/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" "$INSTALL_DIR/lib/gdk-pixbuf-2.0/2.10.0/"
-fi
+# 4. Raccolta TOTALE e RICORSIVA delle DLL
+echo "🔗 Analisi profonda delle dipendenze..."
+# Troviamo tutte le DLL necessarie scansionando ricorsivamente tutto (eseguibile + loader)
+collect_all_deps() {
+    local target_dir="$1"
+    local found_new=true
+    
+    while [ "$found_new" = true ]; do
+        found_new=false
+        # Trova tutti i binari correnti (exe e dll in ogni sottocartella)
+        local binaries=$(find "$target_dir" -name "*.exe" -o -name "*.dll")
+        
+        # Scansiona le loro dipendenze
+        local all_deps=$(ldd $binaries 2>/dev/null | grep -o '/mingw64/bin/[^ ]*\.dll' | sort | uniq)
+        
+        for dep in $all_deps; do
+            local name=$(basename "$dep")
+            # Se la DLL non è ancora nella root dell'installazione, copiala
+            if [ ! -f "$target_dir/$name" ]; then
+                cp "$dep" "$target_dir/"
+                found_new=true
+                # echo "   + $name"
+            fi
+        done
+    done
+}
 
-# --- Traduzioni ---
-# Copia strutturata per gettext: share/locale/<lang>/LC_MESSAGES/e4maps.mo
-echo "Copia traduzioni..."
+collect_all_deps "$INSTALL_DIR"
+
+# 5. Generazione Cache Loader Pixbuf
+# Questo passaggio è vitale: dice a GTK dove trovare i file .dll per caricare le immagini
+echo "⚙️  Generazione cache moduli grafici..."
+# Generiamo la query. I percorsi nel file devono essere relativi alla root dell'app
+gdk-pixbuf-query-loaders > "$INSTALL_DIR/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"
+# Convertiamo i percorsi assoluti di MSYS2 in percorsi relativi per la portable app
+# Esempio: "C:/msys64/mingw64/lib/..." -> "lib/..."
+sed -i 's|.*\/lib/gdk-pixbuf-2.0/|lib/gdk-pixbuf-2.0/|g' "$INSTALL_DIR/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache"
+
+# 6. Traduzioni
+echo "🌐 Configurazione lingue..."
 if [ -d "$BUILD_DIR/po" ]; then
-    mkdir -p "$INSTALL_DIR/share/locale"
     for mo_file in "$BUILD_DIR"/po/*.mo; do
         if [ -f "$mo_file" ]; then
             lang=$(basename "$mo_file" .mo)
-            mkdir -p "$INSTALL_DIR/share/locale/$lang/LC_MESSAGES"
-            cp "$mo_file" "$INSTALL_DIR/share/locale/$lang/LC_MESSAGES/e4maps.mo"
-            echo "   -> Lingua: $lang"
+            dest="$INSTALL_DIR/share/locale/$lang/LC_MESSAGES"
+            mkdir -p "$dest"
+            cp "$mo_file" "$dest/e4maps.mo"
         fi
     done
 fi
 
-# --- Documentazione e Licenza ---
-echo "Copia documentazione..."
-if [ -d "docs" ]; then
-    mkdir -p "$INSTALL_DIR/share/doc/e4maps"
-    cp -r "docs/"* "$INSTALL_DIR/share/doc/e4maps/"
-fi
-cp LICENSE "$INSTALL_DIR/" 2>/dev/null || true
-cp README.md "$INSTALL_DIR/" 2>/dev/null || true
+# 7. File extra
+cp LICENSE README.md "$INSTALL_DIR/" 2>/dev/null || true
 
-# --- Risorse App ---
-if [ -f "e4maps.svg" ]; then
-    cp "e4maps.svg" "$INSTALL_DIR/"
-fi
-
-# Creazione script di avvio .bat (opzionale ma utile per debug)
-cat > "$INSTALL_DIR/run.bat" <<EOF
+# 8. Script di avvio per forzare il caricamento moduli
+cat > "$INSTALL_DIR/run_e4maps.bat" <<EOF
 @echo off
-set PATH=%~dp0;%PATH%
+set GDK_PIXBUF_MODULE_FILE=%~dp0lib\gdk-pixbuf-2.0\2.10.0\loaders.cache
 start e4maps.exe
 EOF
 
 echo
-echo "Distribuzione Windows completata in: $INSTALL_DIR"
+echo "✅ Distribuzione completata con successo in: $INSTALL_DIR"
+echo "Usa 'run_e4maps.bat' per avviare l'applicazione con il supporto immagini garantito."
