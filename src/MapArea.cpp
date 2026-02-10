@@ -30,26 +30,28 @@ void MapArea::setSelectedNodes(const std::vector<std::shared_ptr<Node>>& nodes) 
 }
 
 bool MapArea::on_key_press_event(GdkEventKey* event) {
+    guint keyval = gdk_keyval_to_lower(event->keyval);
+
     // Handle Navigation
-    if (event->keyval == GDK_KEY_Left) {
+    if (keyval == GDK_KEY_Left) {
         navigateSelection(-1, 0);
         return true;
-    } else if (event->keyval == GDK_KEY_Right) {
+    } else if (keyval == GDK_KEY_Right) {
         navigateSelection(1, 0);
         return true;
-    } else if (event->keyval == GDK_KEY_Up) {
+    } else if (keyval == GDK_KEY_Up) {
         navigateSelection(0, -1);
         return true;
-    } else if (event->keyval == GDK_KEY_Down) {
+    } else if (keyval == GDK_KEY_Down) {
         navigateSelection(0, 1);
         return true;
     } 
     
     // Handle shortcuts for adding nodes
-    if (event->keyval == GDK_KEY_Insert || event->keyval == GDK_KEY_Tab) {
+    if (keyval == GDK_KEY_Insert || keyval == GDK_KEY_Tab) {
         signal_add_child_node.emit();
         return true;
-    } else if (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter) {
+    } else if (keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter) {
         // Shift+Enter could mean "add parent" or something else, but standard Enter is sibling
         signal_add_sibling_node.emit();
         return true;

@@ -354,7 +354,8 @@ std::unique_ptr<EditNodeCommand> NodeEditDialog::createEditCommand() {
 }
 
 bool NodeEditDialog::on_text_key_press(GdkEventKey* event) {
-    if (event->keyval == GDK_KEY_Return) {
+    guint keyval = gdk_keyval_to_lower(event->keyval);
+    if (keyval == GDK_KEY_Return) {
         if (event->state & GDK_SHIFT_MASK) {
             // Shift+Enter: Insert newline (default behavior), so return false
             return false; 
@@ -364,7 +365,7 @@ bool NodeEditDialog::on_text_key_press(GdkEventKey* event) {
             return true;
         }
     }
-    if (event->keyval == GDK_KEY_Escape) {
+    if (keyval == GDK_KEY_Escape) {
         response(Gtk::RESPONSE_CANCEL);
         return true;
     }

@@ -154,13 +154,15 @@ bool MainWindow::on_delete_event(GdkEventAny* event) {
 }
 
 bool MainWindow::on_key_press_event(GdkEventKey* event) {
+    guint keyval = gdk_keyval_to_lower(event->keyval);
+
     // Check for Tab key
-    if (event->keyval == GDK_KEY_Tab) {
+    if (keyval == GDK_KEY_Tab) {
         on_add_node();
         return true; // Event handled
     }
     // Check for Delete key
-    if (event->keyval == GDK_KEY_Delete) {
+    if (keyval == GDK_KEY_Delete) {
         // If a node is selected, remove node
         if (m_Area.getSelectedNode()) {
             on_remove_node();
@@ -174,7 +176,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
     }
     
     // Check for F2 to start inline editing
-    if (event->keyval == GDK_KEY_F2) {
+    if (keyval == GDK_KEY_F2) {
         auto node = m_Area.getSelectedNode();
         if (node) {
             start_inline_edit(node);
@@ -183,19 +185,19 @@ bool MainWindow::on_key_press_event(GdkEventKey* event) {
     }
 
     // Check for Ctrl+L to create connections
-    if (event->keyval == GDK_KEY_l && (event->state & GDK_CONTROL_MASK)) {
+    if (keyval == GDK_KEY_l && (event->state & GDK_CONTROL_MASK)) {
         on_create_connection();
         return true;
     }
     
     // Ctrl+F for Search
-    if (event->keyval == GDK_KEY_f && (event->state & GDK_CONTROL_MASK)) {
+    if (keyval == GDK_KEY_f && (event->state & GDK_CONTROL_MASK)) {
         on_search_toggled();
         return true;
     }
 
     // F3 for Find Next, Shift+F3 for Find Prev
-    if (event->keyval == GDK_KEY_F3) {
+    if (keyval == GDK_KEY_F3) {
         if (event->state & GDK_SHIFT_MASK) {
             on_find_prev();
         } else {
@@ -361,7 +363,8 @@ void MainWindow::finish_inline_edit(bool save) {
 }
 
 bool MainWindow::on_editor_key_press(GdkEventKey* event) {
-    if (event->keyval == GDK_KEY_Return) {
+    guint keyval = gdk_keyval_to_lower(event->keyval);
+    if (keyval == GDK_KEY_Return) {
         if (event->state & GDK_SHIFT_MASK) {
             // Shift+Enter: Insert newline (default behavior), so return false
             return false; 
@@ -371,7 +374,7 @@ bool MainWindow::on_editor_key_press(GdkEventKey* event) {
             return true;
         }
     }
-    if (event->keyval == GDK_KEY_Escape) {
+    if (keyval == GDK_KEY_Escape) {
         finish_inline_edit(false);
         return true;
     }

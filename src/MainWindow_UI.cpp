@@ -61,6 +61,24 @@ void MainWindow::initHeaderBar() {
     auto menu = Gtk::manage(new Gtk::Menu());
     btnMenu->set_popup(*menu);
 
+    // --- File Section ---
+    auto itemNew = Gtk::manage(new Gtk::MenuItem(_("New Map")));
+    itemNew->add_accelerator("activate", m_refAccelGroup, GDK_KEY_n, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+    itemNew->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_new));
+    menu->append(*itemNew);
+
+    auto itemOpen = Gtk::manage(new Gtk::MenuItem(_("Open Map")));
+    itemOpen->add_accelerator("activate", m_refAccelGroup, GDK_KEY_o, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+    itemOpen->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_open));
+    menu->append(*itemOpen);
+
+    auto itemSave = Gtk::manage(new Gtk::MenuItem(_("Save Map")));
+    itemSave->add_accelerator("activate", m_refAccelGroup, GDK_KEY_s, Gdk::CONTROL_MASK, Gtk::ACCEL_VISIBLE);
+    itemSave->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_save));
+    menu->append(*itemSave);
+
+    menu->append(*Gtk::manage(new Gtk::SeparatorMenuItem()));
+
     // --- Recents ---
     auto itemRecent = Gtk::manage(new Gtk::MenuItem(_("Open Recent")));
     m_recentMenu = Gtk::manage(new Gtk::Menu());
